@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RSyncClient.WindowsService", "Dwragge.RSyncClient.WindowsService\Dwragge.RSyncClient.WindowsService.csproj", "{2875992D-FD24-4566-94D7-DE9D922E8456}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RSyncClient.CLI", "Dwragge.RSyncClient.CLI\Dwragge.RSyncClient.CLI.csproj", "{95339F4D-338B-4205-9C71-F6564DAD23EF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2875992D-FD24-4566-94D7-DE9D922E8456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2875992D-FD24-4566-94D7-DE9D922E8456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2875992D-FD24-4566-94D7-DE9D922E8456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2875992D-FD24-4566-94D7-DE9D922E8456}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {998D45C8-608D-470F-89FA-0E2343E8723B}
+	EndGlobalSection
+EndGlobal
