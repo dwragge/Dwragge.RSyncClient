@@ -9,12 +9,8 @@ namespace Dwragge.RCloneClient.CLI
         {
             var client = new RCloneManagementServiceClient();
 
-            for (int i = 0; i < 3; i++)
-            {
-                client.PostHelloJob("Dylan");
-                Console.WriteLine("Sent");
-                Console.ReadKey();
-            }
+            Console.WriteLine(client.HelloWorld());
+            Console.ReadKey();
         }
     }
 }

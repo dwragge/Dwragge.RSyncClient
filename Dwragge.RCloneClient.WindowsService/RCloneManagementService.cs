@@ -1,4 +1,6 @@
-﻿using Quartz;
+﻿using System.Threading.Tasks;
+using Dwragge.RCloneClient.Common;
+using Quartz;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
@@ -10,27 +12,25 @@ namespace Dwragge.RCloneClient.WindowsService
         {
             _scheduler = scheduler;
         }
-        public string HelloWorld()
+        public async Task<string> HelloWorld()
         {
-            return "Hello, World";
+            var service = new RCloneService();
+            var command = RCloneCommandBuilder.CreateCommand(RCloneSubCommand.Copy)
+                .WithLocalPath("M:\\EU Photos\\")
+                .WithRemote("azure")
+                .WithRemotePath("backup/EU Photos")
+                .AsDryRun()
+                .WithDebugLogging()
+                .Build();
+
+            await service.ExecuteCommand(command);
+
+            return command;
         }
 
         public void PostHelloJob(string name)
         {
-            var job = JobBuilder.Create<HelloJob>()
-                .WithIdentity("job1", "group1")
-                .UsingJobData("Name", name)
-                .Build();
-
-            var trigger = TriggerBuilder.Create()
-                .WithIdentity("trigger1")
-                .ForJob(job)
-                .StartNow()
-                .WithSimpleSchedule(x => x.WithIntervalInSeconds(10).RepeatForever())
-                .Build();
-
-            _scheduler.ScheduleJob(job, trigger);
-
+            
         }
     }
 }

@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="HelloJob.cs" />
     <Compile Include="IRCloneManagementService.cs" />
+    <Compile Include="Jobs\CopyJob.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuartzSchedulerFactory.cs" />

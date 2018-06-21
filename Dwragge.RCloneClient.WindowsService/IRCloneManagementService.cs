@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
@@ -6,7 +7,7 @@ namespace Dwragge.RCloneClient.WindowsService
     public interface IRCloneManagementService
     {
         [OperationContract]
-        string HelloWorld();
+        Task<string> HelloWorld();
 
         [OperationContract]
         void PostHelloJob(string name);
