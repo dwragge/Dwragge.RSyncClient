@@ -3,7 +3,6 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using Autofac;
 using Dwragge.RCloneClient.Common;
-using Dwragge.RSyncClient.WindowsService;
 using Quartz;
 using Topshelf;
 using Autofac.Integration.Wcf;

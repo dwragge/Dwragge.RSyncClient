@@ -7,7 +7,7 @@ using NLog;
 using Quartz;
 using Quartz.Impl;
 
-namespace Dwragge.RSyncClient.WindowsService
+namespace Dwragge.RCloneClient.WindowsService
 {
     internal class QuartzSchedulerFactory
     {

@@ -2,7 +2,7 @@
 using NLog;
 using Quartz;
 
-namespace Dwragge.RSyncClient.WindowsService
+namespace Dwragge.RCloneClient.WindowsService
 {
     public class HelloJob : IJob
     {

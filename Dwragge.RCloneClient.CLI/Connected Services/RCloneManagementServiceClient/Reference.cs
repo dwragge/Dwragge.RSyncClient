@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dwragge.RSyncClient.CLI.RCloneManagementServiceClient {
+namespace Dwragge.RCloneClient.CLI.Connected_Services.RCloneManagementServiceClient {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -29,12 +29,12 @@ namespace Dwragge.RSyncClient.CLI.RCloneManagementServiceClient {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IRCloneManagementServiceChannel : Dwragge.RSyncClient.CLI.RCloneManagementServiceClient.IRCloneManagementService, System.ServiceModel.IClientChannel {
+    public interface IRCloneManagementServiceChannel : IRCloneManagementService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class RCloneManagementServiceClient : System.ServiceModel.ClientBase<Dwragge.RSyncClient.CLI.RCloneManagementServiceClient.IRCloneManagementService>, Dwragge.RSyncClient.CLI.RCloneManagementServiceClient.IRCloneManagementService {
+    public partial class RCloneManagementServiceClient : System.ServiceModel.ClientBase<IRCloneManagementService>, IRCloneManagementService {
         
         public RCloneManagementServiceClient() {
         }

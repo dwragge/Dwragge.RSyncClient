@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2875992D-FD24-4566-94D7-DE9D922E8456}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Dwragge.RSyncClient.WindowsService</RootNamespace>
-    <AssemblyName>Dwragge.RSyncClient.WindowsService</AssemblyName>
+    <RootNamespace>Dwragge.RCloneClient.WindowsService</RootNamespace>
+    <AssemblyName>Dwragge.RCloneClient.WindowsService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -1,5 +1,4 @@
-﻿using Dwragge.RSyncClient.WindowsService;
-using Quartz;
+﻿using Quartz;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
