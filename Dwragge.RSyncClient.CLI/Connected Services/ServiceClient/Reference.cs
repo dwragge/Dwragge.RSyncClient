@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dwragge.RSyncClient.CLI.ServiceClient {
+namespace Dwragge.RCloneClient.CLI.ServiceClient {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]

@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 
-namespace Dwragge.RSyncClient.WindowsService
+namespace Dwragge.RCloneClient.WindowsService
 {
     [ServiceContract]
     public interface IService

@@ -5,7 +5,7 @@ using System.ServiceModel.Description;
 using System.ServiceProcess;
 using Topshelf;
 
-namespace Dwragge.RSyncClient.WindowsService
+namespace Dwragge.RCloneClient.WindowsService
 {
     public class ServiceWindowsService : ServiceControl
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Topshelf;
 
-namespace Dwragge.RSyncClient.WindowsService
+namespace Dwragge.RCloneClient.WindowsService
 {
     static class Program
     {
@@ -18,8 +18,8 @@ namespace Dwragge.RSyncClient.WindowsService
                 x.RunAsLocalService();
                 x.EnableShutdown();
 
-                x.SetServiceName("Rsync Management Client");
-                x.SetDescription("Manages rsync backups to Azure Blob Storage");
+                x.SetServiceName("rclone Management Client");
+                x.SetDescription("Manages rclone backups to Azure Blob Storage");
 
                 x.UseNLog();
             });
