@@ -11,6 +11,7 @@ namespace Dwragge.RSyncClient.CLI
         static void Main(string[] args)
         {
             var client = new ServiceClient.ServiceClient();
+            //var client = new ServiceProxy();
             Console.WriteLine(client.HelloWorld());
             Console.ReadKey();
         }

@@ -1,22 +1,20 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceProcess;
+using Topshelf;
 
 namespace Dwragge.RSyncClient.WindowsService
 {
-    public class ServiceWindowsService : ServiceBase
+    public class ServiceWindowsService : ServiceControl
     {
         public ServiceHost ServiceHost;
 
-        public ServiceWindowsService()
-        {
-            ServiceName = "Dwragge.RSyncClient.Service";
-        }
-        protected override void OnStart(string[] args)
+        public bool Start(HostControl hostControl)
         {
             ServiceHost?.Close();
-
+            
             var baseAddress = "net.pipe://localhost/com.Dwragge.RsyncClientService";
             ServiceHost = new ServiceHost(typeof(Service), new Uri(baseAddress));
             ServiceHost.AddServiceEndpoint(typeof(IService), new NetNamedPipeBinding(), baseAddress);
@@ -27,12 +25,14 @@ namespace Dwragge.RSyncClient.WindowsService
                 MetadataExchangeBindings.CreateMexNamedPipeBinding(), baseAddress + "/mex/");
 
             ServiceHost.Open();
+            return true;
         }
 
-        protected override void OnStop()
+        public bool Stop(HostControl hostControl)
         {
             ServiceHost?.Close();
             ServiceHost = null;
+            return true;
         }
     }
 }

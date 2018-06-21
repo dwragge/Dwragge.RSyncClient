@@ -1,4 +1,5 @@
-﻿namespace Dwragge.RSyncClient.WindowsService
+﻿
+namespace Dwragge.RSyncClient.WindowsService
 {
     public class Service : IService
     {

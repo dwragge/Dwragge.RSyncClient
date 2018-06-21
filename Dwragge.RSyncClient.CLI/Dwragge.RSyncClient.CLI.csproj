@@ -80,5 +80,11 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dwragge.RSyncClient.Common\Dwragge.RSyncClient.Common.csproj">
+      <Project>{2BD45342-6AD1-41C5-9653-CCA65537683C}</Project>
+      <Name>Dwragge.RSyncClient.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

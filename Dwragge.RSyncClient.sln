@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RSyncClient.Windows
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RSyncClient.CLI", "Dwragge.RSyncClient.CLI\Dwragge.RSyncClient.CLI.csproj", "{95339F4D-338B-4205-9C71-F6564DAD23EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RSyncClient.Common", "Dwragge.RSyncClient.Common\Dwragge.RSyncClient.Common.csproj", "{2BD45342-6AD1-41C5-9653-CCA65537683C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BD45342-6AD1-41C5-9653-CCA65537683C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD45342-6AD1-41C5-9653-CCA65537683C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD45342-6AD1-41C5-9653-CCA65537683C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD45342-6AD1-41C5-9653-CCA65537683C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
