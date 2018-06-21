@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using Autofac;
+using Dwragge.RCloneClient.Common;
 using Dwragge.RSyncClient.WindowsService;
 using Quartz;
 using Topshelf;
+using Autofac.Integration.Wcf;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
@@ -14,16 +17,10 @@ namespace Dwragge.RCloneClient.WindowsService
         
         public bool Start(HostControl hostControl)
         {
-            InitializeServiceHost();
-
             _scheduler = QuartzSchedulerFactory.CreateQuartzScheduler();
             _scheduler.Start().Wait();
 
-            var job = JobBuilder.Create<HelloJob>().WithIdentity("job1", "group1").Build();
-            var trigger = TriggerBuilder.Create().WithIdentity("trigger1").StartNow()
-                .WithSimpleSchedule(x => x.WithIntervalInSeconds(10)).Build();
-
-            _scheduler.ScheduleJob(job, trigger);
+            InitializeServiceHost();
 
             return true;
         }
@@ -32,16 +29,28 @@ namespace Dwragge.RCloneClient.WindowsService
         {
             ServiceHost?.Close();
 
-            var baseAddress = "net.pipe://localhost/com.Dwragge.RsyncClientService";
-            ServiceHost = new ServiceHost(typeof(Service), new Uri(baseAddress));
-            ServiceHost.AddServiceEndpoint(typeof(IService), new NetNamedPipeBinding(), baseAddress);
+            const string baseAddress = "net.pipe://localhost/com.Dwragge.RCloneClientService";
+            ServiceHost = new ServiceHost(typeof(RCloneManagementService), new Uri(baseAddress));
+            ServiceHost.AddServiceEndpoint(typeof(IRCloneManagementService), new NetNamedPipeBinding(), baseAddress);
 
             var behaviour = new ServiceMetadataBehavior();
             ServiceHost.Description.Behaviors.Add(behaviour);
             ServiceHost.AddServiceEndpoint(typeof(IMetadataExchange),
                 MetadataExchangeBindings.CreateMexNamedPipeBinding(), baseAddress + "/mex/");
 
+            var container = BuildContainer();
+            ServiceHost.AddDependencyInjectionBehavior<IRCloneManagementService>(container);
+
             ServiceHost.Open();
+        }
+
+        private IContainer BuildContainer()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(_scheduler);
+            builder.RegisterType<RCloneManagementService>().As<IRCloneManagementService>();
+
+            return builder.Build();
         }
 
         public bool Stop(HostControl hostControl)
@@ -49,7 +58,14 @@ namespace Dwragge.RCloneClient.WindowsService
             ServiceHost?.Close();
             ServiceHost = null;
 
-            _scheduler.Shutdown().Wait();
+            if (DebugChecker.IsDebug)
+            {
+                _scheduler.Shutdown(false).Wait(); 
+            }
+            else
+            {
+                _scheduler.Shutdown(true).Wait();
+            }
             return true;
         }
     }

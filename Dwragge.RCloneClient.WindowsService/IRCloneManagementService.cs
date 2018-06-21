@@ -3,9 +3,12 @@
 namespace Dwragge.RCloneClient.WindowsService
 {
     [ServiceContract]
-    public interface IService
+    public interface IRCloneManagementService
     {
         [OperationContract]
         string HelloWorld();
+
+        [OperationContract]
+        void PostHelloJob(string name);
     }
 }

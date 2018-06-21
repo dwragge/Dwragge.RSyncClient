@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connected Services\ServiceClient\Reference.cs">
+    <Compile Include="Connected Services\RCloneManagementServiceClient\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -54,11 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Connected Services\ServiceClient\service.wsdl" />
-    <None Include="Connected Services\ServiceClient\service.xsd">
+    <None Include="Connected Services\RCloneManagementServiceClient\service.wsdl" />
+    <None Include="Connected Services\RCloneManagementServiceClient\service.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ServiceClient\service1.xsd">
+    <None Include="Connected Services\RCloneManagementServiceClient\service1.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -66,16 +66,16 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Connected Services\ServiceClient\" />
+    <WCFMetadataStorage Include="Connected Services\RCloneManagementServiceClient\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceClient\configuration91.svcinfo" />
+    <None Include="Connected Services\RCloneManagementServiceClient\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceClient\configuration.svcinfo" />
+    <None Include="Connected Services\RCloneManagementServiceClient\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceClient\Reference.svcmap">
+    <None Include="Connected Services\RCloneManagementServiceClient\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

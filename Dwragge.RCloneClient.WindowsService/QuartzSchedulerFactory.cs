@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.Data.SQLite;
 using System.IO;
+using Dwragge.RCloneClient.Common;
 using NLog;
 using Quartz;
 using Quartz.Impl;
@@ -11,7 +12,26 @@ namespace Dwragge.RSyncClient.WindowsService
     internal class QuartzSchedulerFactory
     {
         private static Logger Logger => LogManager.GetCurrentClassLogger();
+
         public static IScheduler CreateQuartzScheduler()
+        {
+            return DebugChecker.IsDebug ? CreateDefaultScheduler() : CreateSchedulerWithSqliteStore();
+        }
+
+        private static IScheduler CreateDefaultScheduler()
+        {
+            var props = new NameValueCollection
+            {
+                {"quartz.serializer.type", "binary"}
+            };
+
+            var schedulerFactory = new StdSchedulerFactory(props);
+            var scheduler = schedulerFactory.GetScheduler().Result;
+
+            return scheduler;
+        }
+
+        private static IScheduler CreateSchedulerWithSqliteStore()
         {
             var dbPath = GetDbLocation();
             TryCreateDb(dbPath);
