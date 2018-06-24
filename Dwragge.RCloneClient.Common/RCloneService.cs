@@ -12,7 +12,8 @@ namespace Dwragge.RCloneClient.Common
 
         public async Task ExecuteCommand(string commandString)
         {
-            var exitCode = await ExecuteCommandCoreAsync(commandString);
+            var process = CreateProcess(commandString);
+            var exitCode = await ExecuteCommandCoreAsync(process);
             if (exitCode == 1)
             {
                 throw new InvalidOperationException("Failed to execute command, syntax was invalid");
@@ -26,46 +27,30 @@ namespace Dwragge.RCloneClient.Common
 
         public async Task<IEnumerable<string>> GetRemotes()
         {
-            var commandOutput = await ExecuteCommandReaderCoreAsync("listremotes");
+            var commandOutput = await ExecuteCommandReaderAsync("listremotes");
             return commandOutput.Split('\r');
         }
 
-        private async Task<string> ExecuteCommandReaderCoreAsync(string commandString)
+        private async Task<string> ExecuteCommandReaderAsync(string commandString)
         {
-            _logger.Info($"Executing command {commandString}");
-            var startTime = DateTime.Now;
-
             var outputLines = new List<string>();
             var process = CreateProcess(commandString, str => outputLines.Add(str));
-            if (!process.Start())
-            {
-                _logger.Error("Failed to start process");
-                return null;
-            }
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-
-            var exitCode = await process.WaitForExitAsync();
-
+            
+            var exitCode = await ExecuteCommandCoreAsync(process);
             if (exitCode != 0)
             {
                 _logger.Error($"Failed to execute command, exit code was {exitCode}");
                 return null;
             }
 
-            await process.StandardError.BaseStream.FlushAsync();
-            await process.StandardOutput.BaseStream.FlushAsync();
-
-            _logger.Info($"Command took {(DateTime.Now - startTime).TotalSeconds } seconds to execute");
             return string.Join("\n", outputLines);
         }
 
-        private async Task<int> ExecuteCommandCoreAsync(string commandString)
+        private async Task<int> ExecuteCommandCoreAsync(Process process)
         {
-            _logger.Info($"Executing command {commandString}");
+            _logger.Info($"Executing command {process.StartInfo.Arguments}");
             var startTime = DateTime.Now;
-
-            var process = CreateProcess(commandString);
+            
             if (!process.Start())
             {
                 _logger.Error("Failed to start process");
@@ -75,7 +60,9 @@ namespace Dwragge.RCloneClient.Common
             process.BeginErrorReadLine();
 
             var exitCode = await process.WaitForExitAsync();
-            
+            await process.StandardError.BaseStream.FlushAsync();
+            await process.StandardOutput.BaseStream.FlushAsync();
+
             _logger.Info($"Command took {(DateTime.Now - startTime).TotalSeconds } seconds to execute");
             return exitCode;
         }

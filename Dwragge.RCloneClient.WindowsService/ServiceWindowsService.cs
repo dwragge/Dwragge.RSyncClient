@@ -1,26 +1,43 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using System.Threading.Tasks;
 using Autofac;
 using Dwragge.RCloneClient.Common;
 using Quartz;
 using Topshelf;
 using Autofac.Integration.Wcf;
+using Dwragge.RCloneClient.Persistence;
+using Microsoft.EntityFrameworkCore;
+using NLog;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
     public class ServiceWindowsService : ServiceControl
     {
         public ServiceHost ServiceHost;
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private IScheduler _scheduler;
         
         public bool Start(HostControl hostControl)
         {
-            _scheduler = QuartzSchedulerFactory.CreateQuartzScheduler();
-            _scheduler.Start().Wait();
+            var startupTasks = new List<Task>
+            {
+                Task.Run(async () =>
+                {
+                    _scheduler = QuartzSchedulerFactory.CreateQuartzScheduler();
+                    await _scheduler.Start();
+                }),
 
-            InitializeServiceHost();
+                Task.Run(async () => await EnsureDatabaseAsync()),
 
+                Task.Run(() => InitializeServiceHost())
+            };
+
+            Task.WaitAll(startupTasks.ToArray());
+            ServiceHost.Open();
             return true;
         }
 
@@ -39,8 +56,15 @@ namespace Dwragge.RCloneClient.WindowsService
 
             var container = BuildContainer();
             ServiceHost.AddDependencyInjectionBehavior<IRCloneManagementService>(container);
+        }
 
-            ServiceHost.Open();
+        private async Task EnsureDatabaseAsync()
+        {
+            using (var context = new JobContext())
+            {
+                _logger.Info($"Migrating Database at {context.Database.GetDbConnection().DataSource}");
+                await context.Database.MigrateAsync();
+            }
         }
 
         private IContainer BuildContainer()
