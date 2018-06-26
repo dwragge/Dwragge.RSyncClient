@@ -5,8 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="NLog" Version="4.5.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dwragge.RCloneClient.Persistence\Dwragge.RCloneClient.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

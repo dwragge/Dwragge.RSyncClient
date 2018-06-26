@@ -37,6 +37,7 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/Dwragge.RCloneClient.Persistence" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IRCloneManagementService_HelloWorld_InputMessage">
@@ -44,6 +45,12 @@
   </wsdl:message>
   <wsdl:message name="IRCloneManagementService_HelloWorld_OutputMessage">
     <wsdl:part name="parameters" element="tns:HelloWorldResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRCloneManagementService_CreateTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateTask" />
+  </wsdl:message>
+  <wsdl:message name="IRCloneManagementService_CreateTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateTaskResponse" />
   </wsdl:message>
   <wsdl:message name="IRCloneManagementService_PostHelloJob_InputMessage">
     <wsdl:part name="parameters" element="tns:PostHelloJob" />
@@ -56,6 +63,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/HelloWorld" message="tns:IRCloneManagementService_HelloWorld_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/HelloWorldResponse" message="tns:IRCloneManagementService_HelloWorld_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="CreateTask">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/CreateTask" message="tns:IRCloneManagementService_CreateTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/CreateTaskResponse" message="tns:IRCloneManagementService_CreateTask_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="PostHelloJob">
       <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/PostHelloJob" message="tns:IRCloneManagementService_PostHelloJob_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/PostHelloJobResponse" message="tns:IRCloneManagementService_PostHelloJob_OutputMessage" />
@@ -67,6 +78,15 @@
     <soap12:binding transport="http://schemas.microsoft.com/soap/named-pipe" />
     <wsdl:operation name="HelloWorld">
       <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/HelloWorld" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateTask">
+      <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/CreateTask" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

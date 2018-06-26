@@ -192,6 +192,7 @@
     <Compile Include="Jobs\RCloneJob.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuartzJobFactory.cs" />
     <Compile Include="QuartzSchedulerFactory.cs" />
     <Compile Include="RCloneManagementService.cs" />
     <Compile Include="WindowsServiceHost.cs" />

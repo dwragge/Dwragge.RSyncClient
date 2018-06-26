@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Dwragge.RCloneClient.Common;
 
 namespace Dwragge.RCloneClient.Persistence
 {

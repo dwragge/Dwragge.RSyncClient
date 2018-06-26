@@ -8,12 +8,14 @@ namespace Dwragge.RCloneClient.Common
         private string _path;
         private string _name;
         private TimeSpan _syncTimeSpan = TimeSpan.FromDays(1);
-        private string _remoteBaseFolder;
-        public int? Id { get; set; }
+        private string _remoteBaseFolder = "";
+        public int Id { get; set; } 
 
-        public BackupFolderInfo(string path)
+        public BackupFolderInfo(string path, string remoteName, string remoteBaseFolder)
         {
             Path = path;
+            RemoteName = remoteName;
+            RemoteBaseFolder = remoteBaseFolder;
         }
 
         public string Path
@@ -35,6 +37,11 @@ namespace Dwragge.RCloneClient.Common
             get => _remoteBaseFolder;
             set
             {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException(nameof(value), $"BaseFolder (Container Name) can't be empty");
+                }
+
                 try
                 {
                     var _ = System.IO.Path.GetFullPath(value);
@@ -85,7 +92,7 @@ namespace Dwragge.RCloneClient.Common
             RCloneCommandBuilder.CreateCommand(RCloneSubCommand.Sync)
                 .WithLocalPath(Path)
                 .WithRemote(RemoteName)
-                .WithRemotePath(System.IO.Path.Combine(RemoteBaseFolder, System.IO.Path.GetDirectoryName(Path) ?? throw new InvalidOperationException()))
+                .WithRemotePath(System.IO.Path.Combine(RemoteBaseFolder, new DirectoryInfo(Path).Name).Replace("\\", "/"))
                 .WithDebugLogging()
                 .AsDryRun()
                 .Build();
@@ -94,7 +101,7 @@ namespace Dwragge.RCloneClient.Common
             RCloneCommandBuilder.CreateCommand(RCloneSubCommand.Copy)
                 .WithLocalPath(Path)
                 .WithRemote(RemoteName)
-                .WithRemotePath(System.IO.Path.Combine(RemoteBaseFolder, System.IO.Path.GetDirectoryName(Path) ?? throw new InvalidOperationException()))
+                .WithRemotePath(System.IO.Path.Combine(RemoteBaseFolder, new DirectoryInfo(Path).Name).Replace("\\", "/"))
                 .WithDebugLogging()
                 .AsDryRun()
                 .Build();

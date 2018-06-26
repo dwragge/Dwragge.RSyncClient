@@ -60,8 +60,6 @@ namespace Dwragge.RCloneClient.Common
             process.BeginErrorReadLine();
 
             var exitCode = await process.WaitForExitAsync();
-            await process.StandardError.BaseStream.FlushAsync();
-            await process.StandardOutput.BaseStream.FlushAsync();
 
             _logger.Info($"Command took {(DateTime.Now - startTime).TotalSeconds } seconds to execute");
             return exitCode;
@@ -88,6 +86,14 @@ namespace Dwragge.RCloneClient.Common
                     if (string.IsNullOrEmpty(substring)) return;
 
                     _logger.Debug(substring);
+                }
+
+                if (args.Data.Contains("ERROR"))
+                {
+                    var substring = args.Data.Substring(args.Data.IndexOf("ERROR :", StringComparison.Ordinal) + 8);
+                    if (string.IsNullOrEmpty(substring)) return;
+
+                    _logger.Error(substring);
                 }
 
                 if (args.Data.Contains("INFO"))

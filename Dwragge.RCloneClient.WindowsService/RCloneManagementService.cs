@@ -1,36 +1,85 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.ServiceModel;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
 using Dwragge.RCloneClient.Common;
+using Dwragge.RCloneClient.Persistence;
+using Dwragge.RCloneClient.WindowsService.Jobs;
+using NLog;
 using Quartz;
+using Quartz.Impl.Matchers;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
     public class RCloneManagementService : IRCloneManagementService
     {
         private readonly IScheduler _scheduler;
+        private readonly IMapper _mapper;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RCloneManagementService(IScheduler scheduler)
+        public RCloneManagementService(IScheduler scheduler, IMapper mapper)
         {
             _scheduler = scheduler;
+            _mapper = mapper;
         }
         public async Task<string> HelloWorld()
         {
-            var service = new RCloneService();
-            var command = RCloneCommandBuilder.CreateCommand(RCloneSubCommand.Copy)
-                .WithLocalPath("M:\\EU Photos\\")
-                .WithRemote("azure")
-                .WithRemotePath("backup/EU Photos")
-                .AsDryRun()
-                .WithDebugLogging()
-                .Build();
+            var builder = new StringBuilder();
+            var keys = await _scheduler.GetJobKeys(GroupMatcher<JobKey>.AnyGroup());
+            foreach (var key in keys)
+            {
+                var job = await _scheduler.GetJobDetail(key);
+                var trigger = await _scheduler.GetTriggersOfJob(key);
+                builder.AppendLine(
+                    $"Job {key.Name}:{key.Group} will next fire at {trigger.Single().GetNextFireTimeUtc()}");
+            }
 
-            await service.ExecuteCommand(command);
-
-            return command;
+            return builder.ToString();
         }
 
-        public async Task CreateTask(BackupFolderInfo info)
+        public async Task CreateTask(BackupFolderDto dto)
         {
+            try
+            {
+                using (var context = new JobContext())
+                {
+                    var exists = context.BackupFolders.SingleOrDefault(x => x.Path == dto.Path) != null;
+                    if (exists)
+                    {
+                        throw new InvalidOperationException($"Folder {dto.Path} already exists!");
+                    }
 
+                    await context.BackupFolders.AddAsync(dto);
+                    await context.SaveChangesAsync();
+                }
+
+                var info = _mapper.Map<BackupFolderDto, BackupFolderInfo>(dto);
+                var syncJob = QuartzJobFactory.CreateSyncJob(info);
+                await _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
+
+                ScheduleCopyJobToRunNow(info);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Failed to Create Task: {e.Message}");
+                throw;
+            }
+        }
+
+        private void ScheduleCopyJobToRunNow(BackupFolderInfo info)
+        {
+            var copyJob = JobBuilder.Create<RCloneJob>()
+                .WithIdentity(info.Id.ToString(), "copy")
+                .UsingJobData("Command", info.CopyCommand)
+                .Build();
+            var copyTrigger = TriggerBuilder.Create()
+                .ForJob(copyJob)
+                .StartNow()
+                .Build();
+
+            _scheduler.ScheduleJob(copyJob, copyTrigger);
         }
 
         public void PostHelloJob(string name)

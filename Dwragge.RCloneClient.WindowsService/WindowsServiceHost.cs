@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Description;
@@ -10,9 +9,8 @@ using Quartz;
 using Topshelf;
 using Autofac.Integration.Wcf;
 using AutoMapper;
+using Dwragge.RCloneClient.Common.AutoMapper;
 using Dwragge.RCloneClient.Persistence;
-using Dwragge.RCloneClient.Persistence.AutoMapperResolvers;
-using Dwragge.RCloneClient.WindowsService.Jobs;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 
@@ -103,18 +101,34 @@ namespace Dwragge.RCloneClient.WindowsService
                 foreach (var folder in syncedFolders)
                 {
                     var info = mapper.Map<BackupFolderInfo>(folder);
+                    var syncJob = QuartzJobFactory.CreateSyncJob(info);
 
-                    var job = JobBuilder.Create<RCloneJob>()
-                        .WithIdentity(folder.Name, "sync")
-                        .UsingJobData("Command", info.SyncCommand)
+                    _logger.Info($"Creating sync job from database. Name = {info.Name}, Path = {info.Path}, Id = {info.Id}, Next Fire Time {syncJob.Trigger.GetNextFireTimeUtc()?.ToLocalTime()}");
+                    _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
+
+                    ScheduleSyncNowIfNecessary(info, syncJob.Job);
+                }
+            }
+        }
+
+        private void ScheduleSyncNowIfNecessary(BackupFolderInfo info, IJobDetail baseJob)
+        {
+            var triggerTimeToday = DateTime.Parse($"{info.SyncTime.Hour}:{info.SyncTime.Minute}");
+            if (triggerTimeToday < DateTime.Now)
+            {
+                var triggerTimeTomorrow = triggerTimeToday.AddDays(1);
+                var todayDiff = DateTime.Now - triggerTimeToday;
+                var tomorrowDiff = triggerTimeTomorrow - DateTime.Now;
+                var shouldTriggerNow = todayDiff < tomorrowDiff;
+                if (shouldTriggerNow)
+                {
+                    _logger.Info($"Trigger for sync job {info.Name} is at {triggerTimeToday:t} which is in the past and closer to current time than tomorrow. Scheduling to run now.");
+                    var triggerNow = TriggerBuilder.Create()
+                        .ForJob(baseJob)
+                        .StartNow()
                         .Build();
 
-                    var trigger = TriggerBuilder.Create()
-                        .ForJob(job)
-                        .WithCronSchedule($"0 {info.SyncTime.Minute} {info.SyncTime.Hour} 1/{info.SyncTimeSpan.Days} * ?")
-                        .Build();
-
-                    _scheduler.ScheduleJob(job, trigger);
+                    _scheduler.ScheduleJob(triggerNow);
                 }
             }
         }
@@ -133,14 +147,7 @@ namespace Dwragge.RCloneClient.WindowsService
             var builder = new ContainerBuilder();
             builder.RegisterInstance(_scheduler);
             builder.RegisterType<RCloneManagementService>().As<IRCloneManagementService>();
-            builder.Register(c => new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<BackupFolderDto, BackupFolderInfo>()
-                        .ForMember(dest => dest.SyncTime, opt => opt.ResolveUsing<BackupFolderSyncTimeResolver>());
-                }))
-                .AsImplementedInterfaces()
-                .SingleInstance();
-            builder.Register(c => c.Resolve<IConfigurationProvider>().CreateMapper()).As<IMapper>();
+            builder.RegisterAutoMapper();
 
             return builder.Build();
         }

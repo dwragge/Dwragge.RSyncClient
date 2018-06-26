@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Dwragge.RCloneClient.Common;
+using Dwragge.RCloneClient.Persistence;
 
-namespace Dwragge.RCloneClient.Persistence.AutoMapperResolvers
+namespace Dwragge.RCloneClient.Common.AutoMapper
 {
     public class BackupFolderSyncTimeResolver : IValueResolver<BackupFolderDto, BackupFolderInfo, TimeValue>
     {
