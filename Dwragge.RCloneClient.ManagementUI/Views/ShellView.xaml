@@ -1,0 +1,37 @@
+﻿<controls:MetroWindow x:Class="Dwragge.RCloneClient.ManagementUI.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dwragge.RCloneClient.ManagementUI"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <controls:MetroWindow.IconTemplate>
+        <DataTemplate>
+            <iconPacks:PackIconMaterial Width="{TemplateBinding Width}"
+                                        Height="{TemplateBinding Height}"
+                                        Margin="2"
+                                        Padding="4"
+                                        Foreground="{DynamicResource IdealForegroundColorBrush}"
+                                        Kind="FolderUpload" />
+        </DataTemplate>
+    </controls:MetroWindow.IconTemplate>
+
+    <Grid>
+        <Grid Name="LoadingIsVisible">
+        </Grid>
+        <ListBox ItemsSource="{Binding FolderNames}" HorizontalAlignment="Left" Height="234" Margin="10,158,0,0" VerticalAlignment="Top" Width="393"/>
+        <ComboBox Name="RemoteName" SelectedItem="{Binding SelectedRemote}" HorizontalAlignment="Left" Margin="157,29,0,0" VerticalAlignment="Top" Width="120"/>
+    </Grid>
+</controls:MetroWindow>
+

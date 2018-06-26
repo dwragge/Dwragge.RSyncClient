@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="98f66916-17eb-458c-a59b-d8a360d46242" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="56df7e72-71f4-427d-923d-70aae4ee8bd5" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="4549e2e2-4574-4d2e-a00a-d50200fbc150" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="fab78f24-6b1a-456d-ad52-9d0fc620b896" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
+    <MetadataFile FileName="Dwragge.RCloneClient.Persistence.xsd" MetadataType="Schema" ID="2e8b619c-863a-41f2-bc99-d7f13c89dd65" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="ef6603a5-a314-444e-b827-8674a6d9c59d" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

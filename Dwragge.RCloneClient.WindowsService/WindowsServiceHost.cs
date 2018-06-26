@@ -103,8 +103,8 @@ namespace Dwragge.RCloneClient.WindowsService
                     var info = mapper.Map<BackupFolderInfo>(folder);
                     var syncJob = QuartzJobFactory.CreateSyncJob(info);
 
-                    _logger.Info($"Creating sync job from database. Name = {info.Name}, Path = {info.Path}, Id = {info.Id}, Next Fire Time {syncJob.Trigger.GetNextFireTimeUtc()?.ToLocalTime()}");
                     _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
+                    _logger.Info($"Creating sync job from database. Name = {info.Name}, Path = {info.Path}, Id = {info.Id}, Next Fire Time {syncJob.Trigger.GetNextFireTimeUtc()?.ToLocalTime()}");
 
                     ScheduleSyncNowIfNecessary(info, syncJob.Job);
                 }

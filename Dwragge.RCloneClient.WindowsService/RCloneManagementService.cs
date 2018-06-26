@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -13,6 +15,7 @@ using Quartz.Impl.Matchers;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class RCloneManagementService : IRCloneManagementService
     {
         private readonly IScheduler _scheduler;
@@ -65,6 +68,20 @@ namespace Dwragge.RCloneClient.WindowsService
             {
                 _logger.Error($"Failed to Create Task: {e.Message}");
                 throw;
+            }
+        }
+
+        public Task<IEnumerable<string>> GetRemotes()
+        {
+            var service = new RCloneService();
+            return service.GetRemotes();
+        }
+
+        public async Task<IEnumerable<BackupFolderDto>> GetBackupFolders()
+        {
+            using (var context = new JobContext())
+            {
+                return context.BackupFolders.ToList();
             }
         }
 
