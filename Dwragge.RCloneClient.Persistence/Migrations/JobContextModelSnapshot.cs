@@ -16,17 +16,29 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846");
 
-            modelBuilder.Entity("Dwragge.RCloneClient.Persistence.BackupFolder", b =>
+            modelBuilder.Entity("Dwragge.RCloneClient.Persistence.BackupFolderDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<DateTime?>("LastSync");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<string>("Path")
                         .IsRequired();
 
                     b.Property<bool>("RealTimeUpdates");
+
+                    b.Property<string>("RemoteBaseFolder");
+
+                    b.Property<string>("RemoteName")
+                        .IsRequired();
+
+                    b.Property<int>("SyncTimeHour");
+
+                    b.Property<int>("SyncTimeMinute");
 
                     b.Property<TimeSpan>("SyncTimeSpan");
 

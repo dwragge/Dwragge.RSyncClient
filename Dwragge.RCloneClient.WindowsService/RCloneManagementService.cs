@@ -28,6 +28,11 @@ namespace Dwragge.RCloneClient.WindowsService
             return command;
         }
 
+        public async Task CreateTask(BackupFolderInfo info)
+        {
+
+        }
+
         public void PostHelloJob(string name)
         {
             

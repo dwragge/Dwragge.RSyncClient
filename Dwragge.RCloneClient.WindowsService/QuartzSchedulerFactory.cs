@@ -15,7 +15,8 @@ namespace Dwragge.RCloneClient.WindowsService
 
         public static IScheduler CreateQuartzScheduler()
         {
-            return DebugChecker.IsDebug ? CreateDefaultScheduler() : CreateSchedulerWithSqliteStore();
+            //return DebugChecker.IsDebug ? CreateDefaultScheduler() : CreateSchedulerWithSqliteStore();
+            return CreateDefaultScheduler();
         }
 
         private static IScheduler CreateDefaultScheduler()

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dwragge.RCloneClient.Persistence.Migrations
 {
     [DbContext(typeof(JobContext))]
-    [Migration("20180624113547_InitialMigration")]
+    [Migration("20180626054921_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,17 +18,29 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846");
 
-            modelBuilder.Entity("Dwragge.RCloneClient.Persistence.BackupFolder", b =>
+            modelBuilder.Entity("Dwragge.RCloneClient.Persistence.BackupFolderDto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<DateTime?>("LastSync");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<string>("Path")
                         .IsRequired();
 
                     b.Property<bool>("RealTimeUpdates");
+
+                    b.Property<string>("RemoteBaseFolder");
+
+                    b.Property<string>("RemoteName")
+                        .IsRequired();
+
+                    b.Property<int>("SyncTimeHour");
+
+                    b.Property<int>("SyncTimeMinute");
 
                     b.Property<TimeSpan>("SyncTimeSpan");
 

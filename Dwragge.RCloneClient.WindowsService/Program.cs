@@ -12,7 +12,7 @@ namespace Dwragge.RCloneClient.WindowsService
         {
             var host = HostFactory.New(x =>
             {
-                x.Service<ServiceWindowsService>();
+                x.Service<WindowsServiceHost>();
 
                 x.StartAutomatically();
                 x.RunAsLocalService();

@@ -6,7 +6,7 @@ namespace Dwragge.RCloneClient.Persistence
 {
     public class JobContext : DbContext
     {   
-        public DbSet<BackupFolder> BackupFolders { get; set; }
+        public DbSet<BackupFolderDto> BackupFolders { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
