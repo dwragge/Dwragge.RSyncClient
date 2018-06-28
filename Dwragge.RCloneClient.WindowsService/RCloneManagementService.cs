@@ -5,6 +5,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using AutoMapper;
 using Dwragge.RCloneClient.Common;
 using Dwragge.RCloneClient.Persistence;
@@ -20,12 +21,14 @@ namespace Dwragge.RCloneClient.WindowsService
     {
         private readonly IScheduler _scheduler;
         private readonly IMapper _mapper;
+        private readonly IJobContextFactory _contextFactory;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RCloneManagementService(IScheduler scheduler, IMapper mapper)
+        public RCloneManagementService(IScheduler scheduler, IMapper mapper, IJobContextFactory contextFactory)
         {
             _scheduler = scheduler;
             _mapper = mapper;
+            _contextFactory = contextFactory;
         }
         public async Task<string> HelloWorld()
         {
@@ -46,23 +49,26 @@ namespace Dwragge.RCloneClient.WindowsService
         {
             try
             {
-                using (var context = new JobContext())
+                using (var scope = new TransactionScope())
                 {
-                    var exists = context.BackupFolders.SingleOrDefault(x => x.Path == dto.Path) != null;
-                    if (exists)
+                    using (var context = _contextFactory.CreateContext())
                     {
-                        throw new InvalidOperationException($"Folder {dto.Path} already exists!");
+                        var exists = context.BackupFolders.SingleOrDefault(x => x.Path == dto.Path) != null;
+                        if (exists)
+                        {
+                            throw new InvalidOperationException($"Folder {dto.Path} already exists!");
+                        }
+
+                        await context.BackupFolders.AddAsync(dto);
+                        await context.SaveChangesAsync();
                     }
 
-                    await context.BackupFolders.AddAsync(dto);
-                    await context.SaveChangesAsync();
+                    var info = _mapper.Map<BackupFolderDto, BackupFolderInfo>(dto);
+                    var syncJob = QuartzJobFactory.CreateSyncJob(info);
+                    await _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
+
+                    scope.Complete();
                 }
-
-                var info = _mapper.Map<BackupFolderDto, BackupFolderInfo>(dto);
-                var syncJob = QuartzJobFactory.CreateSyncJob(info);
-                await _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
-
-                ScheduleCopyJobToRunNow(info);
             }
             catch (Exception e)
             {
@@ -76,21 +82,21 @@ namespace Dwragge.RCloneClient.WindowsService
             var service = new RCloneService();
             return service.GetRemotes();
         }
-
-        public async Task<IEnumerable<BackupFolderDto>> GetBackupFolders()
+        
+        private void ScheduleCopyJobToRunNow(int jobId)
         {
-            using (var context = new JobContext())
+            BackupFolderInfo info = null;
+            using (var context = _contextFactory.CreateContext())
             {
-                return context.BackupFolders.ToList();
+                var dto = context.BackupFolders.Find(jobId);
+                info = _mapper.Map<BackupFolderInfo>(dto);
             }
-        }
 
-        private void ScheduleCopyJobToRunNow(BackupFolderInfo info)
-        {
             var copyJob = JobBuilder.Create<RCloneJob>()
                 .WithIdentity(info.Id.ToString(), "copy")
-                .UsingJobData("Command", info.CopyCommand)
                 .Build();
+            copyJob.JobDataMap["Command"] = info.CopyCommand;
+
             var copyTrigger = TriggerBuilder.Create()
                 .ForJob(copyJob)
                 .StartNow()

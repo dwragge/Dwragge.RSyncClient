@@ -10,8 +10,8 @@ namespace Dwragge.RCloneClient.WindowsService
         {
             var job = JobBuilder.Create<RCloneJob>()
                 .WithIdentity(info.Id.ToString(), "sync")
-                .UsingJobData("Command", info.SyncCommand)
                 .Build();
+            job.JobDataMap["Command"] = info.SyncCommand;
 
             var trigger = TriggerBuilder.Create()
                 .ForJob(job)

@@ -10,9 +10,9 @@ namespace Dwragge.RCloneClient.Common
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task ExecuteCommand(string commandString)
+        public async Task ExecuteCommand(string commandString, Action<string> outputReceivedAction = null)
         {
-            var process = CreateProcess(commandString);
+            var process = CreateProcess(commandString, outputReceivedAction);
             var exitCode = await ExecuteCommandCoreAsync(process);
             if (exitCode == 1)
             {
@@ -65,7 +65,7 @@ namespace Dwragge.RCloneClient.Common
             return exitCode;
         }
 
-        private Process CreateProcess(string commandString, Action<string> stdOutAction = null)
+        private Process CreateProcess(string commandString, Action<string> outputReceivedAction = null)
         {
             var process = new Process
             {
@@ -103,12 +103,14 @@ namespace Dwragge.RCloneClient.Common
 
                     _logger.Info(substring);
                 }
+
+                outputReceivedAction?.Invoke(args.Data);
             };
 
             process.OutputDataReceived += (sender, args) =>
             {
                 if (string.IsNullOrEmpty(args.Data)) return;
-                stdOutAction?.Invoke(args.Data);
+                outputReceivedAction?.Invoke(args.Data);
             };
 
             return process;

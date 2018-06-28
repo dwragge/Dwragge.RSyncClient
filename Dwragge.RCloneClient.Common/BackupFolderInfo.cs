@@ -88,22 +88,24 @@ namespace Dwragge.RCloneClient.Common
             }
         }
 
-        public string SyncCommand => 
-            RCloneCommandBuilder.CreateCommand(RCloneSubCommand.Sync)
-                .WithLocalPath(Path)
-                .WithRemote(RemoteName)
-                .WithRemotePath(System.IO.Path.Combine(RemoteBaseFolder, new DirectoryInfo(Path).Name).Replace("\\", "/"))
-                .WithDebugLogging()
-                .AsDryRun()
-                .Build();
+        public RCloneCommand SyncCommand =>
+            new RCloneCommand(RCloneSubCommand.Sync)
+            {
+                LocalPath = Path,
+                RemoteName = RemoteName,
+                RemotePath = System.IO.Path.Combine(RemoteBaseFolder, new DirectoryInfo(Path).Name).Replace("\\", "/"),
+                WithDebugLogging = true,
+                IsDryRun = true
+            };
 
-        public string CopyCommand =>
-            RCloneCommandBuilder.CreateCommand(RCloneSubCommand.Copy)
-                .WithLocalPath(Path)
-                .WithRemote(RemoteName)
-                .WithRemotePath(System.IO.Path.Combine(RemoteBaseFolder, new DirectoryInfo(Path).Name).Replace("\\", "/"))
-                .WithDebugLogging()
-                .AsDryRun()
-                .Build();
+        public RCloneCommand CopyCommand =>
+            new RCloneCommand(RCloneSubCommand.Copy)
+            {
+                LocalPath = Path,
+                RemoteName = RemoteName,
+                RemotePath = System.IO.Path.Combine(RemoteBaseFolder, new DirectoryInfo(Path).Name).Replace("\\", "/"),
+                WithDebugLogging = true,
+                IsDryRun = true
+            };
     }
 }

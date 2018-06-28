@@ -30,7 +30,6 @@
     <Grid>
         <Grid Name="LoadingIsVisible">
         </Grid>
-        <ListBox ItemsSource="{Binding FolderNames}" HorizontalAlignment="Left" Height="234" Margin="10,158,0,0" VerticalAlignment="Top" Width="393"/>
         <ComboBox Name="RemoteName" SelectedItem="{Binding SelectedRemote}" HorizontalAlignment="Left" Margin="157,29,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </controls:MetroWindow>

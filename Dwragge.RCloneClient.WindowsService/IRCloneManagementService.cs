@@ -18,9 +18,6 @@ namespace Dwragge.RCloneClient.WindowsService
         Task<IEnumerable<string>> GetRemotes();
 
         [OperationContract]
-        Task<IEnumerable<BackupFolderDto>> GetBackupFolders();
-
-        [OperationContract]
         void PostHelloJob(string name);
     }
 }

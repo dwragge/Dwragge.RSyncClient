@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using Autofac;
@@ -11,8 +12,13 @@ using Autofac.Integration.Wcf;
 using AutoMapper;
 using Dwragge.RCloneClient.Common.AutoMapper;
 using Dwragge.RCloneClient.Persistence;
+using Dwragge.RCloneClient.WindowsService.Jobs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using NLog;
+using NLog.Extensions.Logging;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
@@ -30,8 +36,10 @@ namespace Dwragge.RCloneClient.WindowsService
             {
                 _scheduler = QuartzSchedulerFactory.CreateQuartzScheduler();
                 _scheduler.Start();
-                EnsureDatabase();
+
                 InitializeServiceHost();
+                InitializeIoC();
+                EnsureDatabase();
             }
             catch (Exception ex)
             {
@@ -66,6 +74,25 @@ namespace Dwragge.RCloneClient.WindowsService
                 return false;
             }
 
+            var command = new RCloneCommand(RCloneSubCommand.Sync)
+            {
+                LocalPath = @"M:\EU Photos",
+                RemoteName = "azure",
+                RemotePath = "backup/EU-Photos",
+                IsDryRun = true,
+                WithDebugLogging = true
+            };
+
+            var job = JobBuilder.Create<PreCheckMoveFilesJob>()
+                .WithIdentity("test")
+                .Build();
+            job.JobDataMap["Command"] = command;
+            var trigger = TriggerBuilder.Create()
+                .ForJob(job)
+                .StartNow()
+                .Build();
+            _scheduler.ScheduleJob(job, trigger);
+
             ServiceHost.Open();
             return true;
         }
@@ -82,21 +109,26 @@ namespace Dwragge.RCloneClient.WindowsService
             ServiceHost.Description.Behaviors.Add(behaviour);
             ServiceHost.AddServiceEndpoint(typeof(IMetadataExchange),
                 MetadataExchangeBindings.CreateMexNamedPipeBinding(), baseAddress + "/mex/");
+        }
 
+        private void InitializeIoC()
+        {
             _container = BuildContainer();
             ServiceHost.AddDependencyInjectionBehavior<IRCloneManagementService>(_container);
+            var jobFactory = new AutofacJobFactory(_container);
+            _scheduler.JobFactory = jobFactory;
         }
 
         private void LoadJobs()
         {
-            IList<BackupFolderDto> syncedFolders;
-            using (var context = new JobContext())
-            {
-                syncedFolders = context.BackupFolders.ToList();
-            }
-
             using (var scope = _container.BeginLifetimeScope())
             {
+                IList<BackupFolderDto> syncedFolders;
+                using (var context = scope.Resolve<IJobContextFactory>().CreateContext())
+                {
+                    syncedFolders = context.BackupFolders.ToList();
+                }
+
                 var mapper = scope.Resolve<IMapper>();
                 foreach (var folder in syncedFolders)
                 {
@@ -135,7 +167,7 @@ namespace Dwragge.RCloneClient.WindowsService
 
         private void EnsureDatabase()
         {
-            using (var context = new JobContext())
+            using (var context = _container.Resolve<IJobContextFactory>().CreateContext())
             {
                 _logger.Info($"Migrating Database at {context.Database.GetDbConnection().DataSource}");
                 context.Database.Migrate();
@@ -148,6 +180,18 @@ namespace Dwragge.RCloneClient.WindowsService
             builder.RegisterInstance(_scheduler);
             builder.RegisterType<RCloneManagementService>().As<IRCloneManagementService>();
             builder.RegisterAutoMapper();
+            builder.RegisterType<JobContextFactory>().As<IJobContextFactory>();
+            builder.RegisterType<BackedUpFileTracker>().As<IBackedUpFileTracker>();
+            builder.RegisterInstance(new LoggerFactory(new List<ILoggerProvider>
+            {
+                new NLogLoggerProvider()
+            })).As<ILoggerFactory>();
+
+            foreach (var jobType in Assembly.GetExecutingAssembly().GetTypes()
+                .Where(x => x.GetInterfaces().Contains(typeof(IJob))))
+            {
+                builder.RegisterType(jobType);
+            }
 
             return builder.Build();
         }
