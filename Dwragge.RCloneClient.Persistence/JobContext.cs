@@ -16,6 +16,7 @@ namespace Dwragge.RCloneClient.Persistence
 
         public DbSet<BackupFolderDto> BackupFolders { get; set; }
         public DbSet<BackedUpFileDto> BackedUpFiles { get; set; }
+        public DbSet<PendingFileDto> PendingFiles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

@@ -74,24 +74,24 @@ namespace Dwragge.RCloneClient.WindowsService
                 return false;
             }
 
-            var command = new RCloneCommand(RCloneSubCommand.Sync)
-            {
-                LocalPath = @"M:\EU Photos",
-                RemoteName = "azure",
-                RemotePath = "backup/EU-Photos",
-                IsDryRun = true,
-                WithDebugLogging = true
-            };
+            //var command = new RCloneCommand(RCloneSubCommand.Sync)
+            //{
+            //    LocalPath = @"M:\EU Photos",
+            //    RemoteName = "azure",
+            //    RemotePath = "backup/EU-Photos",
+            //    IsDryRun = true,
+            //    WithDebugLogging = true
+            //};
 
-            var job = JobBuilder.Create<PreCheckMoveFilesJob>()
-                .WithIdentity("test")
-                .Build();
-            job.JobDataMap["Command"] = command;
-            var trigger = TriggerBuilder.Create()
-                .ForJob(job)
-                .StartNow()
-                .Build();
-            _scheduler.ScheduleJob(job, trigger);
+            //var job = JobBuilder.Create<PreCheckMoveFilesJob>()
+            //    .WithIdentity("test")
+            //    .Build();
+            //job.JobDataMap["Command"] = command;
+            //var trigger = TriggerBuilder.Create()
+            //    .ForJob(job)
+            //    .StartNow()
+            //    .Build();
+            //_scheduler.ScheduleJob(job, trigger);
 
             ServiceHost.Open();
             return true;

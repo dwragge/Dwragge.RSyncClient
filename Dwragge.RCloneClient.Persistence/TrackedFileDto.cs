@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dwragge.RCloneClient.Persistence
 {
-    public class BackedUpFileDto
+    public class TrackedFileDto
     {
         [Key]
         public int Id { get; set; }
@@ -17,15 +17,20 @@ namespace Dwragge.RCloneClient.Persistence
         public DateTime FirstBackedUp { get; set; } = DateTime.Now;
 
         [Required]
-        public DateTime LastModified { get; set; } = DateTime.Now;
+        public DateTime LastModified { get; set; }
 
         [Required]
-        public string ParentFolder { get; set; }
+        public long SizeBytes { get; set; }
+
+        [Required]
+        public int BackupFolderId { get; set; }
 
         [Required]
         public string RemoteLocation { get; set; }
 
         [Required]
         public bool IsArchived { get; set; }
+
+        public virtual BackupFolderDto BackupFolder { get; set; }
     }
 }

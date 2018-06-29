@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.Data.SQLite;
 using System.IO;
 using Dwragge.RCloneClient.Common;
 using NLog;
@@ -68,7 +67,6 @@ namespace Dwragge.RCloneClient.WindowsService
             CreateDbFile(dbPath);
 
             Logger.Info("Initializing Tables...");
-            InitializeTables(dbPath);
         }
 
         private static void CreateDbFile(string dbPath)
@@ -84,27 +82,7 @@ namespace Dwragge.RCloneClient.WindowsService
                 throw;
             }
         }
-
-        private static void InitializeTables(string dbPath)
-        {
-            string connectionString = $"Data Source={dbPath}";
-            var queryString = File.ReadAllText("Database/create_tables.sql");
-
-            using (var connection = new SQLiteConnection(connectionString))
-            {
-                var command = new SQLiteCommand(queryString, connection);
-                try
-                {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-                catch (SQLiteException ex)
-                {
-                    Logger.Error(ex, "Failed to Create Tables in Database");
-                    throw;
-                }
-            }
-        }
+        
 
         private static string GetDbLocation()
         {

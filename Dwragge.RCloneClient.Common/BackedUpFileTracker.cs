@@ -21,7 +21,7 @@ namespace Dwragge.RCloneClient.Common
             IEnumerable<string> files = newFiles as string[] ?? newFiles.ToArray();
 
             _logger.Info($"Tracking {files.Count()} new files...");
-            var dtos = files.Select(f => new BackedUpFileDto
+            var dtos = files.Select(f => new TrackedFileDto
             {
                 FileName = f,
                 IsArchived = true,
@@ -31,7 +31,7 @@ namespace Dwragge.RCloneClient.Common
 
             using (var context = _contextFactory.CreateContext(false))
             {
-                await context.BackedUpFiles.AddRangeAsync(dtos);
+                await context.TrackedFiles.AddRangeAsync(dtos);
                 await context.SaveChangesAsync();
             }
         }
