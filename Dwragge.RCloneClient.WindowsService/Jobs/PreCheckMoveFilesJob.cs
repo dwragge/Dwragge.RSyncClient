@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using Dwragge.RCloneClient.Common;
 using Dwragge.RCloneClient.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using NLog;
 using Quartz;
 using IsolationLevel = System.Data.IsolationLevel;
@@ -21,25 +16,26 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IJobContextFactory _contextFactory;
-        private readonly IBackedUpFileTracker _tracker;
 
         public BackupFolderInfo Folder { get; set; }
 
-        public PreCheckMoveFilesJob(IJobContextFactory contextFactory, IBackedUpFileTracker tracker)
+        public PreCheckMoveFilesJob(IJobContextFactory contextFactory)
         {
             _contextFactory = contextFactory;
-            _tracker = tracker;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
             Folder = (BackupFolderInfo)context.MergedJobDataMap["Folder"] ?? throw new ArgumentNullException(nameof(Folder), "Command was not set");
-            
+            _logger.Info($"Executing Check Files Job, fired at {context.FireTimeUtc.ToLocalTime()} for foler {Folder.Path}");
 
             try
             {
                 var files = await GetFilesToTransfer();
-                QueueFilesAsPending(files);
+                var newFiles = files as string[] ?? files.ToArray();
+                _logger.Info($"Found {newFiles.Count()} files that need to be transferred.");
+
+                QueueFilesAsPending(newFiles);
                 // mark files as not archived
                 //throw new NotImplementedException();
                 //transaction.Complete();
@@ -61,7 +57,7 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
 
             using (var context = _contextFactory.CreateContext())
             {
-                var trackedFiles = await context.TrackedFiles.Where(t => t.BackupFolderId == Folder.Id).ToDictionaryAsync(t => t.FileName);
+                var trackedFiles = await context.TrackedFiles.Where(t => t.BackupFolderId == Folder.BackupFolderId).ToDictionaryAsync(t => t.FileName);
                 foreach (var file in allFiles)
                 {
                     if (trackedFiles.ContainsKey(file))
@@ -97,7 +93,6 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
 
         private bool DateTimesEqualToSeconds(DateTime d1, DateTime d2)
         {
-            if (d1.Kind != d2.Kind) throw new ArgumentException("DateTimes must be same type");
             var a = new DateTime(d1.Year, d1.Month, d1.Day, d1.Hour, d1.Minute, d1.Second, d1.Kind);
             var b = new DateTime(d2.Year, d2.Month, d2.Day, d2.Hour, d2.Minute, d2.Second, d2.Kind);
 
@@ -112,7 +107,7 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
             var dtos = files.Select(f => new PendingFileDto
             {
                 FileName = f,
-                BackupFolderId = Folder.Id
+                BackupFolderId = Folder.BackupFolderId
             });
 
             using (var context = _contextFactory.CreateContext(false))
@@ -124,13 +119,14 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
                         var alreadyInQueue = context.PendingFiles.Where(t => files.Contains(t.FileName));
                         if (alreadyInQueue.Any())
                         {
-                            _logger.Info($"Overwriting {alreadyInQueue.Count()} pending items that were already in the queue"));
+                            _logger.Info($"Overwriting {alreadyInQueue.Count()} pending items that were already in the queue");
                             context.PendingFiles.RemoveRange(alreadyInQueue);
                         };
 
                         context.PendingFiles.AddRangeAsync(dtos);
                         context.SaveChangesAsync();
                         trans.Commit();
+                        _logger.Info($"Successfully queued files.");
                     }
                     catch (Exception ex)
                     {

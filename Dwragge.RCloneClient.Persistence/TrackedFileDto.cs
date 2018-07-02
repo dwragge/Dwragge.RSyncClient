@@ -24,13 +24,7 @@ namespace Dwragge.RCloneClient.Persistence
 
         [Required]
         public int BackupFolderId { get; set; }
-
-        [Required]
-        public string RemoteLocation { get; set; }
-
-        [Required]
-        public bool IsArchived { get; set; }
-
+        
         public virtual BackupFolderDto BackupFolder { get; set; }
     }
 }

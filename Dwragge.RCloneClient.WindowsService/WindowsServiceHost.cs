@@ -12,13 +12,10 @@ using Autofac.Integration.Wcf;
 using AutoMapper;
 using Dwragge.RCloneClient.Common.AutoMapper;
 using Dwragge.RCloneClient.Persistence;
-using Dwragge.RCloneClient.WindowsService.Jobs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using NLog;
 using NLog.Extensions.Logging;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
@@ -74,25 +71,9 @@ namespace Dwragge.RCloneClient.WindowsService
                 return false;
             }
 
-            //var command = new RCloneCommand(RCloneSubCommand.Sync)
-            //{
-            //    LocalPath = @"M:\EU Photos",
-            //    RemoteName = "azure",
-            //    RemotePath = "backup/EU-Photos",
-            //    IsDryRun = true,
-            //    WithDebugLogging = true
-            //};
-
-            //var job = JobBuilder.Create<PreCheckMoveFilesJob>()
-            //    .WithIdentity("test")
-            //    .Build();
-            //job.JobDataMap["Command"] = command;
-            //var trigger = TriggerBuilder.Create()
-            //    .ForJob(job)
-            //    .StartNow()
-            //    .Build();
-            //_scheduler.ScheduleJob(job, trigger);
-
+            var processor = _container.Resolve<IUploadProcessor>();
+            processor.Start();
+            
             ServiceHost.Open();
             return true;
         }
@@ -136,7 +117,7 @@ namespace Dwragge.RCloneClient.WindowsService
                     var syncJob = QuartzJobFactory.CreateSyncJob(info);
 
                     _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
-                    _logger.Info($"Creating sync job from database. Name = {info.Name}, Path = {info.Path}, Id = {info.Id}, Next Fire Time {syncJob.Trigger.GetNextFireTimeUtc()?.ToLocalTime()}");
+                    _logger.Info($"Creating sync job from database. Name = {info.Name}, Path = {info.Path}, Id = {info.BackupFolderId}, Next Fire Time {syncJob.Trigger.GetNextFireTimeUtc()?.ToLocalTime()}");
 
                     ScheduleSyncNowIfNecessary(info, syncJob.Job);
                 }
@@ -181,7 +162,7 @@ namespace Dwragge.RCloneClient.WindowsService
             builder.RegisterType<RCloneManagementService>().As<IRCloneManagementService>();
             builder.RegisterAutoMapper();
             builder.RegisterType<JobContextFactory>().As<IJobContextFactory>();
-            builder.RegisterType<BackedUpFileTracker>().As<IBackedUpFileTracker>();
+            builder.RegisterType<UploadProcessor>().As<IUploadProcessor>().SingleInstance();
             builder.RegisterInstance(new LoggerFactory(new List<ILoggerProvider>
             {
                 new NLogLoggerProvider()
@@ -200,6 +181,7 @@ namespace Dwragge.RCloneClient.WindowsService
         {
             ServiceHost?.Close();
             ServiceHost = null;
+            _container.Resolve<IUploadProcessor>()?.Shutdown();
 
             if (DebugChecker.IsDebug)
             {

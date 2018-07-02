@@ -1,4 +1,5 @@
 ﻿using System;
+using Dwragge.RCloneClient.Common;
 using Topshelf;
 
 namespace Dwragge.RCloneClient.WindowsService
@@ -25,6 +26,12 @@ namespace Dwragge.RCloneClient.WindowsService
             });
 
             var exitCode = host.Run();
+
+            if (DebugChecker.IsDebug)
+            {
+                Console.ReadKey();
+            }
+
             Environment.ExitCode = (int)exitCode;
         }
     }

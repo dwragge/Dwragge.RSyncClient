@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AutoMapper;
 using Caliburn.Micro;
+using Dwragge.RCloneClient.Common;
 using Dwragge.RCloneClient.ManagementUI.ServiceClient;
 
 namespace Dwragge.RCloneClient.ManagementUI.ViewModels
@@ -63,7 +64,14 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
         {
             _windowManager = windowManager;
             _mapper = mapper;
-            Task.Run(() => Init());
+            //Task.Run(() => Init());
+        }
+
+        public void FireTest()
+        {
+            var folder = new BackupFolderInfo(@"M:\cbr", "azure", "backup");
+            var dto = _mapper.Map<BackupFolderDto>(folder);
+            _client.CreateTask(dto);
         }
 
         private void Init()
@@ -80,7 +88,6 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             }
 
             RemoteName = _client.GetRemotes();
-            FolderNames = _client.GetBackupFolders().Select(x => x.Path);
         }
     }
 }

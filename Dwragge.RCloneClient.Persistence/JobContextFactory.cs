@@ -13,7 +13,7 @@ namespace Dwragge.RCloneClient.Persistence
             _loggerFactory = loggerFactory;
         }
 
-        public JobContext CreateContext(bool shouldLog = true)
+        public JobContext CreateContext(bool shouldLog = false)
         {
             if (shouldLog) return new JobContext(_loggerFactory);
             else return new JobContext(null);

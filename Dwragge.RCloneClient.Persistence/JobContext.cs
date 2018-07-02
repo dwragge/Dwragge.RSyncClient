@@ -15,8 +15,9 @@ namespace Dwragge.RCloneClient.Persistence
         }
 
         public DbSet<BackupFolderDto> BackupFolders { get; set; }
-        public DbSet<BackedUpFileDto> BackedUpFiles { get; set; }
+        public DbSet<TrackedFileDto> TrackedFiles { get; set; }
         public DbSet<PendingFileDto> PendingFiles { get; set; }
+        public DbSet<InProgressFileDto> InProgressFiles { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -29,11 +30,8 @@ namespace Dwragge.RCloneClient.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BackedUpFileDto>()
-                .HasIndex(d => d.FileName);
-
-            modelBuilder.Entity<BackedUpFileDto>()
-                .HasIndex(d => new {d.FileName, d.RemoteLocation})
+            modelBuilder.Entity<TrackedFileDto>()
+                .HasIndex(d => d.FileName)
                 .IsUnique();
         }
     }

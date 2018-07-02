@@ -29,6 +29,7 @@
 
     <Grid>
         <Grid Name="LoadingIsVisible">
+            <Button x:Name="FireTest" Content="Test" HorizontalAlignment="Left" Margin="401,56,0,0" VerticalAlignment="Top" Width="75"/>
         </Grid>
         <ComboBox Name="RemoteName" SelectedItem="{Binding SelectedRemote}" HorizontalAlignment="Left" Margin="157,29,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>

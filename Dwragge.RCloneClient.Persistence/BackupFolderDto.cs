@@ -10,7 +10,7 @@ namespace Dwragge.RCloneClient.Persistence
         }
 
         [Key]
-        public int Id { get; set; }
+        public int BackupFolderId { get; set; }
 
         [Required]
         public string Path { get; set; }

@@ -9,7 +9,7 @@ namespace Dwragge.RCloneClient.Common
         private string _name;
         private TimeSpan _syncTimeSpan = TimeSpan.FromDays(1);
         private string _remoteBaseFolder = "";
-        public int Id { get; set; } 
+        public int BackupFolderId { get; set; } 
 
         public BackupFolderInfo(string path, string remoteName, string remoteBaseFolder)
         {
@@ -87,25 +87,5 @@ namespace Dwragge.RCloneClient.Common
                 _name = value;
             }
         }
-
-        public RCloneCommand SyncCommand =>
-            new RCloneCommand(RCloneSubCommand.Sync)
-            {
-                LocalPath = Path,
-                RemoteName = RemoteName,
-                RemotePath = System.IO.Path.Combine(RemoteBaseFolder, new DirectoryInfo(Path).Name).Replace("\\", "/"),
-                WithDebugLogging = true,
-                IsDryRun = true
-            };
-
-        public RCloneCommand CopyCommand =>
-            new RCloneCommand(RCloneSubCommand.Copy)
-            {
-                LocalPath = Path,
-                RemoteName = RemoteName,
-                RemotePath = System.IO.Path.Combine(RemoteBaseFolder, new DirectoryInfo(Path).Name).Replace("\\", "/"),
-                WithDebugLogging = true,
-                IsDryRun = true
-            };
     }
 }

@@ -8,14 +8,15 @@ namespace Dwragge.RCloneClient.WindowsService
     {
         public static (IJobDetail Job, ITrigger Trigger) CreateSyncJob(BackupFolderInfo info)
         {
-            var job = JobBuilder.Create<RCloneJob>()
-                .WithIdentity(info.Id.ToString(), "sync")
+            var job = JobBuilder.Create<PreCheckMoveFilesJob>()
+                .WithIdentity(info.BackupFolderId.ToString(), "sync")
                 .Build();
-            job.JobDataMap["Command"] = info.SyncCommand;
+            job.JobDataMap["Folder"] = info;
 
             var trigger = TriggerBuilder.Create()
                 .ForJob(job)
-                .WithCronSchedule($"0 {info.SyncTime.Minute} {info.SyncTime.Hour} 1/{info.SyncTimeSpan.Days} * ?")
+                .StartNow()
+                //.WithCronSchedule($"0 {info.SyncTime.Minute} {info.SyncTime.Hour} 1/{info.SyncTimeSpan.Days} * ?")
                 .Build();
 
             return (job, trigger);

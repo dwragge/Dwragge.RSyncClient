@@ -59,12 +59,6 @@
   <wsdl:message name="IRCloneManagementService_GetRemotes_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetRemotesResponse" />
   </wsdl:message>
-  <wsdl:message name="IRCloneManagementService_GetBackupFolders_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetBackupFolders" />
-  </wsdl:message>
-  <wsdl:message name="IRCloneManagementService_GetBackupFolders_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetBackupFoldersResponse" />
-  </wsdl:message>
   <wsdl:message name="IRCloneManagementService_PostHelloJob_InputMessage">
     <wsdl:part name="parameters" element="tns:PostHelloJob" />
   </wsdl:message>
@@ -83,10 +77,6 @@
     <wsdl:operation name="GetRemotes">
       <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/GetRemotes" message="tns:IRCloneManagementService_GetRemotes_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/GetRemotesResponse" message="tns:IRCloneManagementService_GetRemotes_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetBackupFolders">
-      <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/GetBackupFolders" message="tns:IRCloneManagementService_GetBackupFolders_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/GetBackupFoldersResponse" message="tns:IRCloneManagementService_GetBackupFolders_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="PostHelloJob">
       <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/PostHelloJob" message="tns:IRCloneManagementService_PostHelloJob_InputMessage" />
@@ -117,15 +107,6 @@
     </wsdl:operation>
     <wsdl:operation name="GetRemotes">
       <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/GetRemotes" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetBackupFolders">
-      <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/GetBackupFolders" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

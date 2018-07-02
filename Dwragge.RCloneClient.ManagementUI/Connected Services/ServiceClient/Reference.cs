@@ -23,7 +23,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
+        private int BackupFolderIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<System.DateTime> LastSyncField;
@@ -63,14 +63,14 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
+        public int BackupFolderId {
             get {
-                return this.IdField;
+                return this.BackupFolderIdField;
             }
             set {
-                if ((this.IdField.Equals(value) != true)) {
-                    this.IdField = value;
-                    this.RaisePropertyChanged("Id");
+                if ((this.BackupFolderIdField.Equals(value) != true)) {
+                    this.BackupFolderIdField = value;
+                    this.RaisePropertyChanged("BackupFolderId");
                 }
             }
         }
@@ -224,12 +224,6 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetRemotes", ReplyAction="http://tempuri.org/IRCloneManagementService/GetRemotesResponse")]
         System.Threading.Tasks.Task<string[]> GetRemotesAsync();
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetBackupFolders", ReplyAction="http://tempuri.org/IRCloneManagementService/GetBackupFoldersResponse")]
-        Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto[] GetBackupFolders();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetBackupFolders", ReplyAction="http://tempuri.org/IRCloneManagementService/GetBackupFoldersResponse")]
-        System.Threading.Tasks.Task<Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto[]> GetBackupFoldersAsync();
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/PostHelloJob", ReplyAction="http://tempuri.org/IRCloneManagementService/PostHelloJobResponse")]
         void PostHelloJob(string name);
         
@@ -286,14 +280,6 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         
         public System.Threading.Tasks.Task<string[]> GetRemotesAsync() {
             return base.Channel.GetRemotesAsync();
-        }
-        
-        public Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto[] GetBackupFolders() {
-            return base.Channel.GetBackupFolders();
-        }
-        
-        public System.Threading.Tasks.Task<Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto[]> GetBackupFoldersAsync() {
-            return base.Channel.GetBackupFoldersAsync();
         }
         
         public void PostHelloJob(string name) {

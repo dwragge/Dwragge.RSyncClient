@@ -48,26 +48,22 @@ namespace Dwragge.RCloneClient.WindowsService
         {
             try
             {
-                using (var scope = new TransactionScope())
+                using (var context = _contextFactory.CreateContext())
                 {
-                    using (var context = _contextFactory.CreateContext())
+                    var exists = context.BackupFolders.SingleOrDefault(x => x.Path == dto.Path) != null;
+                    if (exists)
                     {
-                        var exists = context.BackupFolders.SingleOrDefault(x => x.Path == dto.Path) != null;
-                        if (exists)
-                        {
-                            throw new InvalidOperationException($"Folder {dto.Path} already exists!");
-                        }
-
-                        await context.BackupFolders.AddAsync(dto);
-                        await context.SaveChangesAsync();
+                        throw new InvalidOperationException($"Folder {dto.Path} already exists!");
                     }
 
-                    var info = _mapper.Map<BackupFolderDto, BackupFolderInfo>(dto);
-                    var syncJob = QuartzJobFactory.CreateSyncJob(info);
-                    await _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
-
-                    scope.Complete();
+                    await context.BackupFolders.AddAsync(dto);
+                    await context.SaveChangesAsync();
                 }
+
+                var info = _mapper.Map<BackupFolderDto, BackupFolderInfo>(dto);
+                var syncJob = QuartzJobFactory.CreateSyncJob(info);
+                await _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
+                
             }
             catch (Exception e)
             {
@@ -82,27 +78,6 @@ namespace Dwragge.RCloneClient.WindowsService
             return service.GetRemotes();
         }
         
-        private void ScheduleCopyJobToRunNow(int jobId)
-        {
-            BackupFolderInfo info = null;
-            using (var context = _contextFactory.CreateContext())
-            {
-                var dto = context.BackupFolders.Find(jobId);
-                info = _mapper.Map<BackupFolderInfo>(dto);
-            }
-
-            var copyJob = JobBuilder.Create<RCloneJob>()
-                .WithIdentity(info.Id.ToString(), "copy")
-                .Build();
-            copyJob.JobDataMap["Command"] = info.CopyCommand;
-
-            var copyTrigger = TriggerBuilder.Create()
-                .ForJob(copyJob)
-                .StartNow()
-                .Build();
-
-            _scheduler.ScheduleJob(copyJob, copyTrigger);
-        }
 
         public void PostHelloJob(string name)
         {

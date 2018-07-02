@@ -2,6 +2,6 @@
 {
     public interface IJobContextFactory
     {
-        JobContext CreateContext(bool shouldLog = true);
+        JobContext CreateContext(bool shouldLog = false);
     }
 }

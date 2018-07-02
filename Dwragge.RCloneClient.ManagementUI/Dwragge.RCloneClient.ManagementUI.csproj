@@ -96,6 +96,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="WcfProfile.cs" />
     <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -138,9 +139,6 @@
     </EmbeddedResource>
     <None Include="Connected Services\ServiceClient\Arrays.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\ServiceClient\Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Connected Services\ServiceClient\Dwragge.RCloneClient.Persistence.xsd">
       <SubType>Designer</SubType>

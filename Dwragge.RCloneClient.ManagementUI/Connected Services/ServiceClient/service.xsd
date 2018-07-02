@@ -38,18 +38,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="GetBackupFolders">
-    <xs:complexType>
-      <xs:sequence />
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="GetBackupFoldersResponse">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Dwragge.RCloneClient.Persistence" minOccurs="0" name="GetBackupFoldersResult" nillable="true" type="q3:ArrayOfBackupFolderDto" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="PostHelloJob">
     <xs:complexType>
       <xs:sequence>
