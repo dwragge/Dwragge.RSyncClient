@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Dwragge.RCloneClient.Persistence.Migrations
 {
-    public partial class AddTables : Migration
+    public partial class AddVersionHistoryTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,6 +29,28 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FileVersionHistory",
+                columns: table => new
+                {
+                    VersionHistoryId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    FileName = table.Column<string>(nullable: false),
+                    RemoteLocation = table.Column<string>(nullable: false),
+                    VersionedOn = table.Column<DateTime>(nullable: false),
+                    BackupFolderId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileVersionHistory", x => x.VersionHistoryId);
+                    table.ForeignKey(
+                        name: "FK_FileVersionHistory_BackupFolders_BackupFolderId",
+                        column: x => x.BackupFolderId,
+                        principalTable: "BackupFolders",
+                        principalColumn: "BackupFolderId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InProgressFiles",
                 columns: table => new
                 {
@@ -36,6 +58,7 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     BackupFolderId = table.Column<int>(nullable: false),
                     InsertedAt = table.Column<DateTime>(nullable: false),
+                    RemotePath = table.Column<string>(nullable: true),
                     FileName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -56,7 +79,8 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FileName = table.Column<string>(nullable: false),
-                    BackupFolderId = table.Column<int>(nullable: false)
+                    BackupFolderId = table.Column<int>(nullable: false),
+                    QueuedTime = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,6 +100,7 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FileName = table.Column<string>(nullable: false),
+                    RemoteLocation = table.Column<string>(nullable: false),
                     FirstBackedUp = table.Column<DateTime>(nullable: false),
                     LastModified = table.Column<DateTime>(nullable: false),
                     SizeBytes = table.Column<long>(nullable: false),
@@ -91,6 +116,11 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                         principalColumn: "BackupFolderId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileVersionHistory_BackupFolderId",
+                table: "FileVersionHistory",
+                column: "BackupFolderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InProgressFiles_BackupFolderId",
@@ -116,6 +146,9 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "FileVersionHistory");
+
             migrationBuilder.DropTable(
                 name: "InProgressFiles");
 

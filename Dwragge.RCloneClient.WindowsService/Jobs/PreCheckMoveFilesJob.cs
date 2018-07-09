@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using Dwragge.RCloneClient.Persistence;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using Quartz;
-using IsolationLevel = System.Data.IsolationLevel;
 
 namespace Dwragge.RCloneClient.WindowsService.Jobs
 {
@@ -27,18 +27,14 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             Folder = (BackupFolderInfo)context.MergedJobDataMap["Folder"] ?? throw new ArgumentNullException(nameof(Folder), "Command was not set");
-            _logger.Info($"Executing Check Files Job, fired at {context.FireTimeUtc.ToLocalTime()} for foler {Folder.Path}");
+            _logger.Info($"Executing Check Files Job, fired at {context.FireTimeUtc.ToLocalTime()} for folder {Folder.Path}");
 
             try
             {
                 var files = await GetFilesToTransfer();
-                var newFiles = files as string[] ?? files.ToArray();
-                _logger.Info($"Found {newFiles.Count()} files that need to be transferred.");
+                _logger.Info($"Found {files.Count} files that need to be transferred.");
 
-                QueueFilesAsPending(newFiles);
-                // mark files as not archived
-                //throw new NotImplementedException();
-                //transaction.Complete();
+                QueueFilesAsPending(files);
             }
             catch (Exception ex)
             {
@@ -47,12 +43,12 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
             }
         }
 
-        private async Task<IEnumerable<string>> GetFilesToTransfer()
+        private async Task<ImmutableHashSet<string>> GetFilesToTransfer()
         {
             var enumerator = new DirectoryEnumerator();
             var allFiles = await enumerator.GetFiles(Folder.Path);
 
-            var newFiles = new List<string>();
+            var newFiles = new HashSet<string>();
             var potentiallyModifiedFiles = new List<TrackedFileDto>();
 
             using (var context = _contextFactory.CreateContext())
@@ -72,8 +68,8 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
             }
 
             var modifiedFiles = GetModifiedFiles(potentiallyModifiedFiles);
-            newFiles.AddRange(modifiedFiles.Select(t => t.FileName));
-            return newFiles;
+            var ret = modifiedFiles.Select(t => t.FileName).ToImmutableHashSet().Union(newFiles);
+            return ret;
         }
 
         private IEnumerable<TrackedFileDto> GetModifiedFiles(IEnumerable<TrackedFileDto> potentiallyModifiedFiles)
@@ -84,6 +80,7 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
                 if (!DateTimesEqualToSeconds(file.LastModified, onDiskFile.LastWriteTimeUtc)
                     || file.SizeBytes != onDiskFile.Length)
                 {
+                    _logger.Debug($"File {file.FileName} has changed. Tracked Last Modified: {file.LastModified:G} FileSystem Last Modified: {onDiskFile.LastWriteTime:G}. Tracked Size: {file.SizeBytes} File System Size: {onDiskFile.Length}");
                     return true;
                 }
 
@@ -99,42 +96,37 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
             return DateTime.Compare(a, b) == 0;
         }
 
-        private void QueueFilesAsPending(IEnumerable<string> newFiles)
+        private void QueueFilesAsPending(ICollection<string> files)
         {
-            IEnumerable<string> files = newFiles as string[] ?? newFiles.ToArray();
-
-            _logger.Info($"Enqueuing {files.Count()} files to be transferred");
+            _logger.Info($"Enqueuing {files.Count} files to be transferred");
             var dtos = files.Select(f => new PendingFileDto
             {
                 FileName = f,
-                BackupFolderId = Folder.BackupFolderId
+                BackupFolderId = Folder.BackupFolderId,
+                QueuedTime = DateTime.Now
             });
 
             using (var context = _contextFactory.CreateContext(false))
             {
-                using (var trans = context.Database.BeginTransaction(IsolationLevel.Serializable))
+                try
                 {
-                    try
+                    var alreadyInQueue = context.PendingFiles.Where(t => t.BackupFolderId == Folder.BackupFolderId).Select(t => t.FileName).ToImmutableList();
+                    if (alreadyInQueue.Any()) _logger.Info($"Found {alreadyInQueue.Count} items already in queue... skipping");
+                    foreach (var queued in alreadyInQueue)
                     {
-                        var alreadyInQueue = context.PendingFiles.Where(t => files.Contains(t.FileName));
-                        if (alreadyInQueue.Any())
-                        {
-                            _logger.Info($"Overwriting {alreadyInQueue.Count()} pending items that were already in the queue");
-                            context.PendingFiles.RemoveRange(alreadyInQueue);
-                        };
+                        files.Remove(queued);
+                    }
 
-                        context.PendingFiles.AddRangeAsync(dtos);
-                        context.SaveChangesAsync();
-                        trans.Commit();
-                        _logger.Info($"Successfully queued files.");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error($"Failed to queue new files: {ex.Message}");
-                        trans.Rollback();
-                        throw;
-                    }
+                    context.PendingFiles.AddRangeAsync(dtos);
+                    context.BackupFolders.Find(Folder.BackupFolderId).LastSync = DateTime.Now;
+                    context.SaveChangesAsync();
+                    _logger.Info($"Successfully queued {files.Count} new files.");
                 }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Failed to queue new files: {ex.Message}");
+                    throw;
+                }   
             }
         }
     }

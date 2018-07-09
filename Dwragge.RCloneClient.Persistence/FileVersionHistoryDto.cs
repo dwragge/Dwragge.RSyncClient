@@ -3,19 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Dwragge.RCloneClient.Persistence
 {
-    public class PendingFileDto
+    public class FileVersionHistoryDto
     {
         [Key]
-        public int Id { get; set; }
-
+        public int VersionHistoryId { get; set; }
         [Required]
         public string FileName { get; set; }
-
+        [Required]
+        public string RemoteLocation { get; set; }
+        [Required]
+        public DateTime VersionedOn { get; set; }
         [Required]
         public int BackupFolderId { get; set; }
-
-        [Required]
-        public DateTime QueuedTime { get; set; }
 
         public virtual BackupFolderDto BackupFolder { get; set; }
     }

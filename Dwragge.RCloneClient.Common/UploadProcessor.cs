@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ByteSizeLib;
 using Dwragge.RCloneClient.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.WindowsAzure.Storage;
 using NLog;
 
 namespace Dwragge.RCloneClient.Common
@@ -43,35 +44,18 @@ namespace Dwragge.RCloneClient.Common
             _cancellationTokenSource = new CancellationTokenSource();
             while (_isRunning)
             {
-                _cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                //dequeue
-                bool found = false;
-                using (var context = _factory.CreateContext(false))
+                try
                 {
-                    var file = await context.PendingFiles.FirstOrDefaultAsync().ConfigureAwait(false);
-                    if (file != null)
+                    _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    if (!await TryDequeueAndProcessFileAsync())
                     {
-                        found = true;
-                        context.PendingFiles.Remove(file);
-
-                        _logger.Debug($"Popped {file.FileName} from queue to be transferred");
-                        var inprogress = new InProgressFileDto()
-                        {
-                            BackupFolderId = file.BackupFolderId,
-                            FileName = file.FileName,
-                            InsertedAt = DateTime.Now
-                        };
-                        context.InProgressFiles.Add(inprogress);
-                        await context.SaveChangesAsync().ConfigureAwait(false);
-
-                        await _uploadTaskSemaphore.WaitAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
-                        _runningTasks.Add(Task.Run(() => UploadFile(inprogress)));
+                        await Task.Delay(50).ConfigureAwait(false);
                     }
                 }
-
-                if (!found)
+                catch (Exception e)
                 {
-                    await Task.Delay(50);
+                    _logger.Fatal($"Exception Occurred In Upload Processor Thread: {e.GetType().Name}. {e.Message}");
+                    throw;
                 }
                 //move to inprogress
                 // wait for available thread
@@ -79,6 +63,44 @@ namespace Dwragge.RCloneClient.Common
                 // spin a few times then pause
                 // pause/unpause needs to be syncronized well
             }
+        }
+
+        private async Task<bool> TryDequeueAndProcessFileAsync()
+        {
+            bool found = false;
+            InProgressFileDto inProgress = null;
+            using (var context = _factory.CreateContext(false))
+            {
+                var file = await context.PendingFiles.FirstOrDefaultAsync().ConfigureAwait(false);
+                if (file != null)
+                {
+                    found = true;
+                    context.PendingFiles.Remove(file);
+
+                    _logger.Debug($"Popped {file.FileName} from queue to be transferred");
+                    var remoteFileName =
+                        Path.Combine(file.BackupFolder.RemoteBaseFolder,
+                            file.FileName.Replace(file.BackupFolder.Path, "").Remove(0, 1), file.QueuedTime.ToString("yyyy-mm-dd")).Replace('\\', '/');
+
+                    inProgress = new InProgressFileDto()
+                    {
+                        BackupFolderId = file.BackupFolderId,
+                        FileName = file.FileName,
+                        InsertedAt = DateTime.Now,
+                        RemotePath = remoteFileName
+                    };
+                    context.InProgressFiles.Add(inProgress);
+                    await context.SaveChangesAsync().ConfigureAwait(false);
+                }
+            }
+
+            if (found)
+            {
+                await _uploadTaskSemaphore.WaitAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+                _runningTasks.Add(Task.Run(() => UploadFile(inProgress))); 
+            }
+
+            return found;
         }
 
         public void NotifyOfPendingTasks()
@@ -101,41 +123,80 @@ namespace Dwragge.RCloneClient.Common
 
         private async Task UploadFile(InProgressFileDto dto)
         {
+            var g = Guid.NewGuid().ToString().Substring(0, 8);
             try
             {
-                _logger.Info($"Uploading {dto.FileName} on thread {Thread.CurrentThread.ManagedThreadId}");
-                await Task.Delay(2000, _cancellationTokenSource.Token);
-                _logger.Info($"Finished uploading {dto.FileName} on thread {Thread.CurrentThread.ManagedThreadId}");
+                _logger.Info($"{{{g}}} Uploading {dto.FileName} on thread {Thread.CurrentThread.ManagedThreadId}");
+
+                
+                        
+                var localFile = new FileInfo(dto.FileName);
+
+                var account = CloudStorageAccount.DevelopmentStorageAccount;
+                var client = account.CreateCloudBlobClient();
+                var container = client.GetContainerReference("test");
+                var blob = container.GetBlockBlobReference(dto.RemotePath);
+
+                _logger.Debug($"{{{g}}} Using Cloud Storage Account {account.BlobStorageUri.PrimaryUri}");
+                _logger.Debug($"{{{g}}} Uploading to {container.Name}/{dto.RemotePath}");
+                _logger.Info(
+                    $"{{{g}}} Beginning Upload of {dto.FileName}. File Size is {ByteSize.FromBytes(localFile.Length).ToString()}");
+
+                var startTime = DateTime.Now;
+                using (var fs = File.OpenRead(dto.FileName))
+                {
+                    await blob.UploadFromStreamAsync(fs);
+                }
+
+                var secondsTime = (DateTime.Now - startTime).TotalSeconds;
+                _logger.Info(
+                    $"{{{g}}} Finished uploading {dto.FileName} in {secondsTime:0.##}s. Average Speed was {ByteSize.FromBytes(localFile.Length / secondsTime).ToString()}/s.");
                 // upload file
                 // save version information if necessary
                 // move to tracked files
                 // set to archive
 
                 using (var context = _factory.CreateContext(false))
+                using (var trans = await context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted))
                 {
-                    var file = new FileInfo(dto.FileName);
-                    var trackedFile = new TrackedFileDto()
+                    var trackedFile = new TrackedFileDto
                     {
                         BackupFolderId = dto.BackupFolderId,
                         FileName = dto.FileName,
                         FirstBackedUp = DateTime.Now,
-                        LastModified = file.LastWriteTimeUtc,
-                        SizeBytes = file.Length
+                        LastModified = localFile.LastWriteTimeUtc,
+                        SizeBytes = localFile.Length,
+                        RemoteLocation = dto.RemotePath
                     };
 
                     context.InProgressFiles.Remove(dto);
-                    context.TrackedFiles.Add(trackedFile);
 
                     var existingFile = await context.TrackedFiles.SingleOrDefaultAsync(t => t.FileName == dto.FileName);
                     if (existingFile != null)
                     {
-                        _logger.Info($"Removing old version and adding it to version tracking.");
-                        _logger.Info($"Not implemented yet tho.");
-                        throw new NotImplementedException();
+                        _logger.Info($"{{{g}}} Removing old version and adding it to version tracking.");
+
+                        var versionHistory = new FileVersionHistoryDto()
+                        {
+                            BackupFolderId = dto.BackupFolderId,
+                            FileName = dto.FileName,
+                            RemoteLocation = existingFile.RemoteLocation,
+                            VersionedOn = DateTime.Today
+                        };
+
+                        await context.FileVersionHistory.AddAsync(versionHistory);
+                        context.TrackedFiles.Remove(existingFile);
+                        await context.SaveChangesAsync();
                     }
 
+                    context.TrackedFiles.Add(trackedFile);
                     await context.SaveChangesAsync(_cancellationTokenSource.Token);
+                    trans.Commit();
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{{{g}}} Exception occurred while uploading file {e.GetType().Name}: {e.Message}");
             }
             finally
             {

@@ -18,6 +18,7 @@ namespace Dwragge.RCloneClient.Persistence
         public DbSet<TrackedFileDto> TrackedFiles { get; set; }
         public DbSet<PendingFileDto> PendingFiles { get; set; }
         public DbSet<InProgressFileDto> InProgressFiles { get; set; } 
+        public DbSet<FileVersionHistoryDto> FileVersionHistory { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

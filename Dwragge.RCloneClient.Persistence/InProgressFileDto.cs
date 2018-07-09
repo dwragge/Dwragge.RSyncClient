@@ -10,6 +10,7 @@ namespace Dwragge.RCloneClient.Persistence
         public int BackupFolderId { get; set; }
         public BackupFolderDto BackupFolder { get; set; }
         public DateTime InsertedAt { get; set; }
+        public string RemotePath { get; set; }
         public string FileName { get; set; }
     }
 }

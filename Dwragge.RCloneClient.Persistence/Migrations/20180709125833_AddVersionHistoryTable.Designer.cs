@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dwragge.RCloneClient.Persistence.Migrations
 {
     [DbContext(typeof(JobContext))]
-    [Migration("20180702093054_AddTables")]
-    partial class AddTables
+    [Migration("20180709125833_AddVersionHistoryTable")]
+    partial class AddVersionHistoryTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,6 +49,28 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                     b.ToTable("BackupFolders");
                 });
 
+            modelBuilder.Entity("Dwragge.RCloneClient.Persistence.FileVersionHistoryDto", b =>
+                {
+                    b.Property<int>("VersionHistoryId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("BackupFolderId");
+
+                    b.Property<string>("FileName")
+                        .IsRequired();
+
+                    b.Property<string>("RemoteLocation")
+                        .IsRequired();
+
+                    b.Property<DateTime>("VersionedOn");
+
+                    b.HasKey("VersionHistoryId");
+
+                    b.HasIndex("BackupFolderId");
+
+                    b.ToTable("FileVersionHistory");
+                });
+
             modelBuilder.Entity("Dwragge.RCloneClient.Persistence.InProgressFileDto", b =>
                 {
                     b.Property<int>("Id")
@@ -59,6 +81,8 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                     b.Property<string>("FileName");
 
                     b.Property<DateTime>("InsertedAt");
+
+                    b.Property<string>("RemotePath");
 
                     b.HasKey("Id");
 
@@ -76,6 +100,8 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
 
                     b.Property<string>("FileName")
                         .IsRequired();
+
+                    b.Property<DateTime>("QueuedTime");
 
                     b.HasKey("Id");
 
@@ -98,6 +124,9 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
 
                     b.Property<DateTime>("LastModified");
 
+                    b.Property<string>("RemoteLocation")
+                        .IsRequired();
+
                     b.Property<long>("SizeBytes");
 
                     b.HasKey("Id");
@@ -108,6 +137,14 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("TrackedFiles");
+                });
+
+            modelBuilder.Entity("Dwragge.RCloneClient.Persistence.FileVersionHistoryDto", b =>
+                {
+                    b.HasOne("Dwragge.RCloneClient.Persistence.BackupFolderDto", "BackupFolder")
+                        .WithMany()
+                        .HasForeignKey("BackupFolderId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Dwragge.RCloneClient.Persistence.InProgressFileDto", b =>

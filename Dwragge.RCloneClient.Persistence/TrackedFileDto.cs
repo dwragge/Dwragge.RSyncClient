@@ -14,6 +14,9 @@ namespace Dwragge.RCloneClient.Persistence
         public string FileName { get; set; }
 
         [Required]
+        public string RemoteLocation { get; set; }
+
+        [Required]
         public DateTime FirstBackedUp { get; set; } = DateTime.Now;
 
         [Required]
