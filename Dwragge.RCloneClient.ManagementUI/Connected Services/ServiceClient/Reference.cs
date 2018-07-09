@@ -206,29 +206,17 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceClient.IRCloneManagementService")]
     public interface IRCloneManagementService {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/HelloWorld", ReplyAction="http://tempuri.org/IRCloneManagementService/HelloWorldResponse")]
-        string HelloWorld();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/Heartbeat", ReplyAction="http://tempuri.org/IRCloneManagementService/HeartbeatResponse")]
+        bool Heartbeat();
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/HelloWorld", ReplyAction="http://tempuri.org/IRCloneManagementService/HelloWorldResponse")]
-        System.Threading.Tasks.Task<string> HelloWorldAsync();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/Heartbeat", ReplyAction="http://tempuri.org/IRCloneManagementService/HeartbeatResponse")]
+        System.Threading.Tasks.Task<bool> HeartbeatAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/CreateTask", ReplyAction="http://tempuri.org/IRCloneManagementService/CreateTaskResponse")]
         void CreateTask(Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto info);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/CreateTask", ReplyAction="http://tempuri.org/IRCloneManagementService/CreateTaskResponse")]
         System.Threading.Tasks.Task CreateTaskAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto info);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetRemotes", ReplyAction="http://tempuri.org/IRCloneManagementService/GetRemotesResponse")]
-        string[] GetRemotes();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetRemotes", ReplyAction="http://tempuri.org/IRCloneManagementService/GetRemotesResponse")]
-        System.Threading.Tasks.Task<string[]> GetRemotesAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/PostHelloJob", ReplyAction="http://tempuri.org/IRCloneManagementService/PostHelloJobResponse")]
-        void PostHelloJob(string name);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/PostHelloJob", ReplyAction="http://tempuri.org/IRCloneManagementService/PostHelloJobResponse")]
-        System.Threading.Tasks.Task PostHelloJobAsync(string name);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -258,12 +246,12 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
                 base(binding, remoteAddress) {
         }
         
-        public string HelloWorld() {
-            return base.Channel.HelloWorld();
+        public bool Heartbeat() {
+            return base.Channel.Heartbeat();
         }
         
-        public System.Threading.Tasks.Task<string> HelloWorldAsync() {
-            return base.Channel.HelloWorldAsync();
+        public System.Threading.Tasks.Task<bool> HeartbeatAsync() {
+            return base.Channel.HeartbeatAsync();
         }
         
         public void CreateTask(Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto info) {
@@ -272,22 +260,6 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         
         public System.Threading.Tasks.Task CreateTaskAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto info) {
             return base.Channel.CreateTaskAsync(info);
-        }
-        
-        public string[] GetRemotes() {
-            return base.Channel.GetRemotes();
-        }
-        
-        public System.Threading.Tasks.Task<string[]> GetRemotesAsync() {
-            return base.Channel.GetRemotesAsync();
-        }
-        
-        public void PostHelloJob(string name) {
-            base.Channel.PostHelloJob(name);
-        }
-        
-        public System.Threading.Tasks.Task PostHelloJobAsync(string name) {
-            return base.Channel.PostHelloJobAsync(name);
         }
     }
 }

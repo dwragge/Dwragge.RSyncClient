@@ -12,13 +12,23 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
 {
     public class ShellViewModel : Screen
     {
-        private readonly RCloneManagementServiceClient _client = new RCloneManagementServiceClient();
+        private RCloneManagementServiceClient _client = new RCloneManagementServiceClient();
         private readonly IWindowManager _windowManager;
         private readonly IMapper _mapper;
         private bool _loadingIsVisible = true;
-        private IEnumerable<string> _remotes;
-        private string _selectedRemote;
         private IEnumerable<string> _folderNames;
+        private bool _cantConnectGridVisible;
+
+        public bool CantConnectGridVisible
+        {
+            get => _cantConnectGridVisible;
+            set
+            {
+                if (value == _cantConnectGridVisible) return;
+                _cantConnectGridVisible = value;
+                NotifyOfPropertyChange(() => CantConnectGridVisible);
+            }
+        }
 
         public bool LoadingIsVisible
         {
@@ -29,26 +39,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
                 NotifyOfPropertyChange(() => LoadingIsVisible);
             }
         }
-
-        public IEnumerable<string> RemoteName
-        {
-            get => _remotes;
-            set
-            {
-                _remotes = value;
-                NotifyOfPropertyChange(() => RemoteName);
-            }
-        }
-
-        public string SelectedRemote
-        {
-            get => _selectedRemote;
-            set
-            {
-                _selectedRemote = value;
-                NotifyOfPropertyChange(() => SelectedRemote);
-            }
-        }
+        
 
         public IEnumerable<string> FolderNames
         {
@@ -64,7 +55,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
         {
             _windowManager = windowManager;
             _mapper = mapper;
-            //Task.Run(() => Init());
+            Task.Run(() => RetryConnectToService());
         }
 
         public void FireTest()
@@ -74,20 +65,19 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             _client.CreateTask(dto);
         }
 
-        private void Init()
+        public async void RetryConnectToService()
         {
+            _client = new RCloneManagementServiceClient();
+            bool connected = false;
             try
             {
-                _client.HelloWorld();
-                LoadingIsVisible = false;
+                connected = await _client.HeartbeatAsync();
             }
-            catch (Exception)
+            catch
             {
-                LoadingIsVisible = true;
-                return;
             }
 
-            RemoteName = _client.GetRemotes();
+            CantConnectGridVisible = !connected;
         }
     }
 }

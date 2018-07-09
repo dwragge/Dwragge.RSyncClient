@@ -29,19 +29,10 @@ namespace Dwragge.RCloneClient.WindowsService
             _mapper = mapper;
             _contextFactory = contextFactory;
         }
-        public async Task<string> HelloWorld()
-        {
-            var builder = new StringBuilder();
-            var keys = await _scheduler.GetJobKeys(GroupMatcher<JobKey>.AnyGroup());
-            foreach (var key in keys)
-            {
-                var job = await _scheduler.GetJobDetail(key);
-                var trigger = await _scheduler.GetTriggersOfJob(key);
-                builder.AppendLine(
-                    $"Job {key.Name}:{key.Group} will next fire at {trigger.Single().GetNextFireTimeUtc()}");
-            }
 
-            return builder.ToString();
+        public Task<bool> Heartbeat()
+        {
+            return Task.FromResult(true);
         }
 
         public async Task CreateTask(BackupFolderDto dto)
@@ -63,25 +54,13 @@ namespace Dwragge.RCloneClient.WindowsService
                 var info = _mapper.Map<BackupFolderDto, BackupFolderInfo>(dto);
                 var syncJob = QuartzJobFactory.CreateSyncJob(info);
                 await _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
-                
+
             }
             catch (Exception e)
             {
                 _logger.Error($"Failed to Create Task: {e.Message}");
                 throw;
             }
-        }
-
-        public Task<IEnumerable<string>> GetRemotes()
-        {
-            var service = new RCloneService();
-            return service.GetRemotes();
-        }
-        
-
-        public void PostHelloJob(string name)
-        {
-            
         }
     }
 }

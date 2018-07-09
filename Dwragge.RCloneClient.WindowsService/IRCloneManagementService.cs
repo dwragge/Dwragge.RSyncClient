@@ -9,15 +9,9 @@ namespace Dwragge.RCloneClient.WindowsService
     public interface IRCloneManagementService
     {
         [OperationContract]
-        Task<string> HelloWorld();
+        Task<bool> Heartbeat();
 
         [OperationContract]
         Task CreateTask(BackupFolderDto info);
-
-        [OperationContract]
-        Task<IEnumerable<string>> GetRemotes();
-
-        [OperationContract]
-        void PostHelloJob(string name);
     }
 }

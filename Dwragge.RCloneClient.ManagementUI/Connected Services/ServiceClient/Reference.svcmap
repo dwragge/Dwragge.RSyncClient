@@ -26,7 +26,6 @@
     <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="4549e2e2-4574-4d2e-a00a-d50200fbc150" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="fab78f24-6b1a-456d-ad52-9d0fc620b896" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
     <MetadataFile FileName="Dwragge.RCloneClient.Persistence.xsd" MetadataType="Schema" ID="2e8b619c-863a-41f2-bc99-d7f13c89dd65" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
-    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="ef6603a5-a314-444e-b827-8674a6d9c59d" SourceId="1" SourceUrl="net.pipe://localhost/com.Dwragge.RCloneClientService/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

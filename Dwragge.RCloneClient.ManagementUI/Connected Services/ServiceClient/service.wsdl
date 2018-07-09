@@ -38,14 +38,13 @@
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import namespace="http://schemas.datacontract.org/2004/07/Dwragge.RCloneClient.Persistence" />
-      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IRCloneManagementService_HelloWorld_InputMessage">
-    <wsdl:part name="parameters" element="tns:HelloWorld" />
+  <wsdl:message name="IRCloneManagementService_Heartbeat_InputMessage">
+    <wsdl:part name="parameters" element="tns:Heartbeat" />
   </wsdl:message>
-  <wsdl:message name="IRCloneManagementService_HelloWorld_OutputMessage">
-    <wsdl:part name="parameters" element="tns:HelloWorldResponse" />
+  <wsdl:message name="IRCloneManagementService_Heartbeat_OutputMessage">
+    <wsdl:part name="parameters" element="tns:HeartbeatResponse" />
   </wsdl:message>
   <wsdl:message name="IRCloneManagementService_CreateTask_InputMessage">
     <wsdl:part name="parameters" element="tns:CreateTask" />
@@ -53,42 +52,22 @@
   <wsdl:message name="IRCloneManagementService_CreateTask_OutputMessage">
     <wsdl:part name="parameters" element="tns:CreateTaskResponse" />
   </wsdl:message>
-  <wsdl:message name="IRCloneManagementService_GetRemotes_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetRemotes" />
-  </wsdl:message>
-  <wsdl:message name="IRCloneManagementService_GetRemotes_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetRemotesResponse" />
-  </wsdl:message>
-  <wsdl:message name="IRCloneManagementService_PostHelloJob_InputMessage">
-    <wsdl:part name="parameters" element="tns:PostHelloJob" />
-  </wsdl:message>
-  <wsdl:message name="IRCloneManagementService_PostHelloJob_OutputMessage">
-    <wsdl:part name="parameters" element="tns:PostHelloJobResponse" />
-  </wsdl:message>
   <wsdl:portType name="IRCloneManagementService">
-    <wsdl:operation name="HelloWorld">
-      <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/HelloWorld" message="tns:IRCloneManagementService_HelloWorld_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/HelloWorldResponse" message="tns:IRCloneManagementService_HelloWorld_OutputMessage" />
+    <wsdl:operation name="Heartbeat">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/Heartbeat" message="tns:IRCloneManagementService_Heartbeat_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/HeartbeatResponse" message="tns:IRCloneManagementService_Heartbeat_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="CreateTask">
       <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/CreateTask" message="tns:IRCloneManagementService_CreateTask_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/CreateTaskResponse" message="tns:IRCloneManagementService_CreateTask_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="GetRemotes">
-      <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/GetRemotes" message="tns:IRCloneManagementService_GetRemotes_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/GetRemotesResponse" message="tns:IRCloneManagementService_GetRemotes_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="PostHelloJob">
-      <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/PostHelloJob" message="tns:IRCloneManagementService_PostHelloJob_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/PostHelloJobResponse" message="tns:IRCloneManagementService_PostHelloJob_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetNamedPipeBinding_IRCloneManagementService" type="tns:IRCloneManagementService">
     <wsp:PolicyReference URI="#NetNamedPipeBinding_IRCloneManagementService_policy">
     </wsp:PolicyReference>
     <soap12:binding transport="http://schemas.microsoft.com/soap/named-pipe" />
-    <wsdl:operation name="HelloWorld">
-      <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/HelloWorld" style="document" />
+    <wsdl:operation name="Heartbeat">
+      <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/Heartbeat" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -98,24 +77,6 @@
     </wsdl:operation>
     <wsdl:operation name="CreateTask">
       <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/CreateTask" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetRemotes">
-      <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/GetRemotes" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="PostHelloJob">
-      <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/PostHelloJob" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
