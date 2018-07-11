@@ -18,6 +18,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
         private bool _loadingIsVisible = true;
         private IEnumerable<string> _folderNames;
         private bool _cantConnectGridVisible;
+        private BindableCollection<string> _remotes = new BindableCollection<string>();
 
         public bool CantConnectGridVisible
         {
@@ -39,7 +40,20 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
                 NotifyOfPropertyChange(() => LoadingIsVisible);
             }
         }
-        
+
+        public void AddFolder()
+        {
+            var vm = new AddFolderViewModel();
+            _windowManager.ShowDialog(vm);
+        }
+
+        public void AddRemote()
+        {
+            var vm = new AddRemoteViewModel();
+            var result = _windowManager.ShowDialog(vm);
+            if (result != true) return;
+            Remotes.Add(vm.RemoteName);
+        }
 
         public IEnumerable<string> FolderNames
         {
@@ -48,6 +62,17 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             {
                 _folderNames = value;
                 NotifyOfPropertyChange(() => FolderNames);
+            }
+        }
+
+        public BindableCollection<string> Remotes
+        {
+            get => _remotes;
+            set
+            {
+                if (Equals(value, _remotes)) return;
+                _remotes = value;
+                NotifyOfPropertyChange(() => Remotes);
             }
         }
 
