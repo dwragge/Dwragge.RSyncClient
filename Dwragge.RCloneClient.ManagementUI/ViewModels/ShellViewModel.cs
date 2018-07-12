@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using AutoMapper;
 using Caliburn.Micro;
-using Dwragge.RCloneClient.Common;
 using Dwragge.RCloneClient.ManagementUI.ServiceClient;
+using RemoteDto = Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto;
 
 namespace Dwragge.RCloneClient.ManagementUI.ViewModels
 {
@@ -18,7 +16,11 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
         private bool _loadingIsVisible = true;
         private IEnumerable<string> _folderNames;
         private bool _cantConnectGridVisible;
-        private BindableCollection<string> _remotes = new BindableCollection<string>();
+        private BindableCollection<string> _remotesComboBoxValues = new BindableCollection<string>();
+
+        private Dictionary<string, RemoteDto> _remotes = new Dictionary<string, RemoteDto>();
+        private string _selectedRemote;
+        private bool _operationInProgress;
 
         public bool CantConnectGridVisible
         {
@@ -41,19 +43,80 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             }
         }
 
+        public string SelectedRemote
+        {
+            get => _selectedRemote;
+            set
+            {
+                if (value == _selectedRemote) return;
+                _selectedRemote = value;
+                NotifyOfPropertyChange(() => SelectedRemote);
+                NotifyOfPropertyChange(() => CanEditRemote);
+                NotifyOfPropertyChange(() => CanDeleteRemote);
+                NotifyOfPropertyChange(() => CanAddFolder);
+            }
+        }
+
+        public bool OperationInProgress
+        {
+            get => _operationInProgress;
+            set
+            {
+                if (value == _operationInProgress) return;
+                _operationInProgress = value;
+                NotifyOfPropertyChange(() => OperationInProgress);
+            }
+        }
+
         public void AddFolder()
         {
-            var vm = new AddFolderViewModel();
+            var vm = new AddFolderViewModel(_remotes[SelectedRemote]);
             _windowManager.ShowDialog(vm);
         }
 
-        public void AddRemote()
+        public async void AddRemote()
         {
             var vm = new AddRemoteViewModel();
+            await RunRemoteDialog(vm);
+        }
+
+        public async void EditRemote()
+        {
+            var selected = _remotes[SelectedRemote];
+            var vm = new AddRemoteViewModel(selected);
+            await RunRemoteDialog(vm);
+        }
+
+        private async Task RunRemoteDialog(AddRemoteViewModel vm)
+        {
             var result = _windowManager.ShowDialog(vm);
             if (result != true) return;
-            Remotes.Add(vm.RemoteName);
+
+            var dto = new RemoteDto
+            {
+                RemoteId = vm.RemoteId,
+                ConnectionString = vm.ConnectionString,
+                Name = vm.RemoteName
+            };
+
+            OperationInProgress = true;
+            _client.AddOrUpdateRemote(dto);
+            await InitializeData();
+            OperationInProgress = false;
         }
+
+        public async void DeleteRemote()
+        {
+            OperationInProgress = true;
+            var selected = _remotes[SelectedRemote];
+            await _client.DeleteRemoteAsync(selected);
+            await InitializeData();
+            OperationInProgress = false;
+        }
+
+        public bool CanEditRemote => !string.IsNullOrEmpty(SelectedRemote);
+        public bool CanDeleteRemote => !string.IsNullOrEmpty(SelectedRemote);
+        public bool CanAddFolder => !string.IsNullOrEmpty(SelectedRemote);
 
         public IEnumerable<string> FolderNames
         {
@@ -67,11 +130,11 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
 
         public BindableCollection<string> Remotes
         {
-            get => _remotes;
+            get => _remotesComboBoxValues;
             set
             {
-                if (Equals(value, _remotes)) return;
-                _remotes = value;
+                if (Equals(value, _remotesComboBoxValues)) return;
+                _remotesComboBoxValues = value;
                 NotifyOfPropertyChange(() => Remotes);
             }
         }
@@ -83,26 +146,29 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             Task.Run(() => RetryConnectToService());
         }
 
-        public void FireTest()
-        {
-            var folder = new BackupFolderInfo(@"M:\cbr", "azure", "backup");
-            var dto = _mapper.Map<BackupFolderDto>(folder);
-            _client.CreateTask(dto);
-        }
-
         public async void RetryConnectToService()
         {
             _client = new RCloneManagementServiceClient();
             bool connected = false;
             try
             {
+                OperationInProgress = true;
                 connected = await _client.HeartbeatAsync();
+                await InitializeData();
+                OperationInProgress = false;
             }
             catch
             {
             }
 
             CantConnectGridVisible = !connected;
+        }
+
+        private async Task InitializeData()
+        {
+            var remotes = await _client.GetRemotesAsync();
+            _remotes = remotes.ToDictionary(x => x.Name);
+            Remotes = new BindableCollection<string>(remotes.Select(x => x.Name));
         }
     }
 }

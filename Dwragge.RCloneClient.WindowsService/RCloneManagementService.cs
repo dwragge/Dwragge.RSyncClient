@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 using AutoMapper;
 using Dwragge.RCloneClient.Common;
 using Dwragge.RCloneClient.Persistence;
-using Dwragge.RCloneClient.WindowsService.Jobs;
 using NLog;
 using Quartz;
-using Quartz.Impl.Matchers;
 
 namespace Dwragge.RCloneClient.WindowsService
 {
@@ -32,11 +31,14 @@ namespace Dwragge.RCloneClient.WindowsService
 
         public Task<bool> Heartbeat()
         {
+            _logger.Info("Sent heartbeat");
             return Task.FromResult(true);
         }
 
         public async Task CreateTask(BackupFolderDto dto)
         {
+            _logger.Info($"Beginning creating backup folder for {dto.Path}...");
+
             try
             {
                 using (var context = _contextFactory.CreateContext())
@@ -54,12 +56,72 @@ namespace Dwragge.RCloneClient.WindowsService
                 var info = _mapper.Map<BackupFolderDto, BackupFolderInfo>(dto);
                 var syncJob = QuartzJobFactory.CreateSyncJob(info);
                 await _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
-
+                _logger.Info($"Successfully created backup folder");
             }
             catch (Exception e)
             {
-                _logger.Error($"Failed to Create Task: {e.Message}");
+                _logger.Error($"Failed to Create backup folder: {e.Message}");
                 throw;
+            }
+        }
+
+        public async Task AddOrUpdateRemote(RemoteDto remote)
+        {
+            _logger.Info($"Creating or Updating remote {remote.Name}");
+            var stringBytes = Encoding.UTF8.GetBytes(remote.ConnectionString);
+            var protectedString = ProtectedData.Protect(stringBytes, null, DataProtectionScope.CurrentUser);
+            var protectedBase64 = Convert.ToBase64String(protectedString);
+            remote.ConnectionString = protectedBase64;
+
+            using (var context = _contextFactory.CreateContext())
+            {
+                var exists = context.Remotes.Find(remote.RemoteId);
+                if (exists != null)
+                {
+                    exists.Name = remote.Name;
+                    exists.ConnectionString = remote.ConnectionString;
+                }
+                else
+                {
+                    context.Add(remote);
+                }
+
+                await context.SaveChangesAsync();
+            }
+            _logger.Info($"Successfully created remote {remote.Name}");
+        }
+
+        public RemoteDto[] GetRemotes()
+        {
+            _logger.Info("Beginning getting remotes...");
+            IEnumerable<RemoteDto> remotes;
+            using (var context = _contextFactory.CreateContext())
+            {
+                remotes = context.Remotes.ToList();
+                
+            }
+
+            var decrypted = remotes.Select(r =>
+            {
+                _logger.Debug($"Decrypting remote {r.Name}");
+
+                var protectedBytes = Convert.FromBase64String(r.ConnectionString);
+                var stringBytes = ProtectedData.Unprotect(protectedBytes, null, DataProtectionScope.CurrentUser);
+                r.ConnectionString = Encoding.UTF8.GetString(stringBytes);
+                return r;
+            }).ToArray();
+
+            _logger.Info($"Returned {decrypted.Length} remotes.");
+            return decrypted;
+        }
+
+        public async Task DeleteRemote(RemoteDto dto)
+        {
+            _logger.Info($"Deleting remote {dto.Name}");
+            using (var context = _contextFactory.CreateContext())
+            {
+                context.Remotes.Remove(dto);
+                await context.SaveChangesAsync();
             }
         }
     }

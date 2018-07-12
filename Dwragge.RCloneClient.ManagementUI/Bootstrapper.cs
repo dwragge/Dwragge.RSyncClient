@@ -4,6 +4,7 @@ using Autofac;
 using Caliburn.Micro;
 using Dwragge.RCloneClient.Common.AutoMapper;
 using Dwragge.RCloneClient.ManagementUI.ViewModels;
+using Dwragge.RCloneClient.Persistence;
 
 namespace Dwragge.RCloneClient.ManagementUI
 {

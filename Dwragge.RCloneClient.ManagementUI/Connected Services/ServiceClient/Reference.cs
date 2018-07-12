@@ -202,6 +202,83 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="RemoteDto", Namespace="http://schemas.datacontract.org/2004/07/Dwragge.RCloneClient.Persistence")]
+    [System.SerializableAttribute()]
+    public partial class RemoteDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ConnectionStringField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int RemoteIdField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ConnectionString {
+            get {
+                return this.ConnectionStringField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ConnectionStringField, value) != true)) {
+                    this.ConnectionStringField = value;
+                    this.RaisePropertyChanged("ConnectionString");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int RemoteId {
+            get {
+                return this.RemoteIdField;
+            }
+            set {
+                if ((this.RemoteIdField.Equals(value) != true)) {
+                    this.RemoteIdField = value;
+                    this.RaisePropertyChanged("RemoteId");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceClient.IRCloneManagementService")]
     public interface IRCloneManagementService {
@@ -217,6 +294,24 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/CreateTask", ReplyAction="http://tempuri.org/IRCloneManagementService/CreateTaskResponse")]
         System.Threading.Tasks.Task CreateTaskAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto info);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/AddOrUpdateRemote", ReplyAction="http://tempuri.org/IRCloneManagementService/AddOrUpdateRemoteResponse")]
+        void AddOrUpdateRemote(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto remote);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/AddOrUpdateRemote", ReplyAction="http://tempuri.org/IRCloneManagementService/AddOrUpdateRemoteResponse")]
+        System.Threading.Tasks.Task AddOrUpdateRemoteAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto remote);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetRemotes", ReplyAction="http://tempuri.org/IRCloneManagementService/GetRemotesResponse")]
+        Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto[] GetRemotes();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetRemotes", ReplyAction="http://tempuri.org/IRCloneManagementService/GetRemotesResponse")]
+        System.Threading.Tasks.Task<Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto[]> GetRemotesAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/DeleteRemote", ReplyAction="http://tempuri.org/IRCloneManagementService/DeleteRemoteResponse")]
+        void DeleteRemote(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto dto);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/DeleteRemote", ReplyAction="http://tempuri.org/IRCloneManagementService/DeleteRemoteResponse")]
+        System.Threading.Tasks.Task DeleteRemoteAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto dto);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -260,6 +355,30 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         
         public System.Threading.Tasks.Task CreateTaskAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto info) {
             return base.Channel.CreateTaskAsync(info);
+        }
+        
+        public void AddOrUpdateRemote(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto remote) {
+            base.Channel.AddOrUpdateRemote(remote);
+        }
+        
+        public System.Threading.Tasks.Task AddOrUpdateRemoteAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto remote) {
+            return base.Channel.AddOrUpdateRemoteAsync(remote);
+        }
+        
+        public Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto[] GetRemotes() {
+            return base.Channel.GetRemotes();
+        }
+        
+        public System.Threading.Tasks.Task<Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto[]> GetRemotesAsync() {
+            return base.Channel.GetRemotesAsync();
+        }
+        
+        public void DeleteRemote(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto dto) {
+            base.Channel.DeleteRemote(dto);
+        }
+        
+        public System.Threading.Tasks.Task DeleteRemoteAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto dto) {
+            return base.Channel.DeleteRemoteAsync(dto);
         }
     }
 }

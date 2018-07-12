@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Dwragge.RCloneClient.CLI.ServiceClient {
+namespace Dwragge.RCloneClient.CLI.ServiceReference1 {
     using System.Runtime.Serialization;
     using System;
     
@@ -23,7 +23,7 @@ namespace Dwragge.RCloneClient.CLI.ServiceClient {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
+        private int BackupFolderIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<System.DateTime> LastSyncField;
@@ -63,14 +63,14 @@ namespace Dwragge.RCloneClient.CLI.ServiceClient {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
+        public int BackupFolderId {
             get {
-                return this.IdField;
+                return this.BackupFolderIdField;
             }
             set {
-                if ((this.IdField.Equals(value) != true)) {
-                    this.IdField = value;
-                    this.RaisePropertyChanged("Id");
+                if ((this.BackupFolderIdField.Equals(value) != true)) {
+                    this.BackupFolderIdField = value;
+                    this.RaisePropertyChanged("BackupFolderId");
                 }
             }
         }
@@ -202,36 +202,119 @@ namespace Dwragge.RCloneClient.CLI.ServiceClient {
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceClient.IRCloneManagementService")]
-    public interface IRCloneManagementService {
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="RemoteDto", Namespace="http://schemas.datacontract.org/2004/07/Dwragge.RCloneClient.Persistence")]
+    [System.SerializableAttribute()]
+    public partial class RemoteDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/HelloWorld", ReplyAction="http://tempuri.org/IRCloneManagementService/HelloWorldResponse")]
-        string HelloWorld();
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/HelloWorld", ReplyAction="http://tempuri.org/IRCloneManagementService/HelloWorldResponse")]
-        System.Threading.Tasks.Task<string> HelloWorldAsync();
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ConnectionStringField;
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/CreateTask", ReplyAction="http://tempuri.org/IRCloneManagementService/CreateTaskResponse")]
-        void CreateTask(Dwragge.RCloneClient.CLI.ServiceClient.BackupFolderDto info);
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/CreateTask", ReplyAction="http://tempuri.org/IRCloneManagementService/CreateTaskResponse")]
-        System.Threading.Tasks.Task CreateTaskAsync(Dwragge.RCloneClient.CLI.ServiceClient.BackupFolderDto info);
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int RemoteIdField;
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/PostHelloJob", ReplyAction="http://tempuri.org/IRCloneManagementService/PostHelloJobResponse")]
-        void PostHelloJob(string name);
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/PostHelloJob", ReplyAction="http://tempuri.org/IRCloneManagementService/PostHelloJobResponse")]
-        System.Threading.Tasks.Task PostHelloJobAsync(string name);
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ConnectionString {
+            get {
+                return this.ConnectionStringField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ConnectionStringField, value) != true)) {
+                    this.ConnectionStringField = value;
+                    this.RaisePropertyChanged("ConnectionString");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int RemoteId {
+            get {
+                return this.RemoteIdField;
+            }
+            set {
+                if ((this.RemoteIdField.Equals(value) != true)) {
+                    this.RemoteIdField = value;
+                    this.RaisePropertyChanged("RemoteId");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IRCloneManagementServiceChannel : Dwragge.RCloneClient.CLI.ServiceClient.IRCloneManagementService, System.ServiceModel.IClientChannel {
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReference1.IRCloneManagementService")]
+    public interface IRCloneManagementService {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/Heartbeat", ReplyAction="http://tempuri.org/IRCloneManagementService/HeartbeatResponse")]
+        bool Heartbeat();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/Heartbeat", ReplyAction="http://tempuri.org/IRCloneManagementService/HeartbeatResponse")]
+        System.Threading.Tasks.Task<bool> HeartbeatAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/CreateTask", ReplyAction="http://tempuri.org/IRCloneManagementService/CreateTaskResponse")]
+        void CreateTask(Dwragge.RCloneClient.CLI.ServiceReference1.BackupFolderDto info);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/CreateTask", ReplyAction="http://tempuri.org/IRCloneManagementService/CreateTaskResponse")]
+        System.Threading.Tasks.Task CreateTaskAsync(Dwragge.RCloneClient.CLI.ServiceReference1.BackupFolderDto info);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/AddOrUpdateRemote", ReplyAction="http://tempuri.org/IRCloneManagementService/AddOrUpdateRemoteResponse")]
+        void AddOrUpdateRemote(Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto remote);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/AddOrUpdateRemote", ReplyAction="http://tempuri.org/IRCloneManagementService/AddOrUpdateRemoteResponse")]
+        System.Threading.Tasks.Task AddOrUpdateRemoteAsync(Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto remote);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetRemotes", ReplyAction="http://tempuri.org/IRCloneManagementService/GetRemotesResponse")]
+        Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto[] GetRemotes();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetRemotes", ReplyAction="http://tempuri.org/IRCloneManagementService/GetRemotesResponse")]
+        System.Threading.Tasks.Task<Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto[]> GetRemotesAsync();
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IRCloneManagementServiceChannel : Dwragge.RCloneClient.CLI.ServiceReference1.IRCloneManagementService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class RCloneManagementServiceClient : System.ServiceModel.ClientBase<Dwragge.RCloneClient.CLI.ServiceClient.IRCloneManagementService>, Dwragge.RCloneClient.CLI.ServiceClient.IRCloneManagementService {
+    public partial class RCloneManagementServiceClient : System.ServiceModel.ClientBase<Dwragge.RCloneClient.CLI.ServiceReference1.IRCloneManagementService>, Dwragge.RCloneClient.CLI.ServiceReference1.IRCloneManagementService {
         
         public RCloneManagementServiceClient() {
         }
@@ -252,28 +335,36 @@ namespace Dwragge.RCloneClient.CLI.ServiceClient {
                 base(binding, remoteAddress) {
         }
         
-        public string HelloWorld() {
-            return base.Channel.HelloWorld();
+        public bool Heartbeat() {
+            return base.Channel.Heartbeat();
         }
         
-        public System.Threading.Tasks.Task<string> HelloWorldAsync() {
-            return base.Channel.HelloWorldAsync();
+        public System.Threading.Tasks.Task<bool> HeartbeatAsync() {
+            return base.Channel.HeartbeatAsync();
         }
         
-        public void CreateTask(Dwragge.RCloneClient.CLI.ServiceClient.BackupFolderDto info) {
+        public void CreateTask(Dwragge.RCloneClient.CLI.ServiceReference1.BackupFolderDto info) {
             base.Channel.CreateTask(info);
         }
         
-        public System.Threading.Tasks.Task CreateTaskAsync(Dwragge.RCloneClient.CLI.ServiceClient.BackupFolderDto info) {
+        public System.Threading.Tasks.Task CreateTaskAsync(Dwragge.RCloneClient.CLI.ServiceReference1.BackupFolderDto info) {
             return base.Channel.CreateTaskAsync(info);
         }
         
-        public void PostHelloJob(string name) {
-            base.Channel.PostHelloJob(name);
+        public void AddOrUpdateRemote(Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto remote) {
+            base.Channel.AddOrUpdateRemote(remote);
         }
         
-        public System.Threading.Tasks.Task PostHelloJobAsync(string name) {
-            return base.Channel.PostHelloJobAsync(name);
+        public System.Threading.Tasks.Task AddOrUpdateRemoteAsync(Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto remote) {
+            return base.Channel.AddOrUpdateRemoteAsync(remote);
+        }
+        
+        public Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto[] GetRemotes() {
+            return base.Channel.GetRemotes();
+        }
+        
+        public System.Threading.Tasks.Task<Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto[]> GetRemotesAsync() {
+            return base.Channel.GetRemotesAsync();
         }
     }
 }

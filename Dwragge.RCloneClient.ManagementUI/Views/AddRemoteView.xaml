@@ -64,7 +64,7 @@
         
         <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Name="CancelButton" Height="23" Width="70" Margin="0 0 10 0" Content="Cancel" />
-            <Button Name="AddButton" Height="23" Width="70" Background="#28a745" Content="Add"/>
+            <Button Name="AddButton" Height="23" Width="70" Content="{Binding ActionString}"/>
         </StackPanel>
         
         

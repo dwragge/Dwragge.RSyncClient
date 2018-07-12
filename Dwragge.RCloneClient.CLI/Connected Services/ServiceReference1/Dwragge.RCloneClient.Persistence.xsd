@@ -3,7 +3,7 @@
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="BackupFolderDto">
     <xs:sequence>
-      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="BackupFolderId" type="xs:int" />
       <xs:element minOccurs="0" name="LastSync" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Path" nillable="true" type="xs:string" />
@@ -16,4 +16,18 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="BackupFolderDto" nillable="true" type="tns:BackupFolderDto" />
+  <xs:complexType name="RemoteDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RemoteId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RemoteDto" nillable="true" type="tns:RemoteDto" />
+  <xs:complexType name="ArrayOfRemoteDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RemoteDto" nillable="true" type="tns:RemoteDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRemoteDto" nillable="true" type="tns:ArrayOfRemoteDto" />
 </xs:schema>

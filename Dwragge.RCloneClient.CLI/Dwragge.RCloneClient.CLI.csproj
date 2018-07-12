@@ -60,8 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoMapperWcf\WcfProfile.cs" />
-    <Compile Include="Connected Services\ServiceClient\Reference.cs">
+    <Compile Include="Connected Services\ServiceReference1\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -70,14 +69,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Connected Services\ServiceClient\Dwragge.RCloneClient.Persistence.xsd">
+    <None Include="Connected Services\ServiceReference1\Dwragge.RCloneClient.CLI.ServiceReference1.RemoteDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReference1\Dwragge.RCloneClient.Persistence.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ServiceClient\service.wsdl" />
-    <None Include="Connected Services\ServiceClient\service.xsd">
+    <None Include="Connected Services\ServiceReference1\service.wsdl" />
+    <None Include="Connected Services\ServiceReference1\service.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ServiceClient\service1.xsd">
+    <None Include="Connected Services\ServiceReference1\service1.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
@@ -86,25 +88,28 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Connected Services\ServiceClient\" />
+    <ProjectReference Include="..\Dwragge.RCloneClient.Common\Dwragge.RCloneClient.Common.csproj">
+      <Project>{3f271adf-eb77-4746-a0c6-1f8d8c7575ba}</Project>
+      <Name>Dwragge.RCloneClient.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceClient\configuration91.svcinfo" />
+    <WCFMetadataStorage Include="Connected Services\ServiceReference1\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceClient\configuration.svcinfo" />
+    <None Include="Connected Services\ServiceReference1\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceClient\Reference.svcmap">
+    <None Include="Connected Services\ServiceReference1\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\ServiceReference1\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dwragge.RCloneClient.Common\Dwragge.RCloneClient.Common.csproj">
-      <Project>{3f271adf-eb77-4746-a0c6-1f8d8c7575ba}</Project>
-      <Name>Dwragge.RCloneClient.Common</Name>
-    </ProjectReference>
+    <Folder Include="AutoMapperWcf\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

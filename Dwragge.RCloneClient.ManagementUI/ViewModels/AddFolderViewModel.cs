@@ -1,5 +1,6 @@
 ﻿using System;
 using Caliburn.Micro;
+using Dwragge.RCloneClient.ManagementUI.ServiceClient;
 using Ookii.Dialogs.Wpf;
 
 namespace Dwragge.RCloneClient.ManagementUI.ViewModels
@@ -8,6 +9,25 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
     {
         private string _selectedFolder;
         private string _remoteBaseFolder;
+        private int _syncInterval = 1;
+        private TimeSpan _selectedSyncTime = new TimeSpan(2, 00, 0);
+        private string _remoteName;
+
+        public AddFolderViewModel(RemoteDto dto)
+        {
+            RemoteName = dto.Name;
+        }
+
+        public string RemoteName
+        {
+            get => _remoteName;
+            set
+            {
+                if (value == _remoteName) return;
+                _remoteName = value;
+                NotifyOfPropertyChange(() => RemoteName);
+            }
+        }
 
         public string SelectedFolder
         {
@@ -28,6 +48,28 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
                 if (value == _remoteBaseFolder) return;
                 _remoteBaseFolder = value;
                 NotifyOfPropertyChange(() => RemoteBaseFolder);
+            }
+        }
+
+        public int SyncInterval
+        {
+            get => _syncInterval;
+            set
+            {
+                if (value == _syncInterval) return;
+                _syncInterval = value;
+                NotifyOfPropertyChange(() => SyncInterval);
+            }
+        }
+
+        public TimeSpan SelectedSyncTime
+        {
+            get => _selectedSyncTime;
+            set
+            {
+                if (value.Equals(_selectedSyncTime)) return;
+                _selectedSyncTime = value;
+                NotifyOfPropertyChange(() => SelectedSyncTime);
             }
         }
 

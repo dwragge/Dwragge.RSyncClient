@@ -1,4 +1,6 @@
-﻿using Caliburn.Micro;
+﻿using System.Text.RegularExpressions;
+using Caliburn.Micro;
+using Dwragge.RCloneClient.ManagementUI.ServiceClient;
 
 namespace Dwragge.RCloneClient.ManagementUI.ViewModels
 {
@@ -8,8 +10,33 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
         private string _accountName;
         private string _connectionString;
         private string _remoteName;
+        private string _actionString;
 
-        public bool OkClicked { get; set; } = false;
+        public bool OkClicked { get; set; }
+
+        public AddRemoteViewModel(RemoteDto dto)
+        {
+            RemoteName = dto.Name;
+            ConnectionString = dto.ConnectionString;
+            RemoteId = dto.RemoteId;
+
+            if (ConnectionString != "dev")
+            {
+                const string regex = @"AccountName=([^;]+);AccountKey=([^;]+);";
+                var match = Regex.Match(ConnectionString, regex);
+                AccountName = match.Groups[1].Value;
+                AccessKey = match.Groups[2].Value;
+            }
+
+            ActionString = "Save";
+        }
+
+        public AddRemoteViewModel()
+        {
+            ActionString = "Add";
+        }
+
+        public int RemoteId { get; set; } = 0;
 
         public string AccessKey
         {
@@ -19,6 +46,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
                 if (value == _accessKey) return;
                 _accessKey = value;
                 NotifyOfPropertyChange(() => AccessKey);
+                RecalculateConnectionString();
             }
         }
 
@@ -30,8 +58,10 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
                 if (value == _accountName) return;
                 _accountName = value;
                 NotifyOfPropertyChange(() => AccountName);
+                RecalculateConnectionString();
             }
         }
+
 
         public string RemoteName
         {
@@ -44,6 +74,17 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             }
         }
 
+        public string ActionString
+        {
+            get => _actionString;
+            set
+            {
+                if (value == _actionString) return;
+                _actionString = value;
+                NotifyOfPropertyChange(() => ActionString);
+            }
+        }
+
         public string ConnectionString
         {
             get => _connectionString;
@@ -53,6 +94,20 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
                 _connectionString = value;
                 NotifyOfPropertyChange(() => ConnectionString);
             }
+        }
+
+        public void RecalculateConnectionString()
+        {
+            if (string.IsNullOrEmpty(AccountName) || string.IsNullOrEmpty(AccessKey))
+            {
+                ConnectionString = "";
+                return;
+            }
+
+            var baseString =
+                "DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix=core.windows.net";
+            var formatted = string.Format(baseString, AccountName, AccessKey);
+            ConnectionString = formatted;
         }
 
         public void AddButton()
