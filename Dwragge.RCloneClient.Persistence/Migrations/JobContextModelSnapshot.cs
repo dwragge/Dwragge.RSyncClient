@@ -33,8 +33,7 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
 
                     b.Property<string>("RemoteBaseFolder");
 
-                    b.Property<string>("RemoteName")
-                        .IsRequired();
+                    b.Property<int>("RemoteId");
 
                     b.Property<int>("SyncTimeHour");
 
@@ -43,6 +42,8 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                     b.Property<TimeSpan>("SyncTimeSpan");
 
                     b.HasKey("BackupFolderId");
+
+                    b.HasIndex("RemoteId");
 
                     b.ToTable("BackupFolders");
                 });
@@ -113,6 +114,9 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                     b.Property<int>("RemoteId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("BaseFolder")
+                        .IsRequired();
+
                     b.Property<string>("ConnectionString")
                         .IsRequired();
 
@@ -151,6 +155,14 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("TrackedFiles");
+                });
+
+            modelBuilder.Entity("Dwragge.RCloneClient.Persistence.BackupFolderDto", b =>
+                {
+                    b.HasOne("Dwragge.RCloneClient.Persistence.RemoteDto", "Remote")
+                        .WithMany()
+                        .HasForeignKey("RemoteId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Dwragge.RCloneClient.Persistence.FileVersionHistoryDto", b =>

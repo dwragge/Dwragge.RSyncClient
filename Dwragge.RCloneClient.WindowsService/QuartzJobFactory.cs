@@ -1,4 +1,5 @@
 ﻿using Dwragge.RCloneClient.Common;
+using Dwragge.RCloneClient.Persistence;
 using Dwragge.RCloneClient.WindowsService.Jobs;
 using Quartz;
 
@@ -6,7 +7,7 @@ namespace Dwragge.RCloneClient.WindowsService
 {
     public class QuartzJobFactory
     {
-        public static (IJobDetail Job, ITrigger Trigger) CreateSyncJob(BackupFolderInfo info)
+        public static (IJobDetail Job, ITrigger Trigger) CreateSyncJob(BackupFolderDto info)
         {
             var job = JobBuilder.Create<PreCheckMoveFilesJob>()
                 .WithIdentity(info.BackupFolderId.ToString(), "sync")

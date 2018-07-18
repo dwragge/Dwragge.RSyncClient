@@ -17,7 +17,7 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IJobContextFactory _contextFactory;
 
-        public BackupFolderInfo Folder { get; set; }
+        public BackupFolderDto Folder { get; set; }
 
         public PreCheckMoveFilesJob(IJobContextFactory contextFactory)
         {
@@ -26,24 +26,24 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            Folder = (BackupFolderInfo)context.MergedJobDataMap["Folder"] ?? throw new ArgumentNullException(nameof(Folder), "Command was not set");
-            _logger.Info($"Executing Check Files Job, fired at {context.FireTimeUtc.ToLocalTime()} for folder {Folder.Path}");
-
             try
             {
+                Folder = (BackupFolderDto)context.MergedJobDataMap["Folder"] ?? throw new ArgumentNullException(nameof(Folder), "Command was not set");
+                _logger.Info($"Executing Check Files Job, fired at {context.FireTimeUtc.ToLocalTime()} for folder {Folder.Path}");
+
                 var files = await GetFilesToTransfer();
-                _logger.Info($"Found {files.Count} files that need to be transferred.");
+                _logger.Info($"Found {files.Count()} files that need to be transferred.");
 
                 QueueFilesAsPending(files);
             }
             catch (Exception ex)
             {
-                _logger.Error($"Exception while running job: {ex.Message}");
+                _logger.Error($"Exception while running job: {ex.Message}. {ex.InnerException?.Message} \n {ex.StackTrace}");
                 throw;
             }
         }
 
-        private async Task<ImmutableHashSet<string>> GetFilesToTransfer()
+        private async Task<IEnumerable<string>> GetFilesToTransfer()
         {
             var enumerator = new DirectoryEnumerator();
             var allFiles = await enumerator.GetFiles(Folder.Path);
@@ -68,7 +68,7 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
             }
 
             var modifiedFiles = GetModifiedFiles(potentiallyModifiedFiles);
-            var ret = modifiedFiles.Select(t => t.FileName).ToImmutableHashSet().Union(newFiles);
+            var ret = modifiedFiles.Select(t => t.FileName).ToList().Union(newFiles);
             return ret;
         }
 
@@ -96,15 +96,10 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
             return DateTime.Compare(a, b) == 0;
         }
 
-        private void QueueFilesAsPending(ICollection<string> files)
+        private void QueueFilesAsPending(IEnumerable<string> files)
         {
-            _logger.Info($"Enqueuing {files.Count} files to be transferred");
-            var dtos = files.Select(f => new PendingFileDto
-            {
-                FileName = f,
-                BackupFolderId = Folder.BackupFolderId,
-                QueuedTime = DateTime.Now
-            });
+            var enumerable = files as string[] ?? files.ToArray();
+            _logger.Info($"Enqueuing {enumerable.Length} files to be transferred");
 
             using (var context = _contextFactory.CreateContext(false))
             {
@@ -112,15 +107,19 @@ namespace Dwragge.RCloneClient.WindowsService.Jobs
                 {
                     var alreadyInQueue = context.PendingFiles.Where(t => t.BackupFolderId == Folder.BackupFolderId).Select(t => t.FileName).ToImmutableList();
                     if (alreadyInQueue.Any()) _logger.Info($"Found {alreadyInQueue.Count} items already in queue... skipping");
-                    foreach (var queued in alreadyInQueue)
+                    files = enumerable.Except(alreadyInQueue);
+
+                    var dtos = files.Select(f => new PendingFileDto
                     {
-                        files.Remove(queued);
-                    }
+                        FileName = f,
+                        BackupFolderId = Folder.BackupFolderId,
+                        QueuedTime = DateTime.Now
+                    });
 
                     context.PendingFiles.AddRangeAsync(dtos);
                     context.BackupFolders.Find(Folder.BackupFolderId).LastSync = DateTime.Now;
                     context.SaveChangesAsync();
-                    _logger.Info($"Successfully queued {files.Count} new files.");
+                    _logger.Info($"Successfully queued {enumerable.Length} new files.");
                 }
                 catch (Exception ex)
                 {

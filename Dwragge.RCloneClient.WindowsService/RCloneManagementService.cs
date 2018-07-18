@@ -18,14 +18,12 @@ namespace Dwragge.RCloneClient.WindowsService
     public class RCloneManagementService : IRCloneManagementService
     {
         private readonly IScheduler _scheduler;
-        private readonly IMapper _mapper;
         private readonly IJobContextFactory _contextFactory;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RCloneManagementService(IScheduler scheduler, IMapper mapper, IJobContextFactory contextFactory)
+        public RCloneManagementService(IScheduler scheduler, IJobContextFactory contextFactory)
         {
             _scheduler = scheduler;
-            _mapper = mapper;
             _contextFactory = contextFactory;
         }
 
@@ -52,11 +50,10 @@ namespace Dwragge.RCloneClient.WindowsService
                     await context.BackupFolders.AddAsync(dto);
                     await context.SaveChangesAsync();
                 }
-
-                var info = _mapper.Map<BackupFolderDto, BackupFolderInfo>(dto);
-                var syncJob = QuartzJobFactory.CreateSyncJob(info);
+                
+                var syncJob = QuartzJobFactory.CreateSyncJob(dto);
                 await _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
-                _logger.Info($"Successfully created backup folder");
+                _logger.Info($"Successfully created backup folder, scheduled to run next at {syncJob.Trigger.GetNextFireTimeUtc()}");
             }
             catch (Exception e)
             {

@@ -5,10 +5,6 @@ namespace Dwragge.RCloneClient.Persistence
 {
     public class BackupFolderDto
     {
-        internal BackupFolderDto()
-        {
-        }
-
         [Key]
         public int BackupFolderId { get; set; }
 
@@ -19,7 +15,9 @@ namespace Dwragge.RCloneClient.Persistence
         public bool RealTimeUpdates { get; set; }
 
         [Required]
-        public string RemoteName { get; set; }
+        public int RemoteId { get; set; }
+
+        public virtual RemoteDto Remote { get; set; }
 
         public string RemoteBaseFolder { get; set; }
 

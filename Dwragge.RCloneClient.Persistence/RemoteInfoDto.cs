@@ -12,6 +12,8 @@ namespace Dwragge.RCloneClient.Persistence
         [Required]
         public string Name { get; set; }
         [Required]
+        public string BaseFolder { get; set; }
+        [Required]
         public string ConnectionString { get; set; }
     }
 }

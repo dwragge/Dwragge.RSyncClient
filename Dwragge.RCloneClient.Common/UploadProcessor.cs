@@ -54,7 +54,7 @@ namespace Dwragge.RCloneClient.Common
                 }
                 catch (Exception e)
                 {
-                    _logger.Fatal($"Exception Occurred In Upload Processor Thread: {e.GetType().Name}. {e.Message}");
+                    _logger.Fatal($"Exception Occurred In Upload Processor Thread: {e.GetType().Name}. {e.Message}. \n{e.StackTrace}");
                     throw;
                 }
                 //move to inprogress
@@ -71,16 +71,19 @@ namespace Dwragge.RCloneClient.Common
             InProgressFileDto inProgress = null;
             using (var context = _factory.CreateContext(false))
             {
-                var file = await context.PendingFiles.FirstOrDefaultAsync().ConfigureAwait(false);
+                var file = await context.PendingFiles.Include(f => f.BackupFolder).ThenInclude(f => f.Remote).FirstOrDefaultAsync().ConfigureAwait(false);
                 if (file != null)
                 {
                     found = true;
                     context.PendingFiles.Remove(file);
 
                     _logger.Debug($"Popped {file.FileName} from queue to be transferred");
+
+                    var baseFolderVersioned = file.BackupFolder.RemoteBaseFolder + "-" + file.QueuedTime.ToString("yyyyMMdd");
+                    var parentDiff = file.FileName.Replace(file.BackupFolder.Path, "").Remove(0, 1);
+
                     var remoteFileName =
-                        Path.Combine(file.BackupFolder.RemoteBaseFolder,
-                            file.FileName.Replace(file.BackupFolder.Path, "").Remove(0, 1), file.QueuedTime.ToString("yyyy-mm-dd")).Replace('\\', '/');
+                        Path.Combine(file.BackupFolder.Remote.BaseFolder, baseFolderVersioned, parentDiff).Replace('\\', '/');
 
                     inProgress = new InProgressFileDto()
                     {
@@ -128,8 +131,6 @@ namespace Dwragge.RCloneClient.Common
             {
                 _logger.Info($"{{{g}}} Uploading {dto.FileName} on thread {Thread.CurrentThread.ManagedThreadId}");
 
-                
-                        
                 var localFile = new FileInfo(dto.FileName);
 
                 var account = CloudStorageAccount.DevelopmentStorageAccount;
@@ -142,13 +143,13 @@ namespace Dwragge.RCloneClient.Common
                 _logger.Info(
                     $"{{{g}}} Beginning Upload of {dto.FileName}. File Size is {ByteSize.FromBytes(localFile.Length).ToString()}");
 
-                var startTime = DateTime.Now;
+                var startTime = DateTime.UtcNow;
                 using (var fs = File.OpenRead(dto.FileName))
                 {
                     await blob.UploadFromStreamAsync(fs);
                 }
 
-                var secondsTime = (DateTime.Now - startTime).TotalSeconds;
+                var secondsTime = (DateTime.UtcNow - startTime).TotalSeconds;
                 _logger.Info(
                     $"{{{g}}} Finished uploading {dto.FileName} in {secondsTime:0.##}s. Average Speed was {ByteSize.FromBytes(localFile.Length / secondsTime).ToString()}/s.");
                 // upload file
@@ -163,7 +164,7 @@ namespace Dwragge.RCloneClient.Common
                     {
                         BackupFolderId = dto.BackupFolderId,
                         FileName = dto.FileName,
-                        FirstBackedUp = DateTime.Now,
+                        FirstBackedUp = DateTime.UtcNow,
                         LastModified = localFile.LastWriteTimeUtc,
                         SizeBytes = localFile.Length,
                         RemoteLocation = dto.RemotePath

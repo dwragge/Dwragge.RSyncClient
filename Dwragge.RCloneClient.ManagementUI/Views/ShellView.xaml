@@ -30,9 +30,8 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
-            <RowDefinition Height="69*"/>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="485*"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -62,14 +61,14 @@
             <Button Name="AddFolder"  Width="120" Content="Add New Folder..." Margin="10" HorizontalAlignment="Right"/>
         </DockPanel>
 
-        <DataGrid Grid.Row="2" Margin="10,10.2,10.2,9.6"></DataGrid>
+        <DataGrid Grid.Row="2" Margin="10" Name="Folders"/>
 
-        <Grid Name="OperationInProgress" Grid.Row="0" Grid.RowSpan="4">
+        <Grid Name="OperationInProgress" Grid.Row="0" Grid.RowSpan="3" Visibility="Hidden">
             <Rectangle Fill="LightGray" Opacity="0.7"/>
             <controls:ProgressRing IsActive="True" />
         </Grid>
 
-        <Grid Name="CantConnectGridVisible" Grid.Row="0" Grid.RowSpan="4" Visibility="Hidden">
+        <Grid Name="CantConnectGridVisible" Grid.Row="0" Grid.RowSpan="3" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>

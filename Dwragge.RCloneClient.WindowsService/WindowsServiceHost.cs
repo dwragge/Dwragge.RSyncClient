@@ -46,10 +46,10 @@ namespace Dwragge.RCloneClient.WindowsService
 
             using (var scope = _container.BeginLifetimeScope())
             {
-                var mapper = scope.Resolve<IMapper>();
                 try
                 {
-                    mapper.ConfigurationProvider.AssertConfigurationIsValid();
+                    var mapper = scope.Resolve<IMapper>();
+                    //mapper.ConfigurationProvider.AssertConfigurationIsValid();
                 }
                 catch (AutoMapperConfigurationException ex)
                 {
@@ -80,6 +80,7 @@ namespace Dwragge.RCloneClient.WindowsService
 
         private void InitializeServiceHost()
         {
+            _logger.Info("Initializing Service Host");
             ServiceHost?.Close();
 
             const string baseAddress = "net.pipe://localhost/com.Dwragge.RCloneClientService";
@@ -94,6 +95,7 @@ namespace Dwragge.RCloneClient.WindowsService
 
         private void InitializeIoC()
         {
+            _logger.Info("Building IOC Container");
             _container = BuildContainer();
             ServiceHost.AddDependencyInjectionBehavior<IRCloneManagementService>(_container);
             var jobFactory = new AutofacJobFactory(_container);
@@ -102,6 +104,7 @@ namespace Dwragge.RCloneClient.WindowsService
 
         private void LoadJobs()
         {
+            _logger.Info("Loading Jobs From Database");
             using (var scope = _container.BeginLifetimeScope())
             {
                 IList<BackupFolderDto> syncedFolders;
@@ -109,40 +112,41 @@ namespace Dwragge.RCloneClient.WindowsService
                 {
                     syncedFolders = context.BackupFolders.ToList();
                 }
-
-                var mapper = scope.Resolve<IMapper>();
+                
                 foreach (var folder in syncedFolders)
                 {
-                    var info = mapper.Map<BackupFolderInfo>(folder);
-                    var syncJob = QuartzJobFactory.CreateSyncJob(info);
+                    var syncJob = QuartzJobFactory.CreateSyncJob(folder);
 
                     _scheduler.ScheduleJob(syncJob.Job, syncJob.Trigger);
-                    _logger.Info($"Creating sync job from database. Name = {info.Name}, Path = {info.Path}, Id = {info.BackupFolderId}, Next Fire Time {syncJob.Trigger.GetNextFireTimeUtc()?.ToLocalTime()}");
+                    _logger.Info($"Creating sync job from database. Name = {folder.Name}, Path = {folder.Path}, Id = {folder.BackupFolderId}, Next Fire Time {syncJob.Trigger.GetNextFireTimeUtc()?.ToLocalTime()}");
 
-                    ScheduleSyncNowIfNecessary(info, syncJob.Job);
+                    ScheduleSyncNowIfNecessary(folder, syncJob.Job);
                 }
             }
         }
 
-        private void ScheduleSyncNowIfNecessary(BackupFolderInfo info, IJobDetail baseJob)
+        private void ScheduleSyncNowIfNecessary(BackupFolderDto info, IJobDetail baseJob)
         {
-            var triggerTimeToday = DateTime.Parse($"{info.SyncTime.Hour}:{info.SyncTime.Minute}");
+            var triggerTimeToday = DateTime.Parse($"{info.SyncTimeHour}:{info.SyncTimeMinute}");
             if (triggerTimeToday < DateTime.Now)
             {
-                var triggerTimeTomorrow = triggerTimeToday.AddDays(1);
-                var todayDiff = DateTime.Now - triggerTimeToday;
-                var tomorrowDiff = triggerTimeTomorrow - DateTime.Now;
-                var shouldTriggerNow = todayDiff < tomorrowDiff;
-                if (shouldTriggerNow)
-                {
-                    _logger.Info($"Trigger for sync job {info.Name} is at {triggerTimeToday:t} which is in the past and closer to current time than tomorrow. Scheduling to run now.");
-                    var triggerNow = TriggerBuilder.Create()
-                        .ForJob(baseJob)
-                        .StartNow()
-                        .Build();
+                // if we choose closest time, could never happen
+                //var triggerTimeTomorrow = triggerTimeToday.AddDays(1);
+                //var todayDiff = DateTime.Now - triggerTimeToday;
+                //var tomorrowDiff = triggerTimeTomorrow - DateTime.Now;
+                //var shouldTriggerNow = todayDiff < tomorrowDiff;
+                //if (shouldTriggerNow)
+                //{
+                    
+                //}
 
-                    _scheduler.ScheduleJob(triggerNow);
-                }
+                _logger.Info($"Trigger for sync job {info.Name} is at {triggerTimeToday:t} which is in the past and closer to current time than tomorrow. Scheduling to run now.");
+                var triggerNow = TriggerBuilder.Create()
+                    .ForJob(baseJob)
+                    .StartNow()
+                    .Build();
+
+                //_scheduler.ScheduleJob(triggerNow);
             }
         }
 

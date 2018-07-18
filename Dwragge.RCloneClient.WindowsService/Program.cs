@@ -1,5 +1,6 @@
 ﻿using System;
 using Dwragge.RCloneClient.Common;
+using NLog;
 using Topshelf;
 
 namespace Dwragge.RCloneClient.WindowsService
@@ -11,6 +12,12 @@ namespace Dwragge.RCloneClient.WindowsService
         /// </summary>
         static void Main()
         {
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                var ex = (Exception) args.ExceptionObject;
+                LogManager.GetCurrentClassLogger().Fatal($"Unhandled exception: {ex.GetType().Name}. {ex.Message}");
+            };
+
             var host = HostFactory.New(x =>
             {
                 x.Service<WindowsServiceHost>();

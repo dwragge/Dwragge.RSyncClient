@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Caliburn.Micro;
 using Dwragge.RCloneClient.ManagementUI.ServiceClient;
 using Ookii.Dialogs.Wpf;
@@ -85,6 +86,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             if (result == true)
             {
                 SelectedFolder = dialog.SelectedPath;
+                RemoteBaseFolder = new DirectoryInfo(SelectedFolder).Name;
             }
         }
 

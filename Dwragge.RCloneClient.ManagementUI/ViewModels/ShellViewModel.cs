@@ -1,9 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Caliburn.Micro;
 using Dwragge.RCloneClient.ManagementUI.ServiceClient;
+using Dwragge.RCloneClient.Persistence;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using BackupFolderDto = Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto;
 using RemoteDto = Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto;
 
 namespace Dwragge.RCloneClient.ManagementUI.ViewModels
@@ -12,6 +18,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
     {
         private RCloneManagementServiceClient _client = new RCloneManagementServiceClient();
         private readonly IWindowManager _windowManager;
+        private readonly IJobContextFactory _contextFactory;
         private readonly IMapper _mapper;
         private bool _loadingIsVisible = true;
         private IEnumerable<string> _folderNames;
@@ -21,6 +28,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
         private Dictionary<string, RemoteDto> _remotes = new Dictionary<string, RemoteDto>();
         private string _selectedRemote;
         private bool _operationInProgress;
+        private BindableCollection<Persistence.BackupFolderDto> _folders;
 
         public bool CantConnectGridVisible
         {
@@ -50,10 +58,21 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             {
                 if (value == _selectedRemote) return;
                 _selectedRemote = value;
+                LoadFolders();
                 NotifyOfPropertyChange(() => SelectedRemote);
                 NotifyOfPropertyChange(() => CanEditRemote);
                 NotifyOfPropertyChange(() => CanDeleteRemote);
                 NotifyOfPropertyChange(() => CanAddFolder);
+            }
+        }
+
+        private void LoadFolders()
+        {
+            using (var context = _contextFactory.CreateContext())
+            {
+                var remote = _remotes[_selectedRemote];
+                var folders = context.BackupFolders.Where(x => x.RemoteId == remote.RemoteId);
+                Folders = new BindableCollection<Persistence.BackupFolderDto>(folders);
             }
         }
 
@@ -68,10 +87,50 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             }
         }
 
-        public void AddFolder()
+        public async void AddFolder()
         {
-            var vm = new AddFolderViewModel(_remotes[SelectedRemote]);
-            _windowManager.ShowDialog(vm);
+            var remote = _remotes[SelectedRemote];
+            var vm = new AddFolderViewModel(remote);
+            var result = _windowManager.ShowDialog(vm);
+            if (result != true) return;
+
+
+            var dto = new BackupFolderDto
+            {
+                RemoteId = remote.RemoteId,
+                Name = new DirectoryInfo(vm.SelectedFolder).Name,
+                Path = vm.SelectedFolder,
+                SyncTimeSpan = TimeSpan.FromDays(vm.SyncInterval),
+                SyncTimeHour = vm.SelectedSyncTime.Hours,
+                SyncTimeMinute = vm.SelectedSyncTime.Minutes,
+                RemoteBaseFolder = vm.RemoteBaseFolder
+            };
+
+            try
+            {
+                OperationInProgress = true;
+                await _client.CreateTaskAsync(dto);
+            }
+            catch (Exception e)
+            {
+                var view = (MetroWindow) GetView();
+                await view.ShowMessageAsync("An error occurred", $"{e.GetType().Name}: {e.Message}");
+            }
+            finally
+            {
+                OperationInProgress = false;
+            }
+        }
+
+        public BindableCollection<Persistence.BackupFolderDto> Folders
+        {
+            get => _folders;
+            set
+            {
+                if (Equals(value, _folders)) return;
+                _folders = value;
+                NotifyOfPropertyChange(() => Folders);
+            }
         }
 
         public async void AddRemote()
@@ -96,7 +155,8 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             {
                 RemoteId = vm.RemoteId,
                 ConnectionString = vm.ConnectionString,
-                Name = vm.RemoteName
+                Name = vm.RemoteName,
+                BaseFolder = vm.BaseFolder
             };
 
             OperationInProgress = true;
@@ -139,10 +199,11 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             }
         }
 
-        public ShellViewModel(IWindowManager windowManager, IMapper mapper)
+        public ShellViewModel(IWindowManager windowManager, IMapper mapper, IJobContextFactory contextFactory)
         {
             _windowManager = windowManager;
             _mapper = mapper;
+            _contextFactory = contextFactory;
             Task.Run(() => RetryConnectToService());
         }
 

@@ -38,10 +38,13 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         private bool RealTimeUpdatesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto RemoteField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string RemoteBaseFolderField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string RemoteNameField;
+        private int RemoteIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int SyncTimeHourField;
@@ -128,6 +131,19 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto Remote {
+            get {
+                return this.RemoteField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.RemoteField, value) != true)) {
+                    this.RemoteField = value;
+                    this.RaisePropertyChanged("Remote");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string RemoteBaseFolder {
             get {
                 return this.RemoteBaseFolderField;
@@ -141,14 +157,14 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string RemoteName {
+        public int RemoteId {
             get {
-                return this.RemoteNameField;
+                return this.RemoteIdField;
             }
             set {
-                if ((object.ReferenceEquals(this.RemoteNameField, value) != true)) {
-                    this.RemoteNameField = value;
-                    this.RaisePropertyChanged("RemoteName");
+                if ((this.RemoteIdField.Equals(value) != true)) {
+                    this.RemoteIdField = value;
+                    this.RaisePropertyChanged("RemoteId");
                 }
             }
         }
@@ -212,6 +228,9 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string BaseFolderField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ConnectionStringField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -227,6 +246,19 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
             }
             set {
                 this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string BaseFolder {
+            get {
+                return this.BaseFolderField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.BaseFolderField, value) != true)) {
+                    this.BaseFolderField = value;
+                    this.RaisePropertyChanged("BaseFolder");
+                }
             }
         }
         

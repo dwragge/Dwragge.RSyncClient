@@ -11,6 +11,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
         private string _connectionString;
         private string _remoteName;
         private string _actionString;
+        private string _baseFolder;
 
         public bool OkClicked { get; set; }
 
@@ -47,6 +48,17 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
                 _accessKey = value;
                 NotifyOfPropertyChange(() => AccessKey);
                 RecalculateConnectionString();
+            }
+        }
+
+        public string BaseFolder
+        {
+            get => string.IsNullOrEmpty(_baseFolder) ? "" : _baseFolder;
+            set
+            {
+                if (value == _baseFolder) return;
+                _baseFolder = value;
+                NotifyOfPropertyChange(() => BaseFolder);
             }
         }
 

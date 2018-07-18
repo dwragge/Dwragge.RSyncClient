@@ -15,7 +15,7 @@ namespace Dwragge.RCloneClient.Common
         public string ParentFolder { get; set; }
         public string RemoteLocation { get; set; }
         public bool IsArchived { get; set; }
-        public DateTime LastModified { get; private set; } = DateTime.Now;
-        public DateTime FirstBackedUp { get; private set; } = DateTime.Now;
+        public DateTime LastModified { get; private set; } = DateTime.UtcNow;
+        public DateTime FirstBackedUp { get; private set; } = DateTime.UtcNow;
     }
 }

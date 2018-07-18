@@ -8,8 +8,9 @@
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Path" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RealTimeUpdates" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Remote" nillable="true" type="tns:RemoteDto" />
       <xs:element minOccurs="0" name="RemoteBaseFolder" nillable="true" type="xs:string" />
-      <xs:element minOccurs="0" name="RemoteName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RemoteId" type="xs:int" />
       <xs:element minOccurs="0" name="SyncTimeHour" type="xs:int" />
       <xs:element minOccurs="0" name="SyncTimeMinute" type="xs:int" />
       <xs:element minOccurs="0" name="SyncTimeSpan" type="ser:duration" />
@@ -18,6 +19,7 @@
   <xs:element name="BackupFolderDto" nillable="true" type="tns:BackupFolderDto" />
   <xs:complexType name="RemoteDto">
     <xs:sequence>
+      <xs:element minOccurs="0" name="BaseFolder" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ConnectionString" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="RemoteId" type="xs:int" />

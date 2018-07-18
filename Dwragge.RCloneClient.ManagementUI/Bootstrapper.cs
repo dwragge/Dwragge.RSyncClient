@@ -23,6 +23,7 @@ namespace Dwragge.RCloneClient.ManagementUI
             builder.RegisterAutoMapper();
             builder.RegisterType<WindowManager>().As<IWindowManager>().SingleInstance();
             builder.RegisterType<ShellViewModel>().InstancePerDependency();
+            builder.RegisterType<JobContextFactory>().As<IJobContextFactory>().WithParameter("loggerFactory", null);
 
             _container = builder.Build();
         }

@@ -35,6 +35,16 @@
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="4*"/>
                 </Grid.ColumnDefinitions>
+                <Label Margin="5" Content="Base Folder:" Grid.Column="0" Grid.Row="0"/>
+                <DockPanel LastChildFill="True" Grid.Column="1">
+                    <TextBox Name="BaseFolder"  Height="23" VerticalAlignment="Top" Margin="5" HorizontalAlignment="Stretch"></TextBox>
+                </DockPanel>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
                 <Label Margin="5" Content="Account Name:" Grid.Column="0" Grid.Row="0"/>
                 <DockPanel LastChildFill="True" Grid.Column="1">
                     <TextBox Name="AccountName"  Height="23" VerticalAlignment="Top" Margin="5" HorizontalAlignment="Stretch"></TextBox>

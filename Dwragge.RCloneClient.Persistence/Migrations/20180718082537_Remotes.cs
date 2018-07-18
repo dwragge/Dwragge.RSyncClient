@@ -3,10 +3,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Dwragge.RCloneClient.Persistence.Migrations
 {
-    public partial class AddVersionHistoryTable : Migration
+    public partial class Remotes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Remotes",
+                columns: table => new
+                {
+                    RemoteId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: false),
+                    BaseFolder = table.Column<string>(nullable: false),
+                    ConnectionString = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Remotes", x => x.RemoteId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "BackupFolders",
                 columns: table => new
@@ -15,7 +30,7 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Path = table.Column<string>(nullable: false),
                     RealTimeUpdates = table.Column<bool>(nullable: false),
-                    RemoteName = table.Column<string>(nullable: false),
+                    RemoteId = table.Column<int>(nullable: false),
                     RemoteBaseFolder = table.Column<string>(nullable: true),
                     SyncTimeSpan = table.Column<TimeSpan>(nullable: false),
                     SyncTimeMinute = table.Column<int>(nullable: false),
@@ -26,6 +41,12 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BackupFolders", x => x.BackupFolderId);
+                    table.ForeignKey(
+                        name: "FK_BackupFolders_Remotes_RemoteId",
+                        column: x => x.RemoteId,
+                        principalTable: "Remotes",
+                        principalColumn: "RemoteId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,6 +139,11 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BackupFolders_RemoteId",
+                table: "BackupFolders",
+                column: "RemoteId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FileVersionHistory_BackupFolderId",
                 table: "FileVersionHistory",
                 column: "BackupFolderId");
@@ -160,6 +186,9 @@ namespace Dwragge.RCloneClient.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "BackupFolders");
+
+            migrationBuilder.DropTable(
+                name: "Remotes");
         }
     }
 }
