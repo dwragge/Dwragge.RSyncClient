@@ -6,6 +6,5 @@ namespace Dwragge.RCloneClient.Persistence
     {
         DbSet<TrackedFileDto> TrackedFiles { get; set; }
         DbSet<BackupFolderDto> BackupFolders { get; set; }
-        DbSet<PendingFileDto> PendingFiles { get; set; }
     }
 }
