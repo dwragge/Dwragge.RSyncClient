@@ -32,4 +32,10 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfRemoteDto" nillable="true" type="tns:ArrayOfRemoteDto" />
+  <xs:complexType name="ArrayOfBackupFolderDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="BackupFolderDto" nillable="true" type="tns:BackupFolderDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfBackupFolderDto" nillable="true" type="tns:ArrayOfBackupFolderDto" />
 </xs:schema>

@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dwragge.RCloneClient.Persis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RCloneClient.ManagementUI", "Dwragge.RCloneClient.ManagementUI\Dwragge.RCloneClient.ManagementUI.csproj", "{2E0A344A-54EC-41D8-B11F-D5145BE4553A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.BlobBlaze.Web", "Dwragge.BlobBlaze.Web\Dwragge.BlobBlaze.Web.csproj", "{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlobBlaze.Application", "BlobBlaze.Application\BlobBlaze.Application.csproj", "{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,22 @@ Global
 		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Release|x64.ActiveCfg = Release|Any CPU
 		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Release|x64.Build.0 = Release|Any CPU
+		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Debug|x64.Build.0 = Debug|Any CPU
+		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Release|x64.ActiveCfg = Release|Any CPU
+		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Release|x64.Build.0 = Release|Any CPU
+		{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}.Debug|x64.Build.0 = Debug|Any CPU
+		{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}.Release|Any CPU.Build.0 = Release|Any CPU
+		{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}.Release|x64.ActiveCfg = Release|Any CPU
+		{037C7F91-BC01-4FDD-B2B4-A7E33AAAE751}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -28,7 +28,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
         private Dictionary<string, RemoteDto> _remotes = new Dictionary<string, RemoteDto>();
         private string _selectedRemote;
         private bool _operationInProgress;
-        private BindableCollection<Persistence.BackupFolderDto> _folders;
+        private BindableCollection<BackupFolderDto> _folders;
 
         public bool CantConnectGridVisible
         {
@@ -71,8 +71,8 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             using (var context = _contextFactory.CreateContext())
             {
                 var remote = _remotes[_selectedRemote];
-                var folders = context.BackupFolders.Where(x => x.RemoteId == remote.RemoteId);
-                Folders = new BindableCollection<Persistence.BackupFolderDto>(folders);
+                var folders = _client.GetBackupFolders(remote.RemoteId);
+                Folders = new BindableCollection<BackupFolderDto>(folders);
             }
         }
 
@@ -122,7 +122,7 @@ namespace Dwragge.RCloneClient.ManagementUI.ViewModels
             }
         }
 
-        public BindableCollection<Persistence.BackupFolderDto> Folders
+        public BindableCollection<BackupFolderDto> Folders
         {
             get => _folders;
             set

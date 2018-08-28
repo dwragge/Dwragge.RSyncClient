@@ -23,9 +23,10 @@ namespace Dwragge.RCloneClient.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            var baseFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var dbPath =  Path.Combine(baseFolder, "rcloneservice", "service.db");
+            var baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "rcloneservice");
+            var dbPath =  Path.Combine(baseFolder, "service.db");
             var connectionString = $"Data Source={dbPath}";
+            Directory.CreateDirectory(baseFolder);
             options.UseSqlite(connectionString);
             options.UseLoggerFactory(_loggerFactory);
         }

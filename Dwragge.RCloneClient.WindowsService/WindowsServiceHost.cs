@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
@@ -40,7 +41,7 @@ namespace Dwragge.RCloneClient.WindowsService
             }
             catch (Exception ex)
             {
-                _logger.Fatal(ex.InnerException, $"Failed to initialize: {ex.Message}");
+                _logger.Fatal(ex.InnerException, $"Failed to initialize: {ex.Message}. \n{ex.StackTrace}");
                 return false;
             }
 
@@ -155,6 +156,7 @@ namespace Dwragge.RCloneClient.WindowsService
             using (var context = _container.Resolve<IJobContextFactory>().CreateContext())
             {
                 _logger.Info($"Migrating Database at {context.Database.GetDbConnection().DataSource}");
+                Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "rcloneservice"));
                 context.Database.Migrate();
             }
         }

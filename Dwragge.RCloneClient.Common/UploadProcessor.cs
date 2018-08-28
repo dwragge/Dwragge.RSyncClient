@@ -52,6 +52,9 @@ namespace Dwragge.RCloneClient.Common
                         await Task.Delay(50).ConfigureAwait(false);
                     }
                 }
+                catch (OperationCanceledException)
+                {
+                }
                 catch (Exception e)
                 {
                     _logger.Fatal($"Exception Occurred In Upload Processor Thread: {e.GetType().Name}. {e.Message}. \n{e.StackTrace}");

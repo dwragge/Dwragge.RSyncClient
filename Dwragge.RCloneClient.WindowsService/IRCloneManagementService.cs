@@ -24,6 +24,6 @@ namespace Dwragge.RCloneClient.WindowsService
         Task DeleteRemote(RemoteDto dto);
 
         [OperationContract]
-        Task GetBackupFolders(int remoteId);
+        BackupFolderDto[] GetBackupFolders(int remoteId);
     }
 }

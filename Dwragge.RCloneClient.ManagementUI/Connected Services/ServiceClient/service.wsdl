@@ -70,6 +70,12 @@
   <wsdl:message name="IRCloneManagementService_DeleteRemote_OutputMessage">
     <wsdl:part name="parameters" element="tns:DeleteRemoteResponse" />
   </wsdl:message>
+  <wsdl:message name="IRCloneManagementService_GetBackupFolders_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBackupFolders" />
+  </wsdl:message>
+  <wsdl:message name="IRCloneManagementService_GetBackupFolders_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBackupFoldersResponse" />
+  </wsdl:message>
   <wsdl:portType name="IRCloneManagementService">
     <wsdl:operation name="Heartbeat">
       <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/Heartbeat" message="tns:IRCloneManagementService_Heartbeat_InputMessage" />
@@ -90,6 +96,10 @@
     <wsdl:operation name="DeleteRemote">
       <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/DeleteRemote" message="tns:IRCloneManagementService_DeleteRemote_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/DeleteRemoteResponse" message="tns:IRCloneManagementService_DeleteRemote_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBackupFolders">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRCloneManagementService/GetBackupFolders" message="tns:IRCloneManagementService_GetBackupFolders_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRCloneManagementService/GetBackupFoldersResponse" message="tns:IRCloneManagementService_GetBackupFolders_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="NetNamedPipeBinding_IRCloneManagementService" type="tns:IRCloneManagementService">
@@ -141,6 +151,15 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetBackupFolders">
+      <soap12:operation soapAction="http://tempuri.org/IRCloneManagementService/GetBackupFolders" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="RCloneManagementService">
     <wsdl:port name="NetNamedPipeBinding_IRCloneManagementService" binding="tns:NetNamedPipeBinding_IRCloneManagementService">
@@ -148,7 +167,7 @@
       <wsa10:EndpointReference>
         <wsa10:Address>net.pipe://localhost/com.Dwragge.RCloneClientService</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>DESKTOP-4587BO8\dylan</Upn>
+          <Upn>DESKTOP-L9BN0GT\dylan</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>

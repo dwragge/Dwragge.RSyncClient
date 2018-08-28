@@ -245,6 +245,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Connected Services\ServiceClient\Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Connected Services\ServiceClient\Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -282,10 +285,6 @@
     <ProjectReference Include="..\Dwragge.RCloneClient.Persistence\Dwragge.RCloneClient.Persistence.csproj">
       <Project>{ff21929d-a336-44fe-ab4b-bc03e60a9d09}</Project>
       <Name>Dwragge.RCloneClient.Persistence</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dwragge.RCloneClient.WindowsService\Dwragge.RCloneClient.WindowsService.csproj">
-      <Project>{2875992d-fd24-4566-94d7-de9d922e8456}</Project>
-      <Name>Dwragge.RCloneClient.WindowsService</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

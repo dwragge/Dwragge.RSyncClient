@@ -121,5 +121,14 @@ namespace Dwragge.RCloneClient.WindowsService
                 await context.SaveChangesAsync();
             }
         }
+
+        public BackupFolderDto[] GetBackupFolders(int remoteId)
+        {
+            using (var context = _contextFactory.CreateContext())
+            {
+                var folders = context.BackupFolders.Where(x => x.RemoteId == remoteId).ToArray();
+                return folders;
+            }
+        }
     }
 }

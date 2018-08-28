@@ -344,6 +344,12 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/DeleteRemote", ReplyAction="http://tempuri.org/IRCloneManagementService/DeleteRemoteResponse")]
         System.Threading.Tasks.Task DeleteRemoteAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto dto);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetBackupFolders", ReplyAction="http://tempuri.org/IRCloneManagementService/GetBackupFoldersResponse")]
+        Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto[] GetBackupFolders(int remoteId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRCloneManagementService/GetBackupFolders", ReplyAction="http://tempuri.org/IRCloneManagementService/GetBackupFoldersResponse")]
+        System.Threading.Tasks.Task<Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto[]> GetBackupFoldersAsync(int remoteId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -411,6 +417,14 @@ namespace Dwragge.RCloneClient.ManagementUI.ServiceClient {
         
         public System.Threading.Tasks.Task DeleteRemoteAsync(Dwragge.RCloneClient.ManagementUI.ServiceClient.RemoteDto dto) {
             return base.Channel.DeleteRemoteAsync(dto);
+        }
+        
+        public Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto[] GetBackupFolders(int remoteId) {
+            return base.Channel.GetBackupFolders(remoteId);
+        }
+        
+        public System.Threading.Tasks.Task<Dwragge.RCloneClient.ManagementUI.ServiceClient.BackupFolderDto[]> GetBackupFoldersAsync(int remoteId) {
+            return base.Channel.GetBackupFoldersAsync(remoteId);
         }
     }
 }
