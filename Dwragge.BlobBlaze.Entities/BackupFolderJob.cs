@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Dwragge.BlobBlaze.Entities
 {
@@ -10,6 +11,13 @@ namespace Dwragge.BlobBlaze.Entities
             BackupFolderId = folder.BackupFolderId;
         }
 
+        private BackupFolderJob()
+        {
+
+        }
+
+        [Key]
+        public int BackupFolderJobId { get; set; }
         public BackupFolderJobStatus Status { get; set; } = BackupFolderJobStatus.Pending;
         public int NumFiles { get; set; }
         public DateTime Created { get; private set; } = DateTime.UtcNow;

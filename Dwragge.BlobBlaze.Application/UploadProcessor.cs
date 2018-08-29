@@ -16,6 +16,7 @@ namespace Dwragge.BlobBlaze.Application
     public class UploadProcessor : IUploadProcessor
     {
         private readonly IApplicationContextFactory _factory;
+        private readonly ILogger _logger;
 
         private bool _isRunning;
         private readonly SemaphoreSlim _uploadTaskSemaphore = new SemaphoreSlim(MaxUploadThreads, MaxUploadThreads);
@@ -26,7 +27,6 @@ namespace Dwragge.BlobBlaze.Application
         private readonly List<BackupFileUploadJob> _failedJobs = new List<BackupFileUploadJob>();
         private const int MaxUploadThreads = 4;
 
-        private readonly ILogger _logger;
 
         public IReadOnlyCollection<BackupFileUploadJob> FailedJobs => _failedJobs.AsReadOnly();
 
@@ -84,7 +84,16 @@ namespace Dwragge.BlobBlaze.Application
             var took = _jobQueue.TryTake(out var job, 500);
             if (!took) return false;
 
-            job.Status = BackupFileUploadJobStatus.InProgress;
+            if (job.Status != BackupFileUploadJobStatus.InProgress)
+            {
+                using (var context = _factory.CreateContext())
+                {
+                    job.Status = BackupFileUploadJobStatus.InProgress;
+                    await context.SaveChangesAsync();
+                }
+            }
+
+
             await _uploadTaskSemaphore.WaitAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
             _runningTasks.Add(Task.Run(() => UploadFile(job)));
 
@@ -113,13 +122,13 @@ namespace Dwragge.BlobBlaze.Application
         private CloudStorageAccount GetStorageAccount(BackupFileUploadJob job)
         {
             CloudStorageAccount account;
-            if (job.ParentJob.Folder.Remote.ConnectionString == "deveopment")
+            if (job.ParentJob.Folder.Remote.ConnectionString.IsDevelopment)
             {
                 account = CloudStorageAccount.DevelopmentStorageAccount;
             }
             else
             {
-                if (!CloudStorageAccount.TryParse(job.ParentJob.Folder.Remote.ConnectionString, out account))
+                if (!CloudStorageAccount.TryParse(job.ParentJob.Folder.Remote.ConnectionString.ToString(), out account))
                 {
                     throw new InvalidOperationException("Connection String was Invalid");
                 }
@@ -178,9 +187,9 @@ namespace Dwragge.BlobBlaze.Application
                 _logger.LogInformation(
                     $"{{{g}}} Finished uploading {job.UploadPath} in {secondsTime:0.##}s. Average Speed was {ByteSize.FromBytes(job.LocalFile.Length / secondsTime).ToString()}/s.");
 
-                // set to archive
-
                 await TrackFile(job);
+                // set to archive
+                // do progress thing and see if finished
             }
             catch (Exception e)
             {
@@ -189,6 +198,7 @@ namespace Dwragge.BlobBlaze.Application
                 {
                     job.Status = BackupFileUploadJobStatus.ErroredRetrying;
                     _jobQueue.Add(job);
+                    job.RetryCount++;
                 }
                 else
                 {

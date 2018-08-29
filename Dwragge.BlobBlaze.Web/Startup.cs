@@ -1,3 +1,5 @@
+using Dwragge.BlobBlaze.Application;
+using Dwragge.BlobBlaze.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +30,12 @@ namespace Dwragge.BlobBlaze.Web
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.AddDataProtection();
             AddQuartz(services);
+            services.AddTransient<IApplicationContextFactory, ApplicationContextFactory>();
+            services.AddTransient<IDirectoryEnumerator, DirectoryEnumerator>();
+            services.AddSingleton<IUploadProcessor, UploadProcessor>();
+            services.AddSingleton<DotnetCoreJobFactory>();
         }
 
         private void AddQuartz(IServiceCollection services)

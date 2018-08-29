@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RCloneClient.WindowsService", "Dwragge.RCloneClient.WindowsService\Dwragge.RCloneClient.WindowsService.csproj", "{2875992D-FD24-4566-94D7-DE9D922E8456}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RCloneClient.CLI", "Dwragge.RCloneClient.CLI\Dwragge.RCloneClient.CLI.csproj", "{95339F4D-338B-4205-9C71-F6564DAD23EF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dwragge.RCloneClient.Common", "Dwragge.RCloneClient.Common\Dwragge.RCloneClient.Common.csproj", "{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.RCloneClient.ManagementUI", "Dwragge.RCloneClient.ManagementUI\Dwragge.RCloneClient.ManagementUI.csproj", "{2E0A344A-54EC-41D8-B11F-D5145BE4553A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dwragge.BlobBlaze.Web", "Dwragge.BlobBlaze.Web\Dwragge.BlobBlaze.Web.csproj", "{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dwragge.BlobBlaze.Entities", "Dwragge.BlobBlaze.Entities\Dwragge.BlobBlaze.Entities.csproj", "{EA23C624-071E-42F9-92C9-A1C9F93720B5}"
@@ -27,38 +19,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2875992D-FD24-4566-94D7-DE9D922E8456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2875992D-FD24-4566-94D7-DE9D922E8456}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2875992D-FD24-4566-94D7-DE9D922E8456}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2875992D-FD24-4566-94D7-DE9D922E8456}.Debug|x64.Build.0 = Debug|Any CPU
-		{2875992D-FD24-4566-94D7-DE9D922E8456}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2875992D-FD24-4566-94D7-DE9D922E8456}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2875992D-FD24-4566-94D7-DE9D922E8456}.Release|x64.ActiveCfg = Release|Any CPU
-		{2875992D-FD24-4566-94D7-DE9D922E8456}.Release|x64.Build.0 = Release|Any CPU
-		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Debug|x64.Build.0 = Debug|Any CPU
-		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Release|x64.ActiveCfg = Release|Any CPU
-		{95339F4D-338B-4205-9C71-F6564DAD23EF}.Release|x64.Build.0 = Release|Any CPU
-		{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}.Debug|x64.Build.0 = Debug|Any CPU
-		{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}.Release|x64.ActiveCfg = Release|Any CPU
-		{3F271ADF-EB77-4746-A0C6-1F8D8C7575BA}.Release|x64.Build.0 = Release|Any CPU
-		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Debug|x64.Build.0 = Debug|Any CPU
-		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Release|x64.ActiveCfg = Release|Any CPU
-		{2E0A344A-54EC-41D8-B11F-D5145BE4553A}.Release|x64.Build.0 = Release|Any CPU
 		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EA91322-D407-4EC0-82B2-7F688FE6B7FE}.Debug|x64.ActiveCfg = Debug|Any CPU

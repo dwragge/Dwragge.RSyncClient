@@ -19,6 +19,8 @@ namespace Dwragge.BlobBlaze.Entities
             UpdateFromFileInfo(job.LocalFile);
         }
 
+        private TrackedFile() { }
+
         [Key]
         public int TrackedFileId { get; set; }
 

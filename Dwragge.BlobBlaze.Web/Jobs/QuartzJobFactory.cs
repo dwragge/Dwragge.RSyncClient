@@ -1,16 +1,14 @@
-﻿using Dwragge.RCloneClient.Common;
-using Dwragge.RCloneClient.Persistence;
-using Dwragge.RCloneClient.WindowsService.Jobs;
+﻿using Dwragge.BlobBlaze.Entities;
 using Quartz;
 
-namespace Dwragge.RCloneClient.WindowsService
+namespace Dwragge.BlobBlaze.Web.Jobs
 {
     public class QuartzJobFactory
     {
-        public static (IJobDetail Job, ITrigger Trigger) CreateSyncJob(BackupFolderDto info)
+        public static (IJobDetail Job, ITrigger Trigger) CreateSyncJob(BackupFolder info)
         {
-            var job = JobBuilder.Create<PreCheckMoveFilesJob>()
-                .WithIdentity(info.BackupFolderId.ToString(), "sync")
+            var job = JobBuilder.Create<DiscoverFilesJob>()
+                .WithIdentity(info.BackupFolderId.ToString(), "discover-files")
                 .Build();
             job.JobDataMap["Folder"] = info;
 

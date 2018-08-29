@@ -1,47 +1,100 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dwragge.BlobBlaze.Entities;
+using Dwragge.BlobBlaze.Storage;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Dwragge.BlobBlaze.Web.Controllers
 {
     [Route("api/[controller]")]
     public class RemotesController : Controller
     {
+        private IApplicationContextFactory _contextFactory;
+
+        public RemotesController(IApplicationContextFactory contextFactory)
+        {
+            _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
+        }
+
         [HttpGet("")]
         public IActionResult GetRemotes()
         {
-            var remotes = new[]
+            using (var context = _contextFactory.CreateContext())
             {
-                new Remote()
+                var remotes = context.BackupRemotes.ToList();
+                return Ok(remotes);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRemote(int id)
+        {
+            using (var context = _contextFactory.CreateContext())
+            {
+                var remote = await context.BackupRemotes.FindAsync(id);
+                if (remote == null) return NotFound();
+
+                if (remote.Default)
                 {
-                    Id = 1,
-                    Name = "Development",
-                    UrlName = "development",
-                    Default = true
-                },
-                new Remote()
-                {
-                    Id = 2,
-                    Name = "Azure",
-                    UrlName = "azure",
-                    Default = false
-                },
-                new Remote()
-                {
-                    Id = 3,
-                    Name = "Azure 2",
-                    UrlName = "azure-2",
-                    Default = false
+                    var next = await context.BackupRemotes.FirstOrDefaultAsync();
+                    if (next != null) next.Default = true;
                 }
+
+                context.BackupRemotes.Remove(remote);
+                await context.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("")]
+        public async Task<IActionResult> AddNewRemote([FromBody]AddNewRemoteFormData data)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!AzureConnectionString.TryParse(data.ConnectionString, out var connectionStringObj))
+            {
+                return BadRequest("Connection String Was Invalid");
+            }
+
+            var remote = new BackupRemote(data.Name, data.BaseFolder, connectionStringObj)
+            {
+                Default = data.Default
             };
 
-            return Ok(remotes);
+            using (var context = _contextFactory.CreateContext())
+            {
+                if (data.Default)
+                {
+                    var currentDefault = await context.BackupRemotes.SingleOrDefaultAsync(r => r.Default == true);
+                    if (currentDefault != null) currentDefault.Default = false;
+                }
+
+                await context.BackupRemotes.AddAsync(remote);
+                await context.SaveChangesAsync();
+            }
+
+            return Created(Request.Path.ToString() + "/" + remote.BackupRemoteId, remote);
         }
     }
-
-    public class Remote
+    
+    public class AddNewRemoteFormData
     {
-        public int Id { get; set; }
+        [Required]
+        [StringLength(50)]
         public string Name { get; set; }
-        public string UrlName { get; set; }
-        public bool Default {get; set; }
+
+        [Required]
+        public string ConnectionString { get; set; }
+    
+        public bool Default { get; set; }
+
+        public string BaseFolder { get; set; }
     }
 }

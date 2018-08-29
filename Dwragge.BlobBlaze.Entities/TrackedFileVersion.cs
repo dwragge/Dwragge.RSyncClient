@@ -12,6 +12,8 @@ namespace Dwragge.BlobBlaze.Entities
             VersionedAt = DateTime.UtcNow;
         }
 
+        private TrackedFileVersion() { }
+
         [Key]
         public int TrackedFileVersionId { get; set; }
         public int TrackedFileId { get; private set; }

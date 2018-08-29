@@ -13,7 +13,7 @@ namespace Dwragge.BlobBlaze.Application
         private readonly ConcurrentBag<string> _files = new ConcurrentBag<string>();
         private readonly ILogger _logger;
 
-        public DirectoryEnumerator(ILogger logger)
+        public DirectoryEnumerator(ILogger<DirectoryEnumerator> logger)
         {
             _logger = logger;
         }

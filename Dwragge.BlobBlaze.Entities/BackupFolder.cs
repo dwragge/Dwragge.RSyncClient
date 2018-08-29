@@ -7,7 +7,6 @@ namespace Dwragge.BlobBlaze.Entities
     public class BackupFolder
     {
         private string _path;
-        private int _remoteId;
         private string _name;
         private TimeSpan _syncTimeSpan = TimeSpan.FromDays(1);
         private string _remoteBaseFolder = "";
@@ -15,10 +14,16 @@ namespace Dwragge.BlobBlaze.Entities
         [Key]
         public int BackupFolderId { get; set; } 
 
-        public BackupFolder(string path, int remoteId)
+        public BackupFolder(string path, BackupRemote remote)
         {
             Path = path ?? throw new ArgumentNullException(nameof(path));
-            _remoteId = remoteId;
+            BackupRemoteId = remote.BackupRemoteId;
+            Remote = remote;
+        }
+
+        //Entity Framework Constructor
+        private BackupFolder()
+        {
         }
 
         public string Path
@@ -89,6 +94,7 @@ namespace Dwragge.BlobBlaze.Entities
             }
         }
 
+        public int BackupRemoteId { get; set; }
         public virtual BackupRemote Remote { get; set; }
     }
 }

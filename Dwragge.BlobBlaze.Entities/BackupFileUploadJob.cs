@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace Dwragge.BlobBlaze.Entities
 {

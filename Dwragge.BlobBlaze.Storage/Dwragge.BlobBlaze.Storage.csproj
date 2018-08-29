@@ -13,4 +13,10 @@
     <ProjectReference Include="..\Dwragge.BlobBlaze.Entities\Dwragge.BlobBlaze.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.DataProtection.Abstractions">
+      <HintPath>..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.dataprotection.abstractions\2.1.1\lib\netstandard2.0\Microsoft.AspNetCore.DataProtection.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

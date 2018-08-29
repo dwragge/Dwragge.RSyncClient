@@ -113,6 +113,12 @@ namespace Dwragge.BlobBlaze.Entities
             return true;
         }
 
+        public static TimeValue Parse(string input)
+        {
+            if (!TryParse(input, out var ret)) throw new InvalidOperationException("Input string was not in a valid format");
+            return ret;
+        }
+
         public bool Equals(TimeValue other)
         {
             return other.Hour == Hour &&
