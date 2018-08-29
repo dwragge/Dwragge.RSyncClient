@@ -212,14 +212,6 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
-# Compiled SASS Files
-*.css
-
-# Compiled JS Files
-*app.js
-*app.min.js
-*app.map
-
 # SSH project used for debugging purposes
 Renci.SshNet/
 Transfer.UI/compilerconfig.json
