@@ -40,7 +40,7 @@ export class RedirectToDefault extends Component {
             )
         }
         else {
-            if (this.state.defaultRemoteName === undefined) {
+            if (this.state.defaultRemote === undefined) {
                 return <Redirect to="/createnewremote" />
             }
             else {

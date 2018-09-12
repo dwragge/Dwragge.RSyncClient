@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 
@@ -35,7 +36,8 @@ namespace Dwragge.BlobBlaze.Entities
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException(nameof(value), $"BaseFolder (Container Name) can't be empty");
+                    _baseFolder = "";
+                    return;
                 }
                 try
                 {
@@ -50,10 +52,14 @@ namespace Dwragge.BlobBlaze.Entities
             }
         }
 
+        [JsonIgnore]
         public AzureConnectionString ConnectionString
         {
             get;set;
         }
+
+        [JsonProperty(PropertyName = "connectionString")]
+        public string ConnectionStringForJson => ConnectionString.ToString();
 
         public string UrlName => Name.ToLower().Replace(' ', '-');
         public bool Default { get; set; }

@@ -12,7 +12,7 @@ export class Layout extends Component {
       <div className="page">
         <div className="page-main">
           <NavMenu currentRemote={this.props.currentRemote}/>
-          <RemoteSwitcherModal currentRemote={this.props.currentRemote} key={this.props.currentRemote.id}/>
+          <RemoteSwitcherModal currentRemote={this.props.currentRemote} key={this.props.currentRemote.backupRemoteId}/>
           <div className="my-3 my-md-5">
           <div className="container">
             {this.props.children}

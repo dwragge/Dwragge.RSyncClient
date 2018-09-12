@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
 import './RemoteSwitcherModal.css'
 
@@ -9,19 +9,20 @@ class RemoteSwitcherModal extends Component {
         this.state = {
             loading: true,
             remotes: [],
-            selectedRemoteId: this.props.currentRemote.id,
-            startingRemoteId: this.props.currentRemote.id
+            selectedRemoteId: this.props.currentRemote.backupRemoteId,
+            startingRemoteId: this.props.currentRemote.backupRemoteId
         }
 
         this.setSelectedRemote = this.setSelectedRemote.bind(this)
         this.changeRemote = this.changeRemote.bind(this)
+        this.createNewRemote = this.createNewRemote.bind(this)
     }
 
     componentDidMount() {
         fetch('api/remotes').then(res => res.json()).then(json => {
             this.setState({
                 remotes: json,
-                loading: false
+                loading: false,
             })
         })
     }
@@ -33,8 +34,12 @@ class RemoteSwitcherModal extends Component {
     }
 
     changeRemote() {
-        let url = this.state.remotes.filter(r => r.id === this.state.selectedRemoteId)[0].urlName;
+        let url = this.state.remotes.filter(r => r.backupRemoteId === this.state.selectedRemoteId)[0].urlName;
         this.props.history.push(`/${url}/`)
+    }
+
+    createNewRemote() {
+        this.props.history.push('/createnewremote')
     }
 
     render() {
@@ -55,8 +60,8 @@ class RemoteSwitcherModal extends Component {
                         <tbody>
                             {this.state.remotes.map(r => {
                                 return (
-                                    <tr key={r.id} onClick={(e) => this.setSelectedRemote(r.id, e)}>
-                                        <td> {r.id === this.state.selectedRemoteId ? <i className="fe fe-check" /> : ''} </td>
+                                    <tr key={r.backupRemoteId} onClick={(e) => this.setSelectedRemote(r.backupRemoteId, e)}>
+                                        <td> {r.backupRemoteId === this.state.selectedRemoteId ? <i className="fe fe-check" /> : ''} </td>
                                         <td> <div> {r.name} </div> </td>
                                     </tr>
                                 )
@@ -72,13 +77,14 @@ class RemoteSwitcherModal extends Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">Change Remote</h5>
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                            <button id="closeButton" type="button" className="close" data-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
                         <div className="modal-body">
                             <div className="card">
                                 {modalBody}
                             </div>
+                             <button type="button" className="btn btn-primary" onClick={this.createNewRemote} data-dismiss="modal" >Create New Remote </button>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>

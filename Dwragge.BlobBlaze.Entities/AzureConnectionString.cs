@@ -17,11 +17,18 @@ namespace Dwragge.BlobBlaze.Entities
 
         public override string ToString()
         {
+            if (IsDevelopment) return "development";
             return $"DefaultEndpointsProtocol={EndpointsProtocol};AccountName={AccountName};AccountKey={AccountKey};EndpointSuffix={EndpointSuffix}";
         }
 
         public static bool TryParse(string connectionString, out AzureConnectionString obj)
         {
+            if (connectionString.Equals("development", StringComparison.OrdinalIgnoreCase))
+            {
+                obj = DevelopmentConnection;
+                return true;
+            }
+
             obj = null;
             var splits = connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries);
             if (splits.Length < 2 || splits.Length > 3)

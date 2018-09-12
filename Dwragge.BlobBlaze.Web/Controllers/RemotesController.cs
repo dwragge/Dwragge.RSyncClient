@@ -60,7 +60,8 @@ namespace Dwragge.BlobBlaze.Web.Controllers
 
             if (!AzureConnectionString.TryParse(data.ConnectionString, out var connectionStringObj))
             {
-                return BadRequest("Connection String Was Invalid");
+                ModelState.AddModelError(nameof(data.ConnectionString), "Connection String Was Invalid");
+                return BadRequest(ModelState);
             }
 
             var remote = new BackupRemote(data.Name, data.BaseFolder, connectionStringObj)

@@ -8,6 +8,7 @@ import { Counter } from './components/Counter';
 import NotFound from './components/404';
 
 import 'bootstrap/dist/js/bootstrap';
+import CreateNewRemote from './components/CreateNewRemote';
 
 
 class App extends Component {
@@ -45,7 +46,7 @@ class App extends Component {
         loading: false,
       });
     });
-    jQuery('[data-dismiss=modal]').click();
+    jQuery('#closeButton').click();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -70,6 +71,7 @@ class App extends Component {
       <Layout currentRemote={this.state.currentRemote}>
         <Route exact path={`${match.path}/`} component={Home} />
         <Route path={`${match.path}/counter`} component={Counter} />
+        <Route path={`${match.path}/edit`} render={props => <CreateNewRemote currentRemote={this.state.currentRemote} /> } />
         <Route path={`${match.path}/fetchdata`} component={FetchData} />
       </Layout>
     );
