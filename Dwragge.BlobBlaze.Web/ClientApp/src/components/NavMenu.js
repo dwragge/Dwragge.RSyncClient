@@ -15,6 +15,7 @@ export class NavMenu extends Component {
             <div className="col-lg order-lg-first">
               <ul className="nav nav-tabs border-0 flex-column flex-lg-row">
                 <li className="nav-item"> <LinkContainer to={`/${this.props.currentRemote.urlName}/`} exact><a className="nav-link">Home</a></LinkContainer> </li>
+                <li className="nav-item"> <LinkContainer to={`/${this.props.currentRemote.urlName}/folders`}><a className="nav-link">Folders</a></LinkContainer> </li>
                 <li className="nav-item"> <LinkContainer to={`/${this.props.currentRemote.urlName}/counter`}><a className="nav-link">Counter</a></LinkContainer> </li>
                 <li className="nav-item"> <LinkContainer to={`/${this.props.currentRemote.urlName}/fetchData`}><a className="nav-link">Weather</a></LinkContainer> </li>  
                 <RemoteSwitch currentRemote={this.props.currentRemote}/>          

@@ -4,11 +4,13 @@ const TextInput = (props) => {
     let inputClass = "form-control"
 
     let idPascal = props.id.charAt(0).toUpperCase() + props.id.substr(1)
-    let errors = props.errors[idPascal]
     let errorItems = ''
-    if (errors) {
-        inputClass += " is-invalid"
+    if (props.errors) {
+        const errors = props.errors[idPascal]
+        if (errors) {
+            inputClass += " is-invalid"
         errorItems = errors.map((str, index) => <div key={index} className="invalid-feedback">{str}</div>)
+        }
     }
 
     return (

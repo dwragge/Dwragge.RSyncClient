@@ -9,6 +9,8 @@ import NotFound from './components/404';
 
 import 'bootstrap/dist/js/bootstrap';
 import CreateNewRemote from './components/CreateNewRemote';
+import BackupFolder from './components/BackupFolder';
+import AddFolder from './components/AddFolder';
 
 
 class App extends Component {
@@ -71,6 +73,8 @@ class App extends Component {
       <Layout currentRemote={this.state.currentRemote}>
         <Route exact path={`${match.path}/`} component={Home} />
         <Route path={`${match.path}/counter`} component={Counter} />
+        <Route path={`${match.path}/folders/add`} render={props => <AddFolder currentRemote={this.state.currentRemote} /> } />        
+        <Route exact path={`${match.path}/folders`} component={BackupFolder} />
         <Route path={`${match.path}/edit`} render={props => <CreateNewRemote currentRemote={this.state.currentRemote} /> } />
         <Route path={`${match.path}/fetchdata`} component={FetchData} />
       </Layout>
