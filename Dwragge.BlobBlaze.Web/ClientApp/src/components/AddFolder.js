@@ -3,8 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import CenteredForm from './CenteredForm';
 import TextInput from './TextInput';
 import moment from 'moment';
-import {TimePicker} from 'antd';
-import 'antd/lib/time-picker/style/index.css';
+import {TimePicker, AutoComplete} from 'antd';
 import { postData } from '../Helpers';
 import FormInput from './FormInput';
 
@@ -18,12 +17,14 @@ class AddFolder extends Component {
             path: '',
             remoteFolder: '',
             syncTimeSpan: '1:0:0',
-            currentRemote: this.props.currentRemote
+            currentRemote: this.props.currentRemote,
+            folderAutoCompleteData: []
         }
 
         this.timeChange = this.timeChange.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.submitForm = this.submitForm.bind(this)
+        this.onAutocompleteChange = this.onAutocompleteChange.bind(this)
     }
 
     timeChange(moment, value) {
@@ -64,6 +65,18 @@ class AddFolder extends Component {
             .catch(err => this.setState({globalErr: err}))
     }
 
+    componentWillUnmount() {
+        this.setState({
+                exception: false
+            }
+        )
+    }
+
+    onAutocompleteChange(value) {
+        this.setState({path: value});
+        fetch(`/api/filesystem/query/${encodeURIComponent(value)}`).then(res => res.json()).then(data => this.setState({folderAutoCompleteData: data}));
+    }
+
     render() {
         if (this.state.success) {
             return <Redirect to={`/${this.state.currentRemote.urlName}/folders`} />
@@ -74,7 +87,9 @@ class AddFolder extends Component {
         }
         return (
         <CenteredForm title="Add Folder">
-            <TextInput id='path' placeholder='C:\Photos\Important' text='Local Folder' onChange={this.handleChange} errors={this.state.errors} />
+            <FormInput label='Local Folder' id='path' errors={this.state.errors}>
+                <AutoComplete dataSource={this.state.folderAutoCompleteData} onChange={this.onAutocompleteChange} placeholder="C:\Foo\Important"/>
+            </FormInput>
             <TextInput id='remoteFolder' placeholder='photos/important' text='Remote Base Folder' onChange={this.handleChange} errors={this.state.errors} />
             <TextInput id='syncTimeSpan' placeholder='days:hours:minutes' default="1:0:0" text='Sync Time Span' onChange={this.handleChange} errors={this.state.errors} />
             <FormInput label="Sync Time" id='syncTime' errors={this.state.errors}>

@@ -8,6 +8,8 @@ import { Counter } from './components/Counter';
 import NotFound from './components/404';
 
 import 'bootstrap/dist/js/bootstrap';
+import 'antd/dist/antd.js'
+import 'antd/dist/antd.css'
 import CreateNewRemote from './components/CreateNewRemote';
 import BackupFolder from './components/BackupFolder';
 import AddFolder from './components/AddFolder';

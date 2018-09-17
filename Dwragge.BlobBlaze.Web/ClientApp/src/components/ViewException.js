@@ -3,7 +3,7 @@ import {Redirect} from 'react-router-dom';
 import GoBackLink from './GoBackLink';
 
 const ViewException = (props) => {
-  if (!props.location.state.exceptionHtml) {
+  if (!props.location.state) {
     return <Redirect to="/" />
   }
   return (
