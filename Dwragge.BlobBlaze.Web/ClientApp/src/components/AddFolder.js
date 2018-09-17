@@ -1,19 +1,23 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
+import { Redirect } from 'react-router-dom';
 import CenteredForm from './CenteredForm';
 import TextInput from './TextInput';
-import moment from 'moment'
-import {TimePicker} from 'antd'
-import 'antd/lib/time-picker/style/index.css'
+import moment from 'moment';
+import {TimePicker} from 'antd';
+import 'antd/lib/time-picker/style/index.css';
+import { postData } from '../Helpers';
+import FormInput from './FormInput';
 
 class AddFolder extends Component {
     constructor(props) {
         super(props)
+        console.log(props)
         this.state = {
             errors: [],
             time: '02:00:00',
-            localFolder: '',
+            path: '',
             remoteFolder: '',
-            syncTimeSpan: '1,0,0',
+            syncTimeSpan: '1:0:0',
             currentRemote: this.props.currentRemote
         }
 
@@ -36,25 +40,49 @@ class AddFolder extends Component {
     }
 
     submitForm() {
-        console.log(this.state)
+        const data = {
+            'syncTime': this.state.time,
+            'path': this.state.path,
+            'remoteFolder': this.state.remoteFolder,
+            'syncTimeSpan': this.state.syncTimeSpan
+        }
+        
+        postData(`/api/remotes/${this.state.currentRemote.backupRemoteId}/backupFolders`, data)
+            .then(response => { 
+                if (response.status === 400) {
+                    response.json().then(errs => this.setState({ errors: errs }))
+                }
+                else if (response.status.ok) {
+                    response.json().then(r => this.setState({ success: true }))
+                }
+                else {
+                    this.setState({globalErr: response.statusText})
+                }
+            })
+            .catch(err => this.setState({globalErr: err}))
     }
 
     render() {
+        if (this.state.success) {
+            return <Redirect to={`/${this.state.currentRemote.urlName}/folders`} />
+        }
+        let err = this.state.globalErr || '';
         return (
         <CenteredForm title="Add Folder">
-            <TextInput id='localFolder' placeholder='C:\Photos\Important' text='Local Folder' onChange={this.handleChange} />
-            <TextInput id='remoteFolder' placeholder='photos/important' text='Remote Base Folder' onChange={this.handleChange} />
-            <TextInput id='syncTimeSpan' placeholder='days,hours,minutes' text='Sync Time Span' onChange={this.handleChange} />
-            <div className="form-group">
-                <label className="form-label">Sync Time</label>
-                <TimePicker defaultValue={moment('02:00:00', 'HH:mm:ss')} onChange={this.timeChange} />
-            </div>
+            <TextInput id='path' placeholder='C:\Photos\Important' text='Local Folder' onChange={this.handleChange} errors={this.state.errors} />
+            <TextInput id='remoteFolder' placeholder='photos/important' text='Remote Base Folder' onChange={this.handleChange} errors={this.state.errors} />
+            <TextInput id='syncTimeSpan' placeholder='days:hours:minutes' default="1:0:0" text='Sync Time Span' onChange={this.handleChange} errors={this.state.errors} />
+            <FormInput label="Sync Time" id='syncTime' errors={this.state.errors}>
+                <TimePicker defaultValue={moment('02:00:00', 'HH:mm:ss')} onChange={this.timeChange} />                
+            </FormInput>
+
             <div className="form-footer">
                 <button type='button' className='btn btn-primary btn-block' onClick={this.submitForm}>Add Folder</button>
             </div>
+            {err}
         </CenteredForm>
         )
     }
 }
 
-export default AddFolder
+export default AddFolder;

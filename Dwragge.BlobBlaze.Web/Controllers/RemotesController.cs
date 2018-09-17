@@ -50,6 +50,42 @@ namespace Dwragge.BlobBlaze.Web.Controllers
             return Ok();
         }
 
+        [HttpPost("{id}")]
+        public async Task<IActionResult> UpdateRemote(int id, [FromBody] AddNewRemoteFormData data)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!AzureConnectionString.TryParse(data.ConnectionString, out var connectionStirngObj))
+            {
+                ModelState.AddModelError(nameof(data.ConnectionString), "Connection String Was Invalid");
+                return BadRequest(ModelState);
+            }
+
+            using (var context = _contextFactory.CreateContext())
+            {
+                var remote = await context.BackupRemotes.FindAsync(id);
+                if (remote == null) return NotFound();
+
+                remote.BaseFolder = data.BaseFolder;
+                remote.ConnectionString = connectionStirngObj;
+                remote.Default = data.Default;
+                remote.Name = data.Name;
+
+                if (data.Default)
+                {
+                    var currentDefault = await context.BackupRemotes.SingleOrDefaultAsync(r => r.Default);
+                    if (currentDefault != null) currentDefault.Default = false;
+                }
+
+                await context.SaveChangesAsync();
+
+                return Created(Request.Path.ToString() + "/" + remote.BackupRemoteId, remote);
+            }
+        }
+
         [HttpPost("")]
         public async Task<IActionResult> AddNewRemote([FromBody]AddNewRemoteFormData data)
         {

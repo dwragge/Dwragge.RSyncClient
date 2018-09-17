@@ -16,7 +16,7 @@ namespace Dwragge.BlobBlaze.Entities
 
         public BackupFolder(string path, BackupRemote remote)
         {
-            Path = path ?? throw new ArgumentNullException(nameof(path));
+            Path = path ?? throw new ArgumentException("Path can't be null", nameof(Path));
             BackupRemoteId = remote.BackupRemoteId;
             Remote = remote;
         }
@@ -31,7 +31,7 @@ namespace Dwragge.BlobBlaze.Entities
             get => _path;
             set
             {
-                if (!Directory.Exists(value)) throw new ArgumentException($"Directory {value} doesn't exist or is inaccessible.");
+                if (!Directory.Exists(value)) throw new ArgumentException($"Directory {value} doesn't exist or is inaccessible.", nameof(Path));
                 _path = value;
             }
         }
@@ -43,18 +43,19 @@ namespace Dwragge.BlobBlaze.Entities
             get => _remoteBaseFolder;
             set
             {
-                if (string.IsNullOrEmpty(value))
-                {
-                    throw new ArgumentException(nameof(value), $"BaseFolder (Container Name) can't be empty");
-                }
-
                 try
                 {
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        _remoteBaseFolder = "";
+                        return;
+                    }
+
                     var _ = System.IO.Path.GetFullPath(value);
                 }
                 catch (IOException)
                 {
-                    throw new ArgumentException(nameof(value), $"{value} is not a valid path string.");
+                    throw new ArgumentException($"{value} is not a valid path string.", nameof(RemoteBaseFolder));
                 }
 
                 _remoteBaseFolder = value;
@@ -68,12 +69,12 @@ namespace Dwragge.BlobBlaze.Entities
             {
                 if (Math.Abs(SyncTimeSpan.TotalDays % 1) > double.Epsilon * 100)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), "Sync Time Span must be whole days only");
+                    throw new ArgumentException("Sync Time Span must be whole days only", nameof(SyncTimeSpan));
                 }
 
                 if (SyncTimeSpan.Days < 1)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), "Sync Time Span must be at least 1 day");
+                    throw new ArgumentException("Sync Time Span must be at least 1 day", nameof(SyncTimeSpan));
                 }
 
                 _syncTimeSpan = value;

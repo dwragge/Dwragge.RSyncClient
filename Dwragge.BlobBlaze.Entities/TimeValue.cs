@@ -101,13 +101,13 @@ namespace Dwragge.BlobBlaze.Entities
                     splits.Add(i);
                 }
             }
-            if (splits.Count != 3) return false;
-            if (splits[0] == 0 || splits[2] == input.Length) return false;
+            if (splits.Count != 2) return false;
+            if (splits[0] == 0 || splits[1] == input.Length) return false;
 
             var inputSpan = input.AsSpan();
             if (!int.TryParse(inputSpan.Slice(0, splits[0]), out int v1)) return false;
-            if (!int.TryParse(inputSpan.Slice(splits[0] + 1, splits[1] - splits[0]), out int v2)) return false;
-            if (!int.TryParse(inputSpan.Slice(splits[1] + 1, splits[2] - splits[0]), out int v3)) return false;
+            if (!int.TryParse(inputSpan.Slice(splits[0] + 1, splits[1] - splits[0] - 1), out int v2)) return false;
+            if (!int.TryParse(inputSpan.Slice(splits[1] + 1, input.Length - splits[1] - 1), out int v3)) return false;
 
             value = new TimeValue(v1, v2, v3);
             return true;

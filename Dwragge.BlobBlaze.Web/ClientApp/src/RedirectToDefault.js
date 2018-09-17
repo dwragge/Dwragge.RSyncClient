@@ -6,8 +6,7 @@ export class RedirectToDefault extends Component {
         super(props)
 
         this.state = {
-            loaded: false,
-            defaultRemote: {}
+            loaded: false
         }
     }
 
@@ -15,6 +14,7 @@ export class RedirectToDefault extends Component {
         fetch('api/remotes').then(res => res.json()).then(json => {
             if (json.length === 0) {
                 this.setState({loaded: true});
+                return;
             }
 
             let defaults = json.filter(r => r.default === true)

@@ -59,7 +59,12 @@ class CreateNewRemote extends Component {
             baseFolder: this.state.baseFolder
         }
 
-        postData('/api/remotes', data)
+        let id = '';
+        if (this.state.currentRemote) {
+            id = this.state.currentRemote.backupRemoteId
+        }
+
+        postData(`/api/remotes/${id}`, data)
             .then(response => {
                 if (response.status === 400) {
                     response.json().then(errs => this.setState({ errors: errs }))
@@ -96,7 +101,6 @@ class CreateNewRemote extends Component {
                     <button type='button' onClick={this.submitForm} className="btn btn-primary btn-block">{this.state.isEdit ? "Save" : "Create"}</button>
                 </div>
             </CenteredForm>
-
         );
     }
 }
