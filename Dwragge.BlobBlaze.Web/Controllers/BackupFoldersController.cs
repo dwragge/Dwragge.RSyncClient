@@ -35,6 +35,7 @@ namespace Dwragge.BlobBlaze.Web.Controllers
         [HttpPost("")]
         public async Task<IActionResult> AddNewFolder(int remoteId, [FromBody] AddFolderFormData data)
         {
+            throw new InvalidOperationException();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
