@@ -59,7 +59,7 @@ namespace Dwragge.BlobBlaze.Web.Controllers
                 await context.BackupFolders.AddAsync(backupFolder);
                 await context.SaveChangesAsync();
 
-                _= Task.Run(() => _mediator.Publish(new FolderCreatedNotification(backupFolder)));
+                _mediator.Publish(new FolderCreatedNotification(backupFolder));
 
                 return Created(Request.Path.ToString() + "/" + backupFolder.BackupFolderId, backupFolder);
             }

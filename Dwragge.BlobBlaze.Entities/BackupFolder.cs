@@ -17,8 +17,8 @@ namespace Dwragge.BlobBlaze.Entities
         public BackupFolder(string path, BackupRemote remote)
         {
             Path = path ?? throw new ArgumentException("Path can't be null", nameof(Path));
+            Remote = remote ?? throw new ArgumentException(nameof(remote));
             BackupRemoteId = remote.BackupRemoteId;
-            Remote = remote;
         }
 
         //Entity Framework Constructor

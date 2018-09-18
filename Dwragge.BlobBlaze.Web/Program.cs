@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Dwragge.BlobBlaze.Application;
 using Dwragge.BlobBlaze.Entities;
 using Dwragge.BlobBlaze.Storage;
 using Dwragge.BlobBlaze.Web.Jobs;
@@ -25,6 +26,8 @@ namespace Dwragge.BlobBlaze.Web
 
             LoadJobs(builder.Services);
             RestoreState(builder.Services);
+
+            builder.Services.GetService<IUploadProcessor>().Start();
 
             builder.Run();
         }
@@ -53,7 +56,7 @@ namespace Dwragge.BlobBlaze.Web
             logger.LogInformation("Beginning loading jobs from the database");
             using (var context = provider.GetService<IApplicationContextFactory>().CreateContext())
             {
-                var folders = context.BackupFolders.ToList();
+                var folders = context.BackupFolders.AsNoTracking().Include(x => x.Remote).ToList();
                 var scheduler = provider.GetService<IScheduler>();
 
                 foreach (var folder in folders)

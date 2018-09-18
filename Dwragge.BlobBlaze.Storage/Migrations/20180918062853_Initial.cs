@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Dwragge.BlobBlaze.Storage.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -33,6 +33,8 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
                     RealTimeUpdates = table.Column<bool>(nullable: false),
                     RemoteBaseFolder = table.Column<string>(nullable: true),
                     SyncTimeSpan = table.Column<TimeSpan>(nullable: false),
+                    Size = table.Column<long>(nullable: false, defaultValue: -1L)
+                        .Annotation("Sqlite:Autoincrement", true),
                     SyncTime = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     BackupRemoteId = table.Column<int>(nullable: false)

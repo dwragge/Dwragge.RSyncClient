@@ -46,12 +46,13 @@ namespace Dwragge.BlobBlaze.Web.Jobs
                             return;
                         }
 
-                        context.BackupJobs.Add(job);
+                        var files = await GetFilesToTransfer();
+                        context.Entry(job.Folder).State = EntityState.Unchanged;
+                        job.NumFiles = files.Count();
+                        await context.BackupJobs.AddAsync(job);
                         await context.SaveChangesAsync(jobContext.CancellationToken);
+                        QueueFilesAsPending(files, job);
                     }
-
-                    var files = await GetFilesToTransfer();
-                    QueueFilesAsPending(files, job);
                 }
                 catch (Exception ex)
                 {

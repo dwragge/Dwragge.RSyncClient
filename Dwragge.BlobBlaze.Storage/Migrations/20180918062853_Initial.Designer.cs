@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dwragge.BlobBlaze.Storage.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20180918041518_AddFolderSize")]
-    partial class AddFolderSize
+    [Migration("20180918062853_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,7 +33,9 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
 
                     b.Property<string>("RemoteBaseFolder");
 
-                    b.Property<long>("Size");
+                    b.Property<long>("Size")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(-1L);
 
                     b.Property<string>("SyncTime")
                         .IsRequired();

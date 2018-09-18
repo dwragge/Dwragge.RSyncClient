@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dwragge.BlobBlaze.Entities
 {
@@ -22,6 +23,8 @@ namespace Dwragge.BlobBlaze.Entities
         public int NumFiles { get; set; }
         public DateTime Created { get; private set; } = DateTime.UtcNow;
         public int BackupFolderId { get; private set; }
+
+        [ForeignKey("BackupFolderId")]
         public virtual BackupFolder Folder { get; private set; }
     }
 

@@ -80,9 +80,15 @@ namespace Dwragge.BlobBlaze.Storage
                 .HasIndex(d => d.FileName)
                 .IsUnique();
 
+
             modelBuilder.Entity<BackupFolder>()
                 .Property(nameof(BackupFolder.Size))
                 .HasDefaultValue(-1);
+            
+
+            modelBuilder.Entity<BackupFolder>()
+                .HasMany<BackupFolderJob>()
+                .WithOne(x => x.Folder);
 
             modelBuilder.Entity<BackupRemote>()
                 .Property(t => t.ConnectionString)

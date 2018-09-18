@@ -8,6 +8,7 @@ namespace Dwragge.BlobBlaze.Application
         IReadOnlyCollection<BackupFileUploadJob> FailedJobs { get; }
 
         void AddJob(BackupFileUploadJob job);
+        void Start();
         void NotifyOfPendingTasks();
     }
 }

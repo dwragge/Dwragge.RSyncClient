@@ -31,7 +31,9 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
 
                     b.Property<string>("RemoteBaseFolder");
 
-                    b.Property<long>("Size");
+                    b.Property<long>("Size")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(-1L);
 
                     b.Property<string>("SyncTime")
                         .IsRequired();
