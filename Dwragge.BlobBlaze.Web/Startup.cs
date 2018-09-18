@@ -1,8 +1,10 @@
 using Dwragge.BlobBlaze.Application;
 using Dwragge.BlobBlaze.Storage;
 using Dwragge.BlobBlaze.Web.Controllers;
+using Dwragge.BlobBlaze.Web.Jobs;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +36,8 @@ namespace Dwragge.BlobBlaze.Web
                 builder.AddFilter("Engine", LogLevel.Debug);
             });
 
+            services.AddMediatR();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddFluentValidation();
 
@@ -51,6 +55,8 @@ namespace Dwragge.BlobBlaze.Web
             services.AddSingleton<DotnetCoreJobFactory>();
 
             services.AddTransient<IValidator<AddFolderFormData>, AddFolderFormDataValidator>();
+
+            services.AddTransient<DiscoverFilesJob>();
         }
 
         private void AddQuartz(IServiceCollection services)

@@ -3,6 +3,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dwragge.BlobBlaze.Application
@@ -43,6 +45,19 @@ namespace Dwragge.BlobBlaze.Application
             _logger.LogInformation($"Discovered {_files.Count} files.");
             return _files;
         }
+
+        public async Task<long> GetSize(string directory)
+        {
+            var files = await GetFiles(directory);
+            long totalSize = 0;
+            files.ToList().AsParallel().ForAll(file =>
+            {
+                var fileSize = new FileInfo(file).Length;
+                Interlocked.Add(ref totalSize, fileSize);
+            });
+            return totalSize;
+        }
+        
 
         private Task DiscoverDirectory(string dir)
         {

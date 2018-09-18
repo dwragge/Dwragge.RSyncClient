@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
 import { normalizeSlashes } from '../Helpers';
-import { Skeleton } from 'antd';
+import { Skeleton, Spin } from 'antd';
+import filesize from 'filesize';
 
 class BackupFolder extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class BackupFolder extends Component {
       tableItems = this.state.folders.map(f => (
         <tr key={f.backupFolderId}>
           <td>{f.name}</td>
-          <td>123MB</td>
+          <td>{f.size === -1 ? <Spin size="small" /> : filesize(f.size)}</td>
           <td>never</td>
           <td>12/12/39</td>
           <td className="text-center">

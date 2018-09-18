@@ -20,15 +20,23 @@ namespace Dwragge.BlobBlaze.Web.Jobs
 
         public BackupFolder Folder { get; set; }
 
+        public DiscoverFilesJob(ILogger<DiscoverFilesJob> logger, IApplicationContextFactory contextFactory,
+                            IDirectoryEnumerator enumerator, IUploadProcessor uploadProcessor)
+        {
+            _logger = logger;
+            _contextFactory = contextFactory;
+            _directoryEnumerator = enumerator;
+            _uploadProcessor = uploadProcessor;
+        }
+
         public async Task Execute(IJobExecutionContext jobContext)
         {
+            Folder = (BackupFolder)jobContext.MergedJobDataMap["Folder"] ?? throw new ArgumentNullException(nameof(Folder));
             using (var scope = _logger.BeginScope("Executing Check Files Job, fired at {date} for folder {path}", jobContext.FireTimeUtc.ToLocalTime(), Folder.Path))
             {
                 var job = new BackupFolderJob(Folder);
                 try
                 {
-                    Folder = (BackupFolder)jobContext.MergedJobDataMap["Folder"] ?? throw new ArgumentNullException(nameof(Folder));
-
                     using (var context = _contextFactory.CreateContext())
                     {
                         // check if already running a job for this folder and return if so

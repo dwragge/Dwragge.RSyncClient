@@ -90,7 +90,6 @@ class CreateNewRemote extends Component {
         const DeleteButton = this.state.isEdit ? <button type='button' onClick={this.checkDelete} className="btn btn-danger btn-block">Delete</button> : ""
         return (
             <CenteredForm title={this.state.isEdit ? "Edit Remote" : "Create New Remote"}>
-                <div className="card-title"></div>
                 <TextInput id='name' default={this.state.name} placeholder='Azure #2' text='Remote Name' onChange={this.handleChange} errors={this.state.errors} />
                 <TextInput id='baseFolder' default={this.state.baseFolder} placeholder='/backup/some_folder' text='Base Folder' onChange={this.handleChange} errors={this.state.errors} />
                 <TextInput id='connectionString' default={this.state.connectionString} placeholder='AccountName=Example;Key=kjQhnJ==' text='Connection String' onChange={this.handleChange} errors={this.state.errors} />

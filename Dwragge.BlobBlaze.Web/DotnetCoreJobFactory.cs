@@ -23,7 +23,11 @@ namespace Dwragge.BlobBlaze.Web
                 var detail = bundle.JobDetail;
                 var jobType = detail.JobType;
 
-                return (IJob)_services.GetService(jobType);
+                _logger.LogInformation("Resolving {type} for job {key}", jobType, detail.Key);
+
+                var job = (IJob)_services.GetService(jobType);
+                if (job == null) throw new InvalidOperationException($"Couldn't instantiate class of type {jobType}, services.GetService() returned null");
+                return job;
             }
             catch (Exception e)
             {
@@ -32,10 +36,10 @@ namespace Dwragge.BlobBlaze.Web
                 throw schedException;
             }
         }
+        
 
         public void ReturnJob(IJob job)
         {
-            throw new NotImplementedException();
         }
     }
 }

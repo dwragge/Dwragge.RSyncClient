@@ -81,6 +81,8 @@ namespace Dwragge.BlobBlaze.Entities
             }
         }
 
+        public long Size { get; set; } = -1;
+
         public TimeValue SyncTime { get; set; } = new TimeValue(2, 0, 0); // Default 02:00AM
 
         public DateTime? LastSync { get; }

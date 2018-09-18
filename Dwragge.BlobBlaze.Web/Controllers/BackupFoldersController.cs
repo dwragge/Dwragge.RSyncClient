@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dwragge.BlobBlaze.Entities;
 using FluentValidation;
+using MediatR;
+using Dwragge.BlobBlaze.Web.Notifications;
 
 namespace Dwragge.BlobBlaze.Web.Controllers
 {
@@ -15,10 +17,12 @@ namespace Dwragge.BlobBlaze.Web.Controllers
     public class BackupFoldersController : Controller
     {
         private readonly IApplicationContextFactory _contextFactory;
+        private readonly IMediator _mediator;
 
-        public BackupFoldersController(IApplicationContextFactory contextFactory)
+        public BackupFoldersController(IApplicationContextFactory contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
+            _mediator = mediator;
         }
 
         [HttpGet("")]
@@ -54,6 +58,8 @@ namespace Dwragge.BlobBlaze.Web.Controllers
 
                 await context.BackupFolders.AddAsync(backupFolder);
                 await context.SaveChangesAsync();
+
+                _= Task.Run(() => _mediator.Publish(new FolderCreatedNotification(backupFolder)));
 
                 return Created(Request.Path.ToString() + "/" + backupFolder.BackupFolderId, backupFolder);
             }
