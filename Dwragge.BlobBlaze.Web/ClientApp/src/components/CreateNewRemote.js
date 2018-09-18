@@ -8,7 +8,6 @@ import CenteredForm from './CenteredForm';
 
 class CreateNewRemote extends Component {
     constructor(props) {
-        console.log(props)
         super(props);
         const c = this.props.currentRemote || null
         if (c === null) {

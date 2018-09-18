@@ -84,7 +84,7 @@ namespace Dwragge.BlobBlaze.Entities
 
         public override string ToString()
         {
-            return $"{Hour}:{Minute}:{Second}";
+            return $"{Hour.ToString().PadLeft(2,'0')}:{Minute.ToString().PadLeft(2, '0')}:{Second.ToString().PadLeft(2, '0')}";
         }
 
         public static bool TryParse(string input, out TimeValue value)

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -35,7 +34,6 @@ namespace Dwragge.BlobBlaze.Web.Controllers
         [HttpPost("")]
         public async Task<IActionResult> AddNewFolder(int remoteId, [FromBody] AddFolderFormData data)
         {
-            throw new InvalidOperationException();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -44,8 +42,11 @@ namespace Dwragge.BlobBlaze.Web.Controllers
             using (var context = _contextFactory.CreateContext())
             {
                 var remote = await context.BackupRemotes.FindAsync(remoteId);
+                if (remote == null) return NotFound();
+
                 var backupFolder = new BackupFolder(data.Path, remote)
                 {
+                    Name = data.Name,
                     RemoteBaseFolder = data.RemoteFolder,
                     SyncTime = TimeValue.Parse(data.SyncTime),
                     SyncTimeSpan = TimeSpan.Parse(data.SyncTimeSpan)
@@ -54,7 +55,70 @@ namespace Dwragge.BlobBlaze.Web.Controllers
                 await context.BackupFolders.AddAsync(backupFolder);
                 await context.SaveChangesAsync();
 
-                return Created(Request.Path.ToString() + "/" + backupFolder.BackupFolderId, remote);
+                return Created(Request.Path.ToString() + "/" + backupFolder.BackupFolderId, backupFolder);
+            }
+        }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> EditBackupFolder(int remoteId, int id, [FromBody] AddFolderFormData data)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            using (var context = _contextFactory.CreateContext())
+            {
+                var folder = await context.BackupFolders.FindAsync(id);
+                if (folder == null) return NotFound();
+                if (folder.BackupRemoteId != remoteId) return NotFound();
+
+                folder.Name = data.Name;
+                folder.RemoteBaseFolder = data.RemoteFolder;
+                folder.SyncTime = TimeValue.Parse(data.SyncTime);
+                folder.SyncTimeSpan = TimeSpan.Parse(data.SyncTimeSpan);
+
+                await context.SaveChangesAsync();
+
+                return Created(Request.Path.ToString() + "/" + folder.BackupFolderId, folder);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBackupFolder(int remoteId, int id)
+        {
+            using (var context = _contextFactory.CreateContext())
+            {
+                var folder = await context.BackupFolders.FindAsync(id);
+                if (folder == null) return NotFound();
+                if (folder.BackupRemoteId != remoteId) return NotFound();
+
+                context.BackupFolders.Remove(folder);
+                await context.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetBackupFolder(int remoteId, int id)
+        {
+            using (var context = _contextFactory.CreateContext())
+            {
+                var backupFolder = await context.BackupFolders.FindAsync(id);
+                if (backupFolder == null) return NotFound();
+                if (backupFolder.BackupRemoteId != remoteId) return NotFound();
+
+                var jsonObj = new
+                {
+                    backupFolder.Path,
+                    backupFolder.Name,
+                    RemoteFolder = backupFolder.RemoteBaseFolder,
+                    SyncTimeSpan = backupFolder.SyncTimeSpan.ToString("g"),
+                    Time = backupFolder.SyncTime.ToString()
+                };
+
+                return Ok(jsonObj);
             }
         }
     }
@@ -63,6 +127,8 @@ namespace Dwragge.BlobBlaze.Web.Controllers
     {
         [Required]
         public string SyncTime { get; set; }
+        [Required]
+        public string Name { get; set; }
         [Required]
         public string Path { get; set; }
         public string RemoteFolder { get; set; }
@@ -78,6 +144,7 @@ namespace Dwragge.BlobBlaze.Web.Controllers
             RuleFor(x => x.SyncTime).Must(BeValidTime).WithMessage("Must be a valid time");
             RuleFor(x => x.RemoteFolder).Must(BeValidPath).WithMessage("Remote Folder must be a valid path string");
             RuleFor(x => x.SyncTimeSpan).Must(BeValidTimeSpan).WithMessage("Invalid TimeSpan");
+            RuleFor(x => x.Name).Length(1, 50);
         }
 
         private bool BeValidDirectory(string path)

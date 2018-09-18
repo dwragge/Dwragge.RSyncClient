@@ -75,9 +75,10 @@ class App extends Component {
       <Layout currentRemote={this.state.currentRemote}>
         <Route exact path={`${match.path}/`} component={Home} />
         <Route path={`${match.path}/counter`} component={Counter} />
-        <Route path={`${match.path}/folders/add`} render={props => <AddFolder currentRemote={this.state.currentRemote} /> } />        
-        <Route exact path={`${match.path}/folders`} component={BackupFolder} />
-        <Route path={`${match.path}/edit`} render={props => <CreateNewRemote currentRemote={this.state.currentRemote} /> } />
+        <Route path={`${match.path}/folders/add`} render={props => <AddFolder currentRemote={this.state.currentRemote} {...props}/> } />        
+        <Route exact path={`${match.path}/folders`} render={props => <BackupFolder currentRemote={this.state.currentRemote} {...props}/>} />
+        <Route path={`${match.path}/edit`} render={props => <CreateNewRemote currentRemote={this.state.currentRemote} {...props}/> } />
+        <Route path={`${match.path}/folders/:folderId/edit`} render={props => <AddFolder currentRemote={this.state.currentRemote} {...props}/> } />
         <Route path={`${match.path}/fetchdata`} component={FetchData} />
       </Layout>
     );

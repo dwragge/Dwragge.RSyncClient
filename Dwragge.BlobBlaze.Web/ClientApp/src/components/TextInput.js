@@ -16,7 +16,7 @@ const TextInput = (props) => {
     return (
         <div className="form-group">
             <label className="form-label">{props.text}</label>
-            <input defaultValue={props.default} type="text" className={inputClass} id={props.id} onChange={props.onChange} placeholder={props.placeholder} />
+            <input type="text" className={inputClass} {...props} />
             {errorItems}
         </div>
     )

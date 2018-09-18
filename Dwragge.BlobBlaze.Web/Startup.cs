@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Quartz.Impl;
 
 namespace Dwragge.BlobBlaze.Web
@@ -25,6 +26,14 @@ namespace Dwragge.BlobBlaze.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Trace);
+                builder.AddFilter("Microsoft", LogLevel.Warning);
+                builder.AddFilter("System", LogLevel.Error);
+                builder.AddFilter("Engine", LogLevel.Debug);
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddFluentValidation();
 
