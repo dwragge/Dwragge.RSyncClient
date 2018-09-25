@@ -58,6 +58,7 @@ namespace Dwragge.BlobBlaze.Web.Jobs
                 {
                     using (var context = _contextFactory.CreateContext())
                     {
+                        context.BackupJobs.Attach(job);
                         job.Status = BackupFolderJobStatus.Errored;
                         await context.SaveChangesAsync();
                     }
@@ -77,7 +78,10 @@ namespace Dwragge.BlobBlaze.Web.Jobs
 
             using (var context = _contextFactory.CreateContext())
             {
-                var trackedFiles = await context.TrackedFiles.Where(t => t.BackupFolderId == Folder.BackupFolderId).ToDictionaryAsync(t => t.FileName);
+                var trackedFiles = await context.TrackedFiles.AsNoTracking()
+                    .Where(t => t.BackupFolderId == Folder.BackupFolderId)
+                    .ToDictionaryAsync(t => t.FileName);
+
                 foreach (var file in allFiles)
                 {
                     if (trackedFiles.ContainsKey(file))

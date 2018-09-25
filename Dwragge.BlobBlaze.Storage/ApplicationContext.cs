@@ -29,6 +29,7 @@ namespace Dwragge.BlobBlaze.Storage
         public DbSet<TrackedFile> TrackedFiles { get; set; }
         public DbSet<TrackedFileVersion> TrackedFileVersions { get; set; }
         public DbSet<BackupFolderJob> BackupJobs { get; set; }
+        public DbSet<BackupFileUploadJob> UploadJobs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -84,7 +85,10 @@ namespace Dwragge.BlobBlaze.Storage
             modelBuilder.Entity<BackupFolder>()
                 .Property(nameof(BackupFolder.Size))
                 .HasDefaultValue(-1);
-            
+
+            modelBuilder.Entity<BackupFileUploadJob>()
+                .Property(x => x.LocalFile)
+                .HasConversion(fileInfo => fileInfo.FullName, path => new FileInfo(path));
 
             modelBuilder.Entity<BackupFolder>()
                 .HasMany<BackupFolderJob>()
