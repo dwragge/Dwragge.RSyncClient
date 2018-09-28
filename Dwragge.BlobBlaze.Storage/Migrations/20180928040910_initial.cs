@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Dwragge.BlobBlaze.Storage.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -36,6 +36,7 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
                     Size = table.Column<long>(nullable: false, defaultValue: -1L)
                         .Annotation("Sqlite:Autoincrement", true),
                     SyncTime = table.Column<string>(nullable: false),
+                    LastSync = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     BackupRemoteId = table.Column<int>(nullable: false)
                 },
@@ -56,7 +57,7 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
                 {
                     BackupFolderJobId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(nullable: false),
                     NumFiles = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     BackupFolderId = table.Column<int>(nullable: false)
@@ -93,6 +94,28 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
                         column: x => x.BackupFolderId,
                         principalTable: "BackupFolders",
                         principalColumn: "BackupFolderId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UploadJobs",
+                columns: table => new
+                {
+                    BackupFileUploadJobId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    LocalFile = table.Column<string>(nullable: true),
+                    ParentJobId = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(nullable: false),
+                    RetryCount = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UploadJobs", x => x.BackupFileUploadJobId);
+                    table.ForeignKey(
+                        name: "FK_UploadJobs_BackupJobs_ParentJobId",
+                        column: x => x.ParentJobId,
+                        principalTable: "BackupJobs",
+                        principalColumn: "BackupFolderJobId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -142,18 +165,26 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
                 name: "IX_TrackedFileVersions_TrackedFileId",
                 table: "TrackedFileVersions",
                 column: "TrackedFileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UploadJobs_ParentJobId",
+                table: "UploadJobs",
+                column: "ParentJobId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BackupJobs");
-
-            migrationBuilder.DropTable(
                 name: "TrackedFileVersions");
 
             migrationBuilder.DropTable(
+                name: "UploadJobs");
+
+            migrationBuilder.DropTable(
                 name: "TrackedFiles");
+
+            migrationBuilder.DropTable(
+                name: "BackupJobs");
 
             migrationBuilder.DropTable(
                 name: "BackupFolders");

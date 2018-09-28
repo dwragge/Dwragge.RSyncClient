@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import { normalizeSlashes } from '../Helpers';
 import { Skeleton, Spin } from 'antd';
 import filesize from 'filesize';
+import SyncNowLink from './SyncNowLink';
 
 class BackupFolder extends Component {
   constructor(props) {
@@ -42,6 +43,7 @@ class BackupFolder extends Component {
               <div className="dropdown-menu dropdown-menu-right">
                 <Link to={`${location}${f.backupFolderId}/edit`} className="dropdown-item"><i className="dropdown-icon fe fe-edit-2"></i> Edit/Delete </Link>
                 <Link to={`/`} className="dropdown-item"><i className="dropdown-icon fe fe-search"></i>View Details </Link>
+                <SyncNowLink folderId={f.backupFolderId} remoteId={f.backupRemoteId} />
               </div>
             </div>
           </td>

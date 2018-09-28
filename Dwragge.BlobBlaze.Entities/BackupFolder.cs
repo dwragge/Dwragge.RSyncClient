@@ -67,12 +67,12 @@ namespace Dwragge.BlobBlaze.Entities
             get => _syncTimeSpan;
             set
             {
-                if (Math.Abs(SyncTimeSpan.TotalDays % 1) > double.Epsilon * 100)
+                if (Math.Abs(value.TotalDays % 1) > double.Epsilon * 100)
                 {
                     throw new ArgumentException("Sync Time Span must be whole days only", nameof(SyncTimeSpan));
                 }
 
-                if (SyncTimeSpan.Days < 1)
+                if (value.Days < 1)
                 {
                     throw new ArgumentException("Sync Time Span must be at least 1 day", nameof(SyncTimeSpan));
                 }
@@ -85,7 +85,7 @@ namespace Dwragge.BlobBlaze.Entities
 
         public TimeValue SyncTime { get; set; } = new TimeValue(2, 0, 0); // Default 02:00AM
 
-        public DateTime? LastSync { get; }
+        public DateTime? LastSync { get; set; }
 
         public string Name
         {

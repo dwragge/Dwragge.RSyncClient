@@ -6,10 +6,11 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dwragge.BlobBlaze.Application.Notifications;
+using Dwragge.BlobBlaze.Application.Requests;
 using Dwragge.BlobBlaze.Entities;
 using FluentValidation;
 using MediatR;
-using Dwragge.BlobBlaze.Web.Notifications;
 
 namespace Dwragge.BlobBlaze.Web.Controllers
 {
@@ -59,7 +60,7 @@ namespace Dwragge.BlobBlaze.Web.Controllers
                 await context.BackupFolders.AddAsync(backupFolder);
                 await context.SaveChangesAsync();
 
-                _mediator.Publish(new FolderCreatedNotification(backupFolder));
+                await _mediator.Publish(new FolderCreatedNotification(backupFolder));
 
                 return Created(Request.Path.ToString() + "/" + backupFolder.BackupFolderId, backupFolder);
             }
@@ -85,6 +86,7 @@ namespace Dwragge.BlobBlaze.Web.Controllers
                 folder.SyncTimeSpan = TimeSpan.Parse(data.SyncTimeSpan);
 
                 await context.SaveChangesAsync();
+                await _mediator.Publish(new FolderChangedNotification(folder));
 
                 return Created(Request.Path.ToString() + "/" + folder.BackupFolderId, folder);
             }
@@ -120,11 +122,32 @@ namespace Dwragge.BlobBlaze.Web.Controllers
                     backupFolder.Path,
                     backupFolder.Name,
                     RemoteFolder = backupFolder.RemoteBaseFolder,
-                    SyncTimeSpan = backupFolder.SyncTimeSpan.ToString("g"),
+                    SyncDays = backupFolder.SyncTimeSpan.Days,
+                    SyncHours = backupFolder.SyncTimeSpan.Hours,
+                    SyncMins = backupFolder.SyncTimeSpan.Minutes,
                     Time = backupFolder.SyncTime.ToString()
                 };
 
                 return Ok(jsonObj);
+            }
+        }
+
+        [HttpGet("{id}/sync")]
+        public async Task<IActionResult> SyncNow(int remoteId, int id)
+        {
+            using (var context = _contextFactory.CreateContext())
+            {
+                var folder = await context.BackupFolders
+                    .AsNoTracking()
+                    .Include(f => f.Remote)
+                    .SingleOrDefaultAsync(f => f.BackupFolderId == id);
+
+                if (folder == null) return NotFound();
+                if (folder.BackupRemoteId != remoteId) return NotFound();
+
+                await _mediator.Send(new SyncFolderNowRequest(folder));
+
+                return Ok();
             }
         }
     }

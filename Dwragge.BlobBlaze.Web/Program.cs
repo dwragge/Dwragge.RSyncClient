@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
 using Dwragge.BlobBlaze.Application;
+using Dwragge.BlobBlaze.Application.Requests;
 using Dwragge.BlobBlaze.Entities;
 using Dwragge.BlobBlaze.Storage;
-using Dwragge.BlobBlaze.Web.Jobs;
+using MediatR;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -49,25 +50,25 @@ namespace Dwragge.BlobBlaze.Web
             }
         }
 
-
         private static void LoadJobs(IServiceProvider provider)
         {
-            var logger = provider.GetService<ILogger<Program>>();
-            logger.LogInformation("Beginning loading jobs from the database");
-            using (var context = provider.GetService<IApplicationContextFactory>().CreateContext())
+            using (var scope = provider.CreateScope())
             {
-                var folders = context.BackupFolders.AsNoTracking().Include(x => x.Remote).ToList();
-                var scheduler = provider.GetService<IScheduler>();
-
-                foreach (var folder in folders)
+                var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
+                logger.LogInformation("Beginning loading jobs from the database");
+                using (var context = scope.ServiceProvider.GetService<IApplicationContextFactory>().CreateContext())
                 {
-                    var (Job, Trigger) = QuartzJobFactory.CreateSyncJob(folder);
-                    scheduler.ScheduleJob(Job, Trigger);
-                    logger.LogInformation($"Creating sync job from database. Name = {folder.Name}, Path = {folder.Path}, Id = {folder.BackupFolderId}, Next Fire Time {Trigger.GetNextFireTimeUtc()?.ToLocalTime()}");
+                    var folders = context.BackupFolders.AsNoTracking().Include(x => x.Remote).ToList();
+                    var mediatr = scope.ServiceProvider.GetService<IMediator>();
 
-                    ScheduleSyncNowIfNecessary(folder, Job);
+                    foreach (var folder in folders)
+                    {
+                        mediatr.Send(new ScheduleJobForFolderRequest(folder)).Wait();
+                        //ScheduleSyncNowIfNecessary(folder, job);
+                    }
                 }
             }
+            
         }
 
         private static void ScheduleSyncNowIfNecessary(BackupFolder info, IJobDetail baseJob)
@@ -97,7 +98,10 @@ namespace Dwragge.BlobBlaze.Web
 
         private static void RestoreState(IServiceProvider provider)
         {
-            // load in the backupfolderjobs that aren't yet complete
+            using (var stateRestorer = provider.GetService<IStateRestorer>())
+            {
+                stateRestorer.RestoreState();
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

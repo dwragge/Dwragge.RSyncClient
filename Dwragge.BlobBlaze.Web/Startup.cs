@@ -1,7 +1,7 @@
 using Dwragge.BlobBlaze.Application;
+using Dwragge.BlobBlaze.Application.Jobs;
 using Dwragge.BlobBlaze.Storage;
 using Dwragge.BlobBlaze.Web.Controllers;
-using Dwragge.BlobBlaze.Web.Jobs;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -51,6 +51,7 @@ namespace Dwragge.BlobBlaze.Web
             AddQuartz(services);
             services.AddTransient<IApplicationContextFactory, ApplicationContextFactory>();
             services.AddTransient<IDirectoryEnumerator, DirectoryEnumerator>();
+            services.AddTransient<IStateRestorer, StateRestorer>();
             services.AddSingleton<IUploadProcessor, UploadProcessor>();
             services.AddSingleton<DotnetCoreJobFactory>();
 

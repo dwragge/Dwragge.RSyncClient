@@ -7,9 +7,9 @@ namespace Dwragge.BlobBlaze.Entities
     {
         [Key]
         public int BackupFileUploadJobId { get; set; }
-        public FileInfo LocalFile { get; }
+        public FileInfo LocalFile { get; private set; }
         public int ParentJobId { get; set; }
-        public BackupFolderJob ParentJob { get; }
+        public BackupFolderJob ParentJob { get; private set; }
         public BackupFileUploadJobStatus Status { get; set; } = BackupFileUploadJobStatus.Pending;
         public int RetryCount { get; set; }
 
@@ -18,6 +18,10 @@ namespace Dwragge.BlobBlaze.Entities
             ParentJob = parentJob;
             ParentJobId = parentJob.BackupFolderJobId;
             LocalFile = localFile;
+        }
+
+        private BackupFileUploadJob()
+        {
         }
 
         public string UploadPath

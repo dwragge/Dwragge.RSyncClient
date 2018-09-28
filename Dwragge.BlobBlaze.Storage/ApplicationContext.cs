@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Dwragge.BlobBlaze.Storage
 {
@@ -81,26 +82,30 @@ namespace Dwragge.BlobBlaze.Storage
                 .HasIndex(d => d.FileName)
                 .IsUnique();
 
-
             modelBuilder.Entity<BackupFolder>()
                 .Property(nameof(BackupFolder.Size))
                 .HasDefaultValue(-1);
+            modelBuilder.Entity<BackupFolder>()
+                .HasMany<BackupFolderJob>()
+                .WithOne(x => x.Folder);
+            modelBuilder.Entity<BackupFolder>()
+                .Property(t => t.SyncTime)
+                .HasConversion(to => to.ToString(), from => TimeValue.Parse(from));
+
+            modelBuilder.Entity<BackupFolderJob>()
+                .Property(j => j.Status)
+                .HasConversion(new EnumToStringConverter<BackupFolderJobStatus>());
 
             modelBuilder.Entity<BackupFileUploadJob>()
                 .Property(x => x.LocalFile)
                 .HasConversion(fileInfo => fileInfo.FullName, path => new FileInfo(path));
-
-            modelBuilder.Entity<BackupFolder>()
-                .HasMany<BackupFolderJob>()
-                .WithOne(x => x.Folder);
+            modelBuilder.Entity<BackupFileUploadJob>()
+                .Property(j => j.Status)
+                .HasConversion(new EnumToStringConverter<BackupFileUploadJobStatus>());
 
             modelBuilder.Entity<BackupRemote>()
                 .Property(t => t.ConnectionString)
                 .HasConversion(unencrypted => EncryptString(unencrypted), encrypted => DecryptString(encrypted));
-
-            modelBuilder.Entity<BackupFolder>()
-                .Property(t => t.SyncTime)
-                .HasConversion(to => to.ToString(), from => TimeValue.Parse(from));
         }
     }
 }

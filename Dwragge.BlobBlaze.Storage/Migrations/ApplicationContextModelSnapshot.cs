@@ -16,12 +16,35 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.2-rtm-30932");
 
+            modelBuilder.Entity("Dwragge.BlobBlaze.Entities.BackupFileUploadJob", b =>
+                {
+                    b.Property<int>("BackupFileUploadJobId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("LocalFile");
+
+                    b.Property<int>("ParentJobId");
+
+                    b.Property<int>("RetryCount");
+
+                    b.Property<string>("Status")
+                        .IsRequired();
+
+                    b.HasKey("BackupFileUploadJobId");
+
+                    b.HasIndex("ParentJobId");
+
+                    b.ToTable("UploadJobs");
+                });
+
             modelBuilder.Entity("Dwragge.BlobBlaze.Entities.BackupFolder", b =>
                 {
                     b.Property<int>("BackupFolderId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("BackupRemoteId");
+
+                    b.Property<DateTime?>("LastSync");
 
                     b.Property<string>("Name");
 
@@ -58,7 +81,8 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
 
                     b.Property<int>("NumFiles");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired();
 
                     b.HasKey("BackupFolderJobId");
 
@@ -128,6 +152,14 @@ namespace Dwragge.BlobBlaze.Storage.Migrations
                     b.HasIndex("TrackedFileId");
 
                     b.ToTable("TrackedFileVersions");
+                });
+
+            modelBuilder.Entity("Dwragge.BlobBlaze.Entities.BackupFileUploadJob", b =>
+                {
+                    b.HasOne("Dwragge.BlobBlaze.Entities.BackupFolderJob", "ParentJob")
+                        .WithMany()
+                        .HasForeignKey("ParentJobId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Dwragge.BlobBlaze.Entities.BackupFolder", b =>

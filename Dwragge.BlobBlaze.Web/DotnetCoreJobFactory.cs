@@ -7,8 +7,8 @@ namespace Dwragge.BlobBlaze.Web
 {
     public class DotnetCoreJobFactory : IJobFactory
     {
-        private IServiceProvider _services;
-        private ILogger _logger;
+        private readonly IServiceProvider _services;
+        private readonly ILogger _logger;
 
         public DotnetCoreJobFactory(IServiceProvider services, ILogger<DotnetCoreJobFactory> logger)
         {

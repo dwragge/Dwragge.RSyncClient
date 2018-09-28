@@ -13,7 +13,7 @@ namespace Dwragge.BlobBlaze.Entities
         {
             Hour = hour;
             Minute = minute;
-            Second = Second;
+            Second = second;
         }
 
         public TimeValue(int hour) : this(hour, 0, 0)
@@ -75,6 +75,16 @@ namespace Dwragge.BlobBlaze.Entities
             return other.Hour == Hour
                     && other.Minute == Minute
                     && other.Second == Second;
+        }
+
+        public static bool operator ==(TimeValue l, TimeValue r)
+        {
+            return l.Equals(r);
+        }
+
+        public static bool operator !=(TimeValue l, TimeValue r)
+        {
+            return !(l == r);
         }
 
         public override int GetHashCode()

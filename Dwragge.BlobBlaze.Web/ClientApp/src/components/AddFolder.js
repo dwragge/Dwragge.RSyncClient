@@ -3,7 +3,7 @@ import { Redirect, Link } from 'react-router-dom';
 import CenteredForm from './CenteredForm';
 import TextInput from './TextInput';
 import moment from 'moment';
-import {TimePicker, AutoComplete, Spin, Popconfirm} from 'antd';
+import {TimePicker, AutoComplete, Spin, Popconfirm, InputNumber} from 'antd';
 import { postData, httpDelete } from '../Helpers';
 import FormInput from './FormInput';
 
@@ -16,7 +16,9 @@ class AddFolder extends Component {
             path: '',
             name: '',
             remoteFolder: '',
-            syncTimeSpan: '1:0:0',
+            syncDays: 1,
+            syncHours: 0,
+            syncMins: 0,
             currentRemote: this.props.currentRemote,
             folderAutoCompleteData: [],
             loading: props.match.params.folderId !== undefined
@@ -62,7 +64,7 @@ class AddFolder extends Component {
             'syncTime': this.state.time,
             'path': this.state.path,
             'remoteFolder': this.state.remoteFolder,
-            'syncTimeSpan': this.state.syncTimeSpan,
+            'syncTimeSpan': `${this.state.syncDays}.${this.state.syncHours}:${this.state.syncMins}:00`,
             'name': this.state.name
         }
         const id = this.props.match.params.folderId || ''
@@ -136,7 +138,13 @@ class AddFolder extends Component {
                 </FormInput>
                 <TextInput id='name' placeholder='important' text='Name' value={name} onChange={this.handleChange} errors={this.state.errors} />
                 <TextInput id='remoteFolder' placeholder='photos/important' value={remoteFolder} text='Remote Base Folder' onChange={this.handleChange} errors={this.state.errors} />
-                <TextInput id='syncTimeSpan' placeholder='days:hours:minutes' default="1:0:0" value={syncTimeSpan} text='Sync Time Span' onChange={this.handleChange} errors={this.state.errors} />
+                <FormInput label='Sync Time Span' id='syncTimeSpan' errors={this.state.errors}>
+                    <span>
+                    <InputNumber min={1} value={this.state.syncDays} onChange={(v) => this.setState({syncDays: v})}/> Days&nbsp;
+                    <InputNumber min={0} max={24} value={this.state.syncHours} onChange={(v) => this.setState({syncHours: v})}/> Hours&nbsp;             
+                    <InputNumber min={0} max={60} value={this.state.syncMins} onChange={(v) => this.setState({syncMins: v})}/> Mins&nbsp;
+                    </span>
+                </FormInput>
                 <FormInput label="Sync Time" id='time' errors={this.state.errors}>
                     <TimePicker value={moment(time, 'HH:mm:ss')} onChange={this.timeChange} />                
                 </FormInput>

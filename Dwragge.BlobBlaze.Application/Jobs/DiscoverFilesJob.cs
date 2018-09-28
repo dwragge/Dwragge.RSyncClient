@@ -1,15 +1,14 @@
-﻿using Dwragge.BlobBlaze.Application;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Dwragge.BlobBlaze.Entities;
 using Dwragge.BlobBlaze.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Dwragge.BlobBlaze.Web.Jobs
+namespace Dwragge.BlobBlaze.Application.Jobs
 {
     public class DiscoverFilesJob : IJob
     {
@@ -32,40 +31,39 @@ namespace Dwragge.BlobBlaze.Web.Jobs
         public async Task Execute(IJobExecutionContext jobContext)
         {
             Folder = (BackupFolder)jobContext.MergedJobDataMap["Folder"] ?? throw new ArgumentNullException(nameof(Folder));
-            using (var scope = _logger.BeginScope("Executing Check Files Job, fired at {date} for folder {path}", jobContext.FireTimeUtc.ToLocalTime(), Folder.Path))
+            _logger.LogInformation("Executing Check Files Job, fired at {date} for folder {path}", jobContext.FireTimeUtc.ToLocalTime(), Folder.Path);
+            var job = new BackupFolderJob(Folder);
+            try
             {
-                var job = new BackupFolderJob(Folder);
-                try
+                using (var context = _contextFactory.CreateContext())
                 {
-                    using (var context = _contextFactory.CreateContext())
+                    // check if already running a job for this folder and return if so
+                    if (context.BackupJobs.Any(j => j.BackupFolderId == Folder.BackupFolderId &&
+                            (j.Status == BackupFolderJobStatus.InProgress || j.Status == BackupFolderJobStatus.Pending)))
                     {
-                        // check if already running a job for this folder and return if so
-                        if (context.BackupJobs.Any(j => j.BackupFolderId == Folder.BackupFolderId && 
-                                (j.Status == BackupFolderJobStatus.InProgress || j.Status == BackupFolderJobStatus.Pending)))
-                        {
-                            return;
-                        }
-
-                        var files = await GetFilesToTransfer();
-                        context.Entry(job.Folder).State = EntityState.Unchanged;
-                        job.NumFiles = files.Count();
-                        await context.BackupJobs.AddAsync(job);
-                        await context.SaveChangesAsync(jobContext.CancellationToken);
-                        QueueFilesAsPending(files, job);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    using (var context = _contextFactory.CreateContext())
-                    {
-                        context.BackupJobs.Attach(job);
-                        job.Status = BackupFolderJobStatus.Errored;
-                        await context.SaveChangesAsync();
+                        _logger.LogInformation("Job found already in progress, skipping...");
+                        return;
                     }
 
-                    _logger.LogCritical(ex, "Exception while running job: {message}. {innerException} \n {stackTrace}", ex.Message, ex.InnerException?.Message, ex.StackTrace);
-                    throw;
+                    var files = await GetFilesToTransfer();
+                    context.Entry(job.Folder).State = EntityState.Unchanged;
+                    job.NumFiles = files.Count;
+                    await context.BackupJobs.AddAsync(job);
+                    await context.SaveChangesAsync(jobContext.CancellationToken);
+                    QueueFilesAsPending(files, job);
                 }
+            }
+            catch (Exception ex)
+            {
+                using (var context = _contextFactory.CreateContext())
+                {
+                    context.BackupJobs.Attach(job);
+                    job.Status = BackupFolderJobStatus.Errored;
+                    await context.SaveChangesAsync();
+                }
+
+                _logger.LogCritical(ex, "Exception while running job: {message}. {innerException} \n {stackTrace}", ex.Message, ex.InnerException?.Message, ex.StackTrace);
+                throw;
             }
         }
 

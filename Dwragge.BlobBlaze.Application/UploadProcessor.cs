@@ -20,7 +20,7 @@ namespace Dwragge.BlobBlaze.Application
 
         private bool _isRunning;
         private readonly SemaphoreSlim _uploadTaskSemaphore = new SemaphoreSlim(MaxUploadThreads, MaxUploadThreads);
-        private BlockingCollection<BackupFileUploadJob> _jobQueue = new BlockingCollection<BackupFileUploadJob>();
+        private readonly BlockingCollection<BackupFileUploadJob> _jobQueue = new BlockingCollection<BackupFileUploadJob>();
         private CancellationTokenSource _cancellationTokenSource;
         private Task _backgroundTask;
         private readonly List<Task> _runningTasks = new List<Task>();
