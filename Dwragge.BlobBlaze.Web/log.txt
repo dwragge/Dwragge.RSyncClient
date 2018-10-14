@@ -30,3 +30,42 @@
 2018-10-14 17:16:34.725 +13:00 [INF] HTTP GET /static/media/feather-webfont.2cf523cd.woff responded 200 in 30.846 ms
 2018-10-14 17:16:35.215 +13:00 [INF] HTTP GET /sockjs-node/info?t=1539490594052 responded 200 in 1128.1377 ms
 2018-10-14 17:16:52.290 +13:00 [INF] HTTP GET /sockjs-node/617/bbabiooy/websocket responded 101 in 17055.5562 ms
+2018-10-14 17:25:35.116 +13:00 [ERR] {15a060f7} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 17:26:02.696 +13:00 [ERR] {9c815f07} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 17:26:31.735 +13:00 [ERR] {ebcb6697} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 17:27:02.101 +13:00 [ERR] {e03feedf} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 17:51:14.396 +13:00 [ERR] {0da5a6f6} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 17:51:44.037 +13:00 [ERR] {6a62ea71} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 17:52:14.437 +13:00 [ERR] {bc0f4342} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 17:52:44.691 +13:00 [ERR] {957165e8} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 18:33:45.286 +13:00 [ERR] {c9d6c126} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 18:37:39.095 +13:00 [ERR] {0f6edd0e} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 18:39:07.526 +13:00 [ERR] {c8428588} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 18:41:15.272 +13:00 [ERR] {435d9105} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 18:47:09.394 +13:00 [ERR] {bafbe6ab} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 18:47:35.799 +13:00 [ERR] An exception occurred in the database while saving changes for context type 'Dwragge.BlobBlaze.Storage.ApplicationContext'.
+Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException: Database operation expected to affect 1 row(s) but actually affected 0 row(s). Data may have been modified or deleted since entities were loaded. See http://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ThrowAggregateUpdateConcurrencyException(Int32 commandIndex, Int32 expectedRowsAffected, Int32 rowsAffected)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSetWithoutPropagation(Int32 commandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(DbContext _, ValueTuple`2 parameters)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.NoopExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IReadOnlyList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException: Database operation expected to affect 1 row(s) but actually affected 0 row(s). Data may have been modified or deleted since entities were loaded. See http://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ThrowAggregateUpdateConcurrencyException(Int32 commandIndex, Int32 expectedRowsAffected, Int32 rowsAffected)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.ConsumeResultSetWithoutPropagation(Int32 commandIndex, RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.AffectedCountModificationCommandBatch.Consume(RelationalDataReader reader)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(DbContext _, ValueTuple`2 parameters)
+   at Microsoft.EntityFrameworkCore.Storage.Internal.NoopExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IReadOnlyList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+2018-10-14 18:51:13.210 +13:00 [ERR] {90c3f4b5} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 19:04:08.358 +13:00 [ERR] {63abde55} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 19:10:05.084 +13:00 [ERR] {4b0ff8cf} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it

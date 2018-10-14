@@ -45,12 +45,14 @@ namespace Dwragge.BlobBlaze.Web.Controllers
                         await _scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupContains(DiscoverFilesJob.JobGroupName));
                     var nextTrigger = keys.SelectMany(x => _scheduler.GetTriggersOfJob(x).Result).OrderBy(x => x.GetNextFireTimeUtc()).FirstOrDefault();
                     var nextFireTime = nextTrigger?.GetNextFireTimeUtc()?.ToLocalTime().ToString("g");
+
                     returnList.Add(new
                     {   
                         backupFolder.BackupFolderId,
+                        backupFolder.BackupRemoteId,
                         backupFolder.Name,
                         backupFolder.Size,
-                        backupFolder.LastSync,
+                        LastSync = backupFolder.LastSync?.ToLocalTime().ToString("g"),
                         NextFireTime = nextFireTime
                     });
                 }

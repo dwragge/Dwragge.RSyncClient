@@ -26,7 +26,7 @@ namespace Dwragge.BlobBlaze.Application
         private readonly List<Task> _runningTasks = new List<Task>();
         private readonly List<BackupFileUploadJob> _failedJobs = new List<BackupFileUploadJob>();
         private const int MaxUploadThreads = 4;
-
+        private const int MaxNumRetries = 0;
 
         public IReadOnlyCollection<BackupFileUploadJob> FailedJobs => _failedJobs.AsReadOnly();
 
@@ -83,19 +83,19 @@ namespace Dwragge.BlobBlaze.Application
         {
             var took = _jobQueue.TryTake(out var job, 500);
             if (!took) return false;
-
-            if (job.Status != BackupFileUploadJobStatus.InProgress)
+            if (job.ParentJob.Status != BackupFolderJobStatus.InProgress)
             {
                 using (var context = _factory.CreateContext())
                 {
-                    job.Status = BackupFileUploadJobStatus.InProgress;
+                    context.BackupJobs.Attach(job.ParentJob);
+                    job.ParentJob.Status = BackupFolderJobStatus.InProgress;
                     await context.SaveChangesAsync();
                 }
             }
 
 
             await _uploadTaskSemaphore.WaitAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
-            _runningTasks.Add(Task.Run(() => UploadFile(job)));
+            _runningTasks.Add(Task.Run(() => UploadFile(job).ContinueWith(task => OnUploadComplete(job))));
 
             return true;
         }
@@ -159,6 +159,20 @@ namespace Dwragge.BlobBlaze.Application
             }
         }
 
+        private async Task OnUploadComplete(BackupFileUploadJob job)
+        {
+            using (var context = _factory.CreateContext())
+            {
+                context.BackupJobs.Attach(job.ParentJob);
+                if (job.ParentJob.Status != BackupFolderJobStatus.InProgress)
+                {
+                    context.Entry(job.ParentJob).State = EntityState.Modified;
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+
         private async Task UploadFile(BackupFileUploadJob job)
         {
             var g = Guid.NewGuid().ToString().Substring(0, 8);
@@ -188,26 +202,45 @@ namespace Dwragge.BlobBlaze.Application
                     $"{{{g}}} Finished uploading {job.UploadPath} in {secondsTime:0.##}s. Average Speed was {ByteSize.FromBytes(job.LocalFile.Length / secondsTime).ToString()}/s.");
 
                 await TrackFile(job);
+                job.ParentJob.IncrementComplete();
                 // set to archive
                 // do progress thing and see if finished
             }
             catch (Exception e)
             {
                 _logger.LogError($"{{{g}}} Exception occurred while uploading file {e.GetType().Name}: {e.Message}");
-                if (job.RetryCount < 3)
+                await LogError(job, e);
+                if (job.RetryCount < MaxNumRetries)
                 {
-                    job.Status = BackupFileUploadJobStatus.ErroredRetrying;
+                    _logger.LogInformation($"{{{g}}} Retrying job... {job.RetryCount} of {MaxNumRetries}");
                     _jobQueue.Add(job);
                     job.RetryCount++;
                 }
                 else
                 {
-                    job.Status = BackupFileUploadJobStatus.Errored;
+                    job.ParentJob.IncrementErrored();
                 }
             }
             finally
             {
                 _uploadTaskSemaphore.Release();
+            }
+        }
+
+        private async Task LogError(BackupFileUploadJob job, Exception e)
+        {
+            try
+            {
+                using (var context = _factory.CreateContext())
+                {
+                    var uploadError = new UploadError(job, e);
+                    await context.UploadErrors.AddAsync(uploadError);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+                // this can't throw
             }
         }
     }

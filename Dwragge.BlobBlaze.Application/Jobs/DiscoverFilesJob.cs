@@ -50,8 +50,13 @@ namespace Dwragge.BlobBlaze.Application.Jobs
                     var files = await GetFilesToTransfer();
                     context.Entry(job.Folder).State = EntityState.Unchanged;
                     job.NumFiles = files.Count;
+
+                    context.Attach(Folder);
+                    Folder.LastSync = DateTime.UtcNow;
+
                     await context.BackupJobs.AddAsync(job);
                     await context.SaveChangesAsync(jobContext.CancellationToken);
+
                     QueueFilesAsPending(files, job);
                 }
             }

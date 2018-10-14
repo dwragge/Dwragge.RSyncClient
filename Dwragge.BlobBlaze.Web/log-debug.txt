@@ -1,0 +1,202 @@
+2018-10-14 18:50:39.337 +13:00 [INF] Default Quartz.NET properties loaded from embedded resource file
+2018-10-14 18:50:39.406 +13:00 [DBG] TaskSchedulingThreadPool configured with max concurrency of 10 and TaskScheduler ThreadPoolTaskScheduler.
+2018-10-14 18:50:39.435 +13:00 [INF] Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl
+2018-10-14 18:50:39.437 +13:00 [INF] Quartz Scheduler v.3.0.6.0 created.
+2018-10-14 18:50:39.442 +13:00 [INF] RAMJobStore initialized.
+2018-10-14 18:50:39.448 +13:00 [INF] Scheduler meta-data: Quartz Scheduler (v3.0.6.0) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'Quartz.Core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'Quartz.Simpl.DefaultThreadPool' - with 10 threads.
+  Using job-store 'Quartz.Simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2018-10-14 18:50:39.450 +13:00 [INF] Quartz scheduler 'DefaultQuartzScheduler' initialized
+2018-10-14 18:50:39.451 +13:00 [INF] Quartz scheduler version: 3.0.6.0
+2018-10-14 18:50:40.767 +13:00 [INF] JobFactory set to: Dwragge.BlobBlaze.Web.DotnetCoreJobFactory
+2018-10-14 18:50:40.781 +13:00 [INF] Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
+2018-10-14 18:50:40.784 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 18:50:40.786 +13:00 [INF] Beginning loading jobs from the database
+2018-10-14 18:50:41.306 +13:00 [INF] Created sync job. Name = test123, Path = c:\users\dylan\Pictures\folder1, Id = 1, Next Fire Time 16/10/2018 2:00:00 AM +13:00
+2018-10-14 18:50:41.307 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 18:50:41.314 +13:00 [INF] Created additional sync job for today. Fire time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 18:50:41.315 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 18:50:41.318 +13:00 [INF] Created sync job. Name = md11, Path = M:\pilotseye.tv\MD11 Quito, Id = 2, Next Fire Time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 18:50:41.318 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 18:50:41.321 +13:00 [INF] Beginning Restoring State
+2018-10-14 18:50:41.557 +13:00 [DBG] Batch acquisition of 1 triggers
+2018-10-14 18:50:41.558 +13:00 [INF] Starting Upload Processor thread
+2018-10-14 18:50:41.592 +13:00 [INF] Resolving Dwragge.BlobBlaze.Application.Jobs.DiscoverFilesJob for job discover-files.1
+2018-10-14 18:50:41.611 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 18:50:41.653 +13:00 [DBG] Calling Execute on job discover-files.1
+2018-10-14 18:50:41.658 +13:00 [INF] Executing Check Files Job, fired at "2018-10-14T18:50:41.5764779+13:00" for folder c:\users\dylan\Pictures\folder1
+2018-10-14 18:50:41.748 +13:00 [INF] Beginning enumeration of c:\users\dylan\Pictures\folder1
+2018-10-14 18:50:41.749 +13:00 [DBG] Spawning thread for sub-directory c:\users\dylan\Pictures\folder1
+2018-10-14 18:50:41.752 +13:00 [INF] Discovered 1 files.
+2018-10-14 18:50:41.977 +13:00 [DBG] Trigger instruction : DeleteTrigger
+2018-10-14 18:50:41.987 +13:00 [DBG] Deleting trigger
+2018-10-14 18:50:42.023 +13:00 [DBG] {90c3f4b5} Uploading test123-20181014/2017-09-041899.jpg on thread 7
+2018-10-14 18:50:42.039 +13:00 [DBG] {90c3f4b5} Using Cloud Storage Account http://127.0.0.1:10000/devstoreaccount1
+2018-10-14 18:50:42.041 +13:00 [DBG] {90c3f4b5} Uploading to test/test123-20181014/2017-09-041899.jpg
+2018-10-14 18:50:42.045 +13:00 [INF] {90c3f4b5} Beginning Upload of test123-20181014/2017-09-041899.jpg. File Size is 299.6 KB
+2018-10-14 18:51:11.207 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 18:51:13.210 +13:00 [ERR] {90c3f4b5} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 18:51:40.648 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:01:55.306 +13:00 [INF] Default Quartz.NET properties loaded from embedded resource file
+2018-10-14 19:01:55.376 +13:00 [DBG] TaskSchedulingThreadPool configured with max concurrency of 10 and TaskScheduler ThreadPoolTaskScheduler.
+2018-10-14 19:01:55.383 +13:00 [INF] Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl
+2018-10-14 19:01:55.386 +13:00 [INF] Quartz Scheduler v.3.0.6.0 created.
+2018-10-14 19:01:55.390 +13:00 [INF] RAMJobStore initialized.
+2018-10-14 19:01:55.397 +13:00 [INF] Scheduler meta-data: Quartz Scheduler (v3.0.6.0) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'Quartz.Core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'Quartz.Simpl.DefaultThreadPool' - with 10 threads.
+  Using job-store 'Quartz.Simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2018-10-14 19:01:55.397 +13:00 [INF] Quartz scheduler 'DefaultQuartzScheduler' initialized
+2018-10-14 19:01:55.397 +13:00 [INF] Quartz scheduler version: 3.0.6.0
+2018-10-14 19:02:14.197 +13:00 [INF] Default Quartz.NET properties loaded from embedded resource file
+2018-10-14 19:02:14.268 +13:00 [DBG] TaskSchedulingThreadPool configured with max concurrency of 10 and TaskScheduler ThreadPoolTaskScheduler.
+2018-10-14 19:02:14.301 +13:00 [INF] Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl
+2018-10-14 19:02:14.304 +13:00 [INF] Quartz Scheduler v.3.0.6.0 created.
+2018-10-14 19:02:14.308 +13:00 [INF] RAMJobStore initialized.
+2018-10-14 19:02:14.314 +13:00 [INF] Scheduler meta-data: Quartz Scheduler (v3.0.6.0) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'Quartz.Core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'Quartz.Simpl.DefaultThreadPool' - with 10 threads.
+  Using job-store 'Quartz.Simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2018-10-14 19:02:14.316 +13:00 [INF] Quartz scheduler 'DefaultQuartzScheduler' initialized
+2018-10-14 19:02:14.317 +13:00 [INF] Quartz scheduler version: 3.0.6.0
+2018-10-14 19:02:15.492 +13:00 [INF] JobFactory set to: Dwragge.BlobBlaze.Web.DotnetCoreJobFactory
+2018-10-14 19:02:15.506 +13:00 [INF] Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
+2018-10-14 19:02:15.510 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:02:15.513 +13:00 [INF] Beginning loading jobs from the database
+2018-10-14 19:02:16.053 +13:00 [INF] Created sync job. Name = test123, Path = c:\users\dylan\Pictures\folder1, Id = 1, Next Fire Time 16/10/2018 2:00:00 AM +13:00
+2018-10-14 19:02:16.054 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:02:16.064 +13:00 [INF] Created additional sync job for today. Fire time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 19:02:16.064 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:02:16.067 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:02:16.067 +13:00 [INF] Created sync job. Name = md11, Path = M:\pilotseye.tv\MD11 Quito, Id = 2, Next Fire Time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 19:02:16.071 +13:00 [INF] Beginning Restoring State
+2018-10-14 19:02:16.129 +13:00 [INF] Starting Upload Processor thread
+2018-10-14 19:02:45.340 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:03:13.101 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:03:39.805 +13:00 [DBG] Batch acquisition of 1 triggers
+2018-10-14 19:03:39.814 +13:00 [INF] HTTP GET /api/remotes/1/backupfolders/1/sync responded 200 in 464.5466 ms
+2018-10-14 19:03:39.823 +13:00 [INF] Resolving Dwragge.BlobBlaze.Application.Jobs.DiscoverFilesJob for job discover-files.1
+2018-10-14 19:03:39.829 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:03:39.875 +13:00 [DBG] Calling Execute on job discover-files.1
+2018-10-14 19:03:39.879 +13:00 [INF] Executing Check Files Job, fired at "2018-10-14T19:03:39.8140384+13:00" for folder c:\users\dylan\Pictures\folder1
+2018-10-14 19:03:39.920 +13:00 [INF] Beginning enumeration of c:\users\dylan\Pictures\folder1
+2018-10-14 19:03:39.921 +13:00 [DBG] Spawning thread for sub-directory c:\users\dylan\Pictures\folder1
+2018-10-14 19:03:39.924 +13:00 [INF] Discovered 1 files.
+2018-10-14 19:03:40.251 +13:00 [DBG] Trigger instruction : DeleteTrigger
+2018-10-14 19:03:40.263 +13:00 [DBG] Deleting trigger
+2018-10-14 19:03:40.310 +13:00 [DBG] {63abde55} Uploading test123-20181014/2017-09-041899.jpg on thread 8
+2018-10-14 19:03:40.329 +13:00 [DBG] {63abde55} Using Cloud Storage Account http://127.0.0.1:10000/devstoreaccount1
+2018-10-14 19:03:40.332 +13:00 [DBG] {63abde55} Uploading to test/test123-20181014/2017-09-041899.jpg
+2018-10-14 19:03:40.336 +13:00 [INF] {63abde55} Beginning Upload of test123-20181014/2017-09-041899.jpg. File Size is 299.6 KB
+2018-10-14 19:04:07.005 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:04:08.358 +13:00 [ERR] {63abde55} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 19:04:31.174 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:07:55.010 +13:00 [INF] Default Quartz.NET properties loaded from embedded resource file
+2018-10-14 19:07:55.081 +13:00 [DBG] TaskSchedulingThreadPool configured with max concurrency of 10 and TaskScheduler ThreadPoolTaskScheduler.
+2018-10-14 19:07:55.107 +13:00 [INF] Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl
+2018-10-14 19:07:55.119 +13:00 [INF] Quartz Scheduler v.3.0.6.0 created.
+2018-10-14 19:07:55.125 +13:00 [INF] RAMJobStore initialized.
+2018-10-14 19:07:55.132 +13:00 [INF] Scheduler meta-data: Quartz Scheduler (v3.0.6.0) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'Quartz.Core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'Quartz.Simpl.DefaultThreadPool' - with 10 threads.
+  Using job-store 'Quartz.Simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2018-10-14 19:07:55.134 +13:00 [INF] Quartz scheduler 'DefaultQuartzScheduler' initialized
+2018-10-14 19:07:55.135 +13:00 [INF] Quartz scheduler version: 3.0.6.0
+2018-10-14 19:07:56.295 +13:00 [INF] JobFactory set to: Dwragge.BlobBlaze.Web.DotnetCoreJobFactory
+2018-10-14 19:07:56.308 +13:00 [INF] Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
+2018-10-14 19:07:56.312 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:07:56.315 +13:00 [INF] Beginning loading jobs from the database
+2018-10-14 19:07:56.859 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:07:56.860 +13:00 [INF] Created sync job. Name = test123, Path = c:\users\dylan\Pictures\folder1, Id = 1, Next Fire Time 16/10/2018 2:00:00 AM +13:00
+2018-10-14 19:07:56.869 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:07:56.869 +13:00 [INF] Created additional sync job for today. Fire time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 19:07:56.873 +13:00 [INF] Created sync job. Name = md11, Path = M:\pilotseye.tv\MD11 Quito, Id = 2, Next Fire Time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 19:07:56.873 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:07:56.875 +13:00 [INF] Beginning Restoring State
+2018-10-14 19:07:56.932 +13:00 [INF] Starting Upload Processor thread
+2018-10-14 19:08:00.961 +13:00 [DBG] Batch acquisition of 1 triggers
+2018-10-14 19:08:00.968 +13:00 [INF] HTTP GET /api/remotes/1/backupfolders/1/sync responded 200 in 435.9854 ms
+2018-10-14 19:08:00.976 +13:00 [INF] Resolving Dwragge.BlobBlaze.Application.Jobs.DiscoverFilesJob for job discover-files.1
+2018-10-14 19:08:00.982 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:08:01.030 +13:00 [DBG] Calling Execute on job discover-files.1
+2018-10-14 19:08:01.035 +13:00 [INF] Executing Check Files Job, fired at "2018-10-14T19:08:00.9670360+13:00" for folder c:\users\dylan\Pictures\folder1
+2018-10-14 19:08:01.073 +13:00 [INF] Beginning enumeration of c:\users\dylan\Pictures\folder1
+2018-10-14 19:08:01.074 +13:00 [DBG] Spawning thread for sub-directory c:\users\dylan\Pictures\folder1
+2018-10-14 19:08:01.076 +13:00 [INF] Discovered 1 files.
+2018-10-14 19:08:01.521 +13:00 [DBG] Trigger instruction : DeleteTrigger
+2018-10-14 19:08:01.534 +13:00 [DBG] Deleting trigger
+2018-10-14 19:08:01.571 +13:00 [DBG] {c252be7c} Uploading test123-20181014/2017-09-041899.jpg on thread 8
+2018-10-14 19:08:01.593 +13:00 [DBG] {c252be7c} Using Cloud Storage Account http://127.0.0.1:10000/devstoreaccount1
+2018-10-14 19:08:01.594 +13:00 [DBG] {c252be7c} Uploading to test/test123-20181014/2017-09-041899.jpg
+2018-10-14 19:08:01.598 +13:00 [INF] {c252be7c} Beginning Upload of test123-20181014/2017-09-041899.jpg. File Size is 299.6 KB
+2018-10-14 19:08:07.391 +13:00 [INF] HTTP GET /test/folders responded 200 in 1137.8459 ms
+2018-10-14 19:08:08.152 +13:00 [INF] HTTP GET /static/js/bundle.js responded 200 in 733.829 ms
+2018-10-14 19:08:09.305 +13:00 [INF] HTTP GET /api/remotes responded 200 in 427.4825 ms
+2018-10-14 19:08:09.553 +13:00 [INF] HTTP GET /static/js/bundle.js.map responded 200 in 885.6258 ms
+2018-10-14 19:08:09.555 +13:00 [INF] HTTP GET /api/remotes responded 200 in 135.8046 ms
+2018-10-14 19:08:09.607 +13:00 [INF] HTTP GET /api/remotes/1/backupfolders responded 200 in 187.9235 ms
+2018-10-14 19:08:09.730 +13:00 [INF] HTTP GET /static/media/feather-webfont.2cf523cd.woff responded 200 in 35.7889 ms
+2018-10-14 19:08:10.301 +13:00 [INF] HTTP GET /sockjs-node/info?t=1539497289131 responded 200 in 1156.7324 ms
+2018-10-14 19:09:33.311 +13:00 [INF] Default Quartz.NET properties loaded from embedded resource file
+2018-10-14 19:09:33.390 +13:00 [DBG] TaskSchedulingThreadPool configured with max concurrency of 10 and TaskScheduler ThreadPoolTaskScheduler.
+2018-10-14 19:09:33.416 +13:00 [INF] Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl
+2018-10-14 19:09:33.426 +13:00 [INF] Quartz Scheduler v.3.0.6.0 created.
+2018-10-14 19:09:33.431 +13:00 [INF] RAMJobStore initialized.
+2018-10-14 19:09:33.444 +13:00 [INF] Scheduler meta-data: Quartz Scheduler (v3.0.6.0) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'Quartz.Core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'Quartz.Simpl.DefaultThreadPool' - with 10 threads.
+  Using job-store 'Quartz.Simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2018-10-14 19:09:33.446 +13:00 [INF] Quartz scheduler 'DefaultQuartzScheduler' initialized
+2018-10-14 19:09:33.447 +13:00 [INF] Quartz scheduler version: 3.0.6.0
+2018-10-14 19:09:34.718 +13:00 [INF] JobFactory set to: Dwragge.BlobBlaze.Web.DotnetCoreJobFactory
+2018-10-14 19:09:34.732 +13:00 [INF] Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
+2018-10-14 19:09:34.735 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:09:34.737 +13:00 [INF] Beginning loading jobs from the database
+2018-10-14 19:09:35.319 +13:00 [INF] Created sync job. Name = test123, Path = c:\users\dylan\Pictures\folder1, Id = 1, Next Fire Time 16/10/2018 2:00:00 AM +13:00
+2018-10-14 19:09:35.320 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:09:35.331 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:09:35.331 +13:00 [INF] Created additional sync job for today. Fire time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 19:09:35.334 +13:00 [INF] Created sync job. Name = md11, Path = M:\pilotseye.tv\MD11 Quito, Id = 2, Next Fire Time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 19:09:35.334 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:09:35.336 +13:00 [INF] Beginning Restoring State
+2018-10-14 19:09:35.584 +13:00 [DBG] Batch acquisition of 1 triggers
+2018-10-14 19:09:35.585 +13:00 [INF] Starting Upload Processor thread
+2018-10-14 19:09:35.615 +13:00 [INF] Resolving Dwragge.BlobBlaze.Application.Jobs.DiscoverFilesJob for job discover-files.1
+2018-10-14 19:09:35.634 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:09:35.678 +13:00 [DBG] Calling Execute on job discover-files.1
+2018-10-14 19:09:35.685 +13:00 [INF] Executing Check Files Job, fired at "2018-10-14T19:09:35.6003568+13:00" for folder c:\users\dylan\Pictures\folder1
+2018-10-14 19:09:35.785 +13:00 [INF] Beginning enumeration of c:\users\dylan\Pictures\folder1
+2018-10-14 19:09:35.786 +13:00 [DBG] Spawning thread for sub-directory c:\users\dylan\Pictures\folder1
+2018-10-14 19:09:35.796 +13:00 [INF] Discovered 1 files.
+2018-10-14 19:09:36.059 +13:00 [DBG] Trigger instruction : DeleteTrigger
+2018-10-14 19:09:36.070 +13:00 [DBG] Deleting trigger
+2018-10-14 19:09:36.094 +13:00 [DBG] {4b0ff8cf} Uploading test123-20181014/2017-09-041899.jpg on thread 7
+2018-10-14 19:09:36.109 +13:00 [DBG] {4b0ff8cf} Using Cloud Storage Account http://127.0.0.1:10000/devstoreaccount1
+2018-10-14 19:09:36.110 +13:00 [DBG] {4b0ff8cf} Uploading to test/test123-20181014/2017-09-041899.jpg
+2018-10-14 19:09:36.115 +13:00 [INF] {4b0ff8cf} Beginning Upload of test123-20181014/2017-09-041899.jpg. File Size is 299.6 KB
+2018-10-14 19:09:40.560 +13:00 [INF] HTTP GET /api/remotes/1/backupfolders responded 200 in 369.499 ms
+2018-10-14 19:10:03.753 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:10:05.084 +13:00 [ERR] {4b0ff8cf} Exception occurred while uploading file StorageException: No connection could be made because the target machine actively refused it
+2018-10-14 19:10:28.428 +13:00 [DBG] Batch acquisition of 0 triggers
+2018-10-14 19:10:55.128 +13:00 [DBG] Batch acquisition of 0 triggers

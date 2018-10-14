@@ -113,6 +113,7 @@ namespace Dwragge.BlobBlaze.Web
                     .ReadFrom.Configuration(hostingContext.Configuration)
                     .Enrich.FromLogContext()
                     .WriteTo.Console()
-                    .WriteTo.File("log.txt", LogEventLevel.Information));
+                    .WriteTo.File("log.txt", LogEventLevel.Error)
+                    .WriteTo.File("log-debug.txt", LogEventLevel.Verbose));
     }
 }

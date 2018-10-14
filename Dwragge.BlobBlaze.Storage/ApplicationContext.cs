@@ -31,6 +31,7 @@ namespace Dwragge.BlobBlaze.Storage
         public DbSet<TrackedFileVersion> TrackedFileVersions { get; set; }
         public DbSet<BackupFolderJob> BackupJobs { get; set; }
         public DbSet<BackupFileUploadJob> UploadJobs { get; set; }
+        public DbSet<UploadError> UploadErrors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
