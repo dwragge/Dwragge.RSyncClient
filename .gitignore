@@ -238,3 +238,5 @@ Transfer\.UWP/Transfer\.UWP\.nuget\.cache
 Transfer\.UWP\.Package/Server
 Transfer\.UWP\.Package/BundleArtifacts/*.*
 Transfer.UWP/_pkginfo.txt
+Dwragge.BlobBlaze.Web/log-debug.txt
+Dwragge.BlobBlaze.Web/log.txt

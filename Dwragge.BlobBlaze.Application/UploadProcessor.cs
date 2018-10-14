@@ -71,11 +71,6 @@ namespace Dwragge.BlobBlaze.Application
                     _logger.LogCritical(e, $"Exception Occurred In Upload Processor Thread: {e.GetType().Name}. {e.Message}. \n{e.StackTrace}");
                     throw;
                 }
-                //move to inprogress
-                // wait for available thread
-                // spawn thread
-                // spin a few times then pause
-                // pause/unpause needs to be syncronized well
             }
         }
 
@@ -167,6 +162,7 @@ namespace Dwragge.BlobBlaze.Application
                 if (job.ParentJob.Status != BackupFolderJobStatus.InProgress)
                 {
                     context.Entry(job.ParentJob).State = EntityState.Modified;
+                    _logger.LogInformation($"Finished Processing all files for folder {job.ParentJob.Folder.Name} at path {job.ParentJob.Folder.Path}");
                 }
 
                 await context.SaveChangesAsync();
@@ -204,7 +200,6 @@ namespace Dwragge.BlobBlaze.Application
                 await TrackFile(job);
                 job.ParentJob.IncrementComplete();
                 // set to archive
-                // do progress thing and see if finished
             }
             catch (Exception e)
             {

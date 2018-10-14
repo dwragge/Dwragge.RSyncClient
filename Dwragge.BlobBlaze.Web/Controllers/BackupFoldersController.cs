@@ -46,17 +46,44 @@ namespace Dwragge.BlobBlaze.Web.Controllers
                     var nextTrigger = keys.SelectMany(x => _scheduler.GetTriggersOfJob(x).Result).OrderBy(x => x.GetNextFireTimeUtc()).FirstOrDefault();
                     var nextFireTime = nextTrigger?.GetNextFireTimeUtc()?.ToLocalTime().ToString("g");
 
+                    var trackedFilesQuery =
+                        context.TrackedFiles.Where(f => f.BackupFolderId == backupFolder.BackupFolderId);
+
                     returnList.Add(new
                     {   
                         backupFolder.BackupFolderId,
                         backupFolder.BackupRemoteId,
                         backupFolder.Name,
-                        backupFolder.Size,
+                        Size = trackedFilesQuery.Sum(f => f.SizeBytes),
+                        NumFiles = trackedFilesQuery.Count(),
                         LastSync = backupFolder.LastSync?.ToLocalTime().ToString("g"),
                         NextFireTime = nextFireTime
                     });
                 }
                 return Ok(returnList);
+            }
+        }
+
+        [HttpGet("{id}/info")]
+        public async Task<IActionResult> GetBackupFolderDetailedInfo(int remoteId, int id)
+        {
+            using (var context = _contextFactory.CreateContext())
+            {
+                var trackedFiles = await context.TrackedFiles
+                    .AsNoTracking()
+                    .Where(f => f.BackupFolderId == id)
+                    .Include(f => f.Versions)
+                    .Select(f => new
+                    {
+                        f.TrackedFileId,
+                        Size = f.SizeBytes,
+                        f.FileName,
+                        VersionCount = f.Versions.Count + 1
+                    })
+                    .OrderBy(f => f.FileName)
+                    .ToListAsync();
+
+                return Ok(trackedFiles);
             }
         }
 

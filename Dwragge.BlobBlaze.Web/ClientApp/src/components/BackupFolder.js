@@ -35,14 +35,16 @@ class BackupFolder extends Component {
         <tr key={f.backupFolderId}>
           <td>{f.name}</td>
           <td>{f.size === -1 ? <Spin size="small" /> : filesize(f.size)}</td>
+          <td>{f.numFiles}</td>
           <td>{f.lastSync == null ? "Never" : f.lastSync}</td>
           <td>{f.nextFireTime == null ? "N/A" : f.nextFireTime}</td>
           <td className="text-center">
             <div className="item-action dropdown">
               <a href="javascript:void(0)" data-toggle="dropdown" className="icon"><i className="fe fe-more-vertical"></i></a>
               <div className="dropdown-menu dropdown-menu-right">
-                <Link to={`${location}${f.backupFolderId}/edit`} className="dropdown-item"><i className="dropdown-icon fe fe-edit-2"></i> Edit/Delete </Link>
-                <Link to={`/`} className="dropdown-item"><i className="dropdown-icon fe fe-search"></i>View Details </Link>
+                <Link to={`${location}${f.backupFolderId}/edit`} className="dropdown-item"><i className="dropdown-icon fe fe-edit-2"></i>Edit/Delete </Link>
+                <Link to={`${location}${f.backupFolderId}/details`} className="dropdown-item"><i className="dropdown-icon fe fe-search"></i>View Details </Link>
+                <div className="dropdown-divider"/>
                 <SyncNowLink folderId={f.backupFolderId} remoteId={f.backupRemoteId} />
               </div>
             </div>
@@ -66,6 +68,7 @@ class BackupFolder extends Component {
                         <tr>
                           <th>Name</th>
                           <th>Size</th>
+                          <th>Num Files</th>
                           <th>Last Sync</th>
                           <th>Next Sync</th>
                           <th className="text-center"><i className="icon-settings"></i></th>

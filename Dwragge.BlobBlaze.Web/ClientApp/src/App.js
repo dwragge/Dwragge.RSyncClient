@@ -13,6 +13,7 @@ import 'antd/dist/antd.css'
 import CreateNewRemote from './components/CreateNewRemote';
 import BackupFolder from './components/BackupFolder';
 import AddFolder from './components/AddFolder';
+import FolderInfo from './components/FolderInfo';
 
 
 class App extends Component {
@@ -77,6 +78,7 @@ class App extends Component {
         <Route path={`${match.path}/counter`} component={Counter} />
         <Route path={`${match.path}/folders/add`} render={props => <AddFolder currentRemote={this.state.currentRemote} {...props}/> } />        
         <Route exact path={`${match.path}/folders`} render={props => <BackupFolder currentRemote={this.state.currentRemote} {...props}/>} />
+        <Route path={`${match.path}/folders/:folderId/details`} render={props => <FolderInfo currentRemote={this.state.currentRemote} {...props} />} />
         <Route path={`${match.path}/edit`} render={props => <CreateNewRemote currentRemote={this.state.currentRemote} {...props}/> } />
         <Route path={`${match.path}/folders/:folderId/edit`} render={props => <AddFolder currentRemote={this.state.currentRemote} {...props}/> } />
         <Route path={`${match.path}/fetchdata`} component={FetchData} />

@@ -48,6 +48,13 @@ namespace Dwragge.BlobBlaze.Application.Jobs
                     }
 
                     var files = await GetFilesToTransfer();
+                    if (files.Count == 0)
+                    {
+                        _logger.LogInformation($"{Folder.Path} All Files Unchanged. Skipping Sync.");
+                        return;
+                    };
+                    _logger.LogInformation($"{Folder.Path} Found {files.Count} files that need to be transferred.");
+
                     context.Entry(job.Folder).State = EntityState.Unchanged;
                     job.NumFiles = files.Count;
 
