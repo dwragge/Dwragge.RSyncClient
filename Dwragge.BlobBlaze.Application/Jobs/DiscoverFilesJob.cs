@@ -19,6 +19,8 @@ namespace Dwragge.BlobBlaze.Application.Jobs
 
         public BackupFolder Folder { get; set; }
 
+        public static string JobGroupName => "discover-files";
+
         public DiscoverFilesJob(ILogger<DiscoverFilesJob> logger, IApplicationContextFactory contextFactory,
                             IDirectoryEnumerator enumerator, IUploadProcessor uploadProcessor)
         {

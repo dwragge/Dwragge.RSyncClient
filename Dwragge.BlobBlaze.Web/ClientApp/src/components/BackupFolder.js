@@ -35,8 +35,8 @@ class BackupFolder extends Component {
         <tr key={f.backupFolderId}>
           <td>{f.name}</td>
           <td>{f.size === -1 ? <Spin size="small" /> : filesize(f.size)}</td>
-          <td>never</td>
-          <td>12/12/39</td>
+          <td>{f.lastSync == null ? "Never" : f.lastSync}</td>
+          <td>{f.nextFireTime == null ? "N/A" : f.nextFireTime}</td>
           <td className="text-center">
             <div className="item-action dropdown">
               <a href="javascript:void(0)" data-toggle="dropdown" className="icon"><i className="fe fe-more-vertical"></i></a>

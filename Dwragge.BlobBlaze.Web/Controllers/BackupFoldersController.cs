@@ -2,15 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dwragge.BlobBlaze.Application.Jobs;
 using Dwragge.BlobBlaze.Application.Notifications;
 using Dwragge.BlobBlaze.Application.Requests;
 using Dwragge.BlobBlaze.Entities;
 using FluentValidation;
 using MediatR;
+using Quartz;
+using Quartz.Impl.Matchers;
 
 namespace Dwragge.BlobBlaze.Web.Controllers
 {
@@ -19,11 +24,13 @@ namespace Dwragge.BlobBlaze.Web.Controllers
     {
         private readonly IApplicationContextFactory _contextFactory;
         private readonly IMediator _mediator;
+        private readonly IScheduler _scheduler;
 
-        public BackupFoldersController(IApplicationContextFactory contextFactory, IMediator mediator)
+        public BackupFoldersController(IApplicationContextFactory contextFactory, IMediator mediator, IScheduler scheduler)
         {
             _contextFactory = contextFactory ?? throw new ArgumentNullException(nameof(contextFactory));
             _mediator = mediator;
+            _scheduler = scheduler;
         }
 
         [HttpGet("")]
@@ -32,7 +39,23 @@ namespace Dwragge.BlobBlaze.Web.Controllers
             using (var context = _contextFactory.CreateContext())
             {
                 var folders = await context.BackupFolders.AsNoTracking().Where(f => f.BackupRemoteId == remoteId).ToListAsync();
-                return Ok(folders);
+                var returnList = new List<object>();
+                foreach (var backupFolder in folders)
+                {
+                    var keys =
+                        await _scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupContains(DiscoverFilesJob.JobGroupName));
+                    var nextTrigger = keys.SelectMany(x => _scheduler.GetTriggersOfJob(x).Result).OrderBy(x => x.GetNextFireTimeUtc()).FirstOrDefault();
+                    var nextFireTime = nextTrigger?.GetNextFireTimeUtc()?.ToLocalTime().ToString("g");
+                    returnList.Add(new
+                    {   
+                        backupFolder.BackupFolderId,
+                        backupFolder.Name,
+                        backupFolder.Size,
+                        backupFolder.LastSync,
+                        NextFireTime = nextFireTime
+                    });
+                }
+                return Ok(returnList);
             }
         }
 
@@ -149,6 +172,16 @@ namespace Dwragge.BlobBlaze.Web.Controllers
 
                 return Ok();
             }
+        }
+
+        [HttpGet("{id}/schedule")]
+        public async Task<IActionResult> GetScheduleForFolder(int remoteId, int id)
+        {
+            var job = await _scheduler.GetJobDetail(new JobKey(id.ToString(), "discover-files"));
+            if (job == null) return NotFound();
+
+            var triggers = await _scheduler.GetTriggersOfJob(new JobKey(id.ToString(), "discover-files"));
+            return Ok(triggers);
         }
     }
 
