@@ -28,13 +28,7 @@ namespace Dwragge.BlobBlaze.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(builder =>
-            {
-                builder.SetMinimumLevel(LogLevel.Trace);
-                builder.AddFilter("Microsoft", LogLevel.Warning);
-                builder.AddFilter("System", LogLevel.Error);
-                builder.AddFilter("Engine", LogLevel.Debug);
-            });
+            
 
             services.AddMediatR();
 
@@ -80,6 +74,7 @@ namespace Dwragge.BlobBlaze.Web
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseMiddleware<SerilogMiddleware>();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 

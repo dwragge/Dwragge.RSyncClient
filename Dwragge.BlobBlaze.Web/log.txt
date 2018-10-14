@@ -1,0 +1,32 @@
+2018-10-14 17:15:38.671 +13:00 [INF] Default Quartz.NET properties loaded from embedded resource file
+2018-10-14 17:15:38.921 +13:00 [INF] Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl
+2018-10-14 17:15:38.975 +13:00 [INF] Quartz Scheduler v.3.0.6.0 created.
+2018-10-14 17:15:38.982 +13:00 [INF] RAMJobStore initialized.
+2018-10-14 17:15:38.991 +13:00 [INF] Scheduler meta-data: Quartz Scheduler (v3.0.6.0) 'DefaultQuartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'Quartz.Core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'Quartz.Simpl.DefaultThreadPool' - with 10 threads.
+  Using job-store 'Quartz.Simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2018-10-14 17:15:38.993 +13:00 [INF] Quartz scheduler 'DefaultQuartzScheduler' initialized
+2018-10-14 17:15:38.993 +13:00 [INF] Quartz scheduler version: 3.0.6.0
+2018-10-14 17:15:40.286 +13:00 [INF] JobFactory set to: Dwragge.BlobBlaze.Web.DotnetCoreJobFactory
+2018-10-14 17:15:40.298 +13:00 [INF] Scheduler DefaultQuartzScheduler_$_NON_CLUSTERED started.
+2018-10-14 17:15:40.305 +13:00 [INF] Beginning loading jobs from the database
+2018-10-14 17:15:40.853 +13:00 [INF] Created sync job. Name = test123, Path = c:\users\dylan\Pictures\folder1, Id = 1, Next Fire Time 16/10/2018 2:00:00 AM +13:00
+2018-10-14 17:15:40.863 +13:00 [INF] Created additional sync job for today. Fire time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 17:15:40.865 +13:00 [INF] Created sync job. Name = md11, Path = M:\pilotseye.tv\MD11 Quito, Id = 2, Next Fire Time 15/10/2018 2:00:00 AM +13:00
+2018-10-14 17:15:40.869 +13:00 [INF] Beginning Restoring State
+2018-10-14 17:15:40.917 +13:00 [INF] Found 0 jobs that were in progress
+2018-10-14 17:15:40.975 +13:00 [INF] Starting Upload Processor thread
+2018-10-14 17:16:32.186 +13:00 [INF] HTTP GET /test/folders responded 200 in 1355.499 ms
+2018-10-14 17:16:32.903 +13:00 [INF] HTTP GET /static/js/bundle.js responded 200 in 673.5002 ms
+2018-10-14 17:16:34.187 +13:00 [INF] HTTP GET /static/js/bundle.js.map responded 200 in 721.4646 ms
+2018-10-14 17:16:34.331 +13:00 [INF] HTTP GET /api/remotes responded 200 in 604.6805 ms
+2018-10-14 17:16:34.436 +13:00 [INF] HTTP GET /api/remotes responded 200 in 38.292 ms
+2018-10-14 17:16:34.669 +13:00 [INF] HTTP GET /api/remotes/1/backupfolders responded 200 in 248.0515 ms
+2018-10-14 17:16:34.725 +13:00 [INF] HTTP GET /static/media/feather-webfont.2cf523cd.woff responded 200 in 30.846 ms
+2018-10-14 17:16:35.215 +13:00 [INF] HTTP GET /sockjs-node/info?t=1539490594052 responded 200 in 1128.1377 ms
+2018-10-14 17:16:52.290 +13:00 [INF] HTTP GET /sockjs-node/617/bbabiooy/websocket responded 101 in 17055.5562 ms
