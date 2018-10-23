@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Dwragge.BlobBlaze.Application
 {
@@ -144,6 +145,8 @@ namespace Dwragge.BlobBlaze.Application
                     .SingleOrDefaultAsync(f => f.FileName == job.LocalFile.FullName);
                 if (alreadyTracked != null)
                 {
+                    context.Attach(alreadyTracked);
+
                     var version = new TrackedFileVersion(alreadyTracked);
                     await context.TrackedFileVersions.AddAsync(version, _cancellationTokenSource.Token);
                     alreadyTracked.UpdateFromFileInfo(job.LocalFile);
@@ -172,6 +175,23 @@ namespace Dwragge.BlobBlaze.Application
                 await context.SaveChangesAsync();
             }
         }
+        
+
+        private async Task SetArchiveStatus(BackupFileUploadJob job, CloudBlobContainer container)
+        {
+            // Emulator does not support access tiers
+            if (GetStorageAccount(job) == CloudStorageAccount.DevelopmentStorageAccount) return;
+
+            try
+            {
+                var blockReference = container.GetBlockBlobReference(job.UploadPath);
+                await blockReference.SetStandardBlobTierAsync(StandardBlobTier.Hot);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Failed to Set Blob Access Level for {file}, {message}", job.UploadPath, e.Message);
+            }
+        }
 
         private async Task UploadFile(BackupFileUploadJob job)
         {
@@ -182,7 +202,9 @@ namespace Dwragge.BlobBlaze.Application
 
                 var account = GetStorageAccount(job);
                 var client = account.CreateCloudBlobClient();
-                var container = client.GetContainerReference("test");
+                var container = client.GetContainerReference("blobblaze");
+                await container.CreateIfNotExistsAsync();
+
                 var blob = container.GetBlockBlobReference(job.UploadPath);
 
                 _logger.LogDebug($"{{{g}}} Using Cloud Storage Account {account.BlobStorageUri.PrimaryUri}");
@@ -203,11 +225,13 @@ namespace Dwragge.BlobBlaze.Application
 
                 await TrackFile(job);
                 job.ParentJob.IncrementComplete();
+
+                await SetArchiveStatus(job, container);
                 // set to archive
             }
             catch (Exception e)
             {
-                _logger.LogError($"{{{g}}} Exception occurred while uploading file {e.GetType().Name}: {e.Message}");
+                _logger.LogError($"{{{g}}} Exception occurred while uploading file {e.GetType().Name}: {e.Message} {e.StackTrace}");
                 await LogError(job, e);
                 if (job.RetryCount < MaxNumRetries)
                 {

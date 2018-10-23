@@ -28,7 +28,7 @@ namespace Dwragge.BlobBlaze.Entities
         {
             get
             {
-                var baseFolderVersioned = ParentJob.Folder.Name.Replace(' ', '-') + "/" + ParentJob.Created.ToString("yyyyMMdd");
+                var baseFolderVersioned = ParentJob.Folder.Name.Replace(' ', '-') + "/" + ParentJob.Created.ToString("yyyyMMdd-HHmmss");
                 var parentDiff = LocalFile.FullName.Replace(ParentJob.Folder.Path, "").Remove(0, 1); // remove the leading slash
                 return Path.Combine(ParentJob.Folder.Remote.BaseFolder, baseFolderVersioned, parentDiff).Replace('\\', '/');
             }
