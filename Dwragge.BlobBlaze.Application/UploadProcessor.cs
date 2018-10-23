@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 
 namespace Dwragge.BlobBlaze.Application
 {
+    // TODO : Split into Upload and UploadProcessor
+    // Currently violates SRP pretty badly 
+    // Two jobs of this currently are 1) reading off the queue and managing threads and 2) uploading the file to Azure
+    // Maybe split into Upload and have AzureUpload S3Upload w/e eventually
     public class UploadProcessor : IUploadProcessor
     {
         private readonly IApplicationContextFactory _factory;
