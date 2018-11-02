@@ -31,7 +31,7 @@ namespace Dwragge.BlobBlaze.Entities
 
             obj = null;
             var splits = connectionString.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            if (splits.Length < 2 || splits.Length > 3)
+            if (splits.Length < 2 || splits.Length > 4)
             {
                 return false;
             }
@@ -45,15 +45,15 @@ namespace Dwragge.BlobBlaze.Entities
                 }
                 else if (split.StartsWith("AccountName=", StringComparison.OrdinalIgnoreCase))
                 {
-                    account = split.Substring(11);
+                    account = split.Substring(12);
                 }
                 else if (split.StartsWith("AccountKey=", StringComparison.OrdinalIgnoreCase))
                 {
-                    key = split.Substring(10);
+                    key = split.Substring(11);
                 }
                 else if (split.StartsWith("EndpointSuffix=", StringComparison.OrdinalIgnoreCase))
                 {
-                    suffix = split.Substring(14);
+                    suffix = split.Substring(15);
                 }
             }
 

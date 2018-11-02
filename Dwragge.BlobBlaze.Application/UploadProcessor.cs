@@ -185,7 +185,7 @@ namespace Dwragge.BlobBlaze.Application
             try
             {
                 var blockReference = container.GetBlockBlobReference(job.UploadPath);
-                await blockReference.SetStandardBlobTierAsync(StandardBlobTier.Hot);
+                await blockReference.SetStandardBlobTierAsync(StandardBlobTier.Archive);
             }
             catch (Exception e)
             {
